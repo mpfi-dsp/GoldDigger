@@ -1,0 +1,38 @@
+{% extends 'GDapp/base.html' %}
+{% block 'body' %}
+
+
+
+{% load static %}
+<section class="jumbotron text-center">
+    <div class="container">
+      <h1 class = "jumbotron-heading">Hello, and welcome to the GoldDigger web app</h1>
+      <p class="lead text-muted">Description text- we can put something here if we want</p>
+      <p>
+        <a href= "{% url 'image_upload' %}" class="btn btn-primary my-2">Upload an Image to GoldDigger</a>
+      </p>
+      <img src="{% static 'figure3.png' %}"  alt='Example of GoldDigger Labeling' height=300>
+    </div>
+  </section>
+
+
+<br><br>
+
+
+
+
+<!--<p>-->
+<!--    Freeze-fracture replica immunogold labeling (FRIL) is an electron microscopy-->
+<!--    (EM) technique that uniquely allows for two-dimensional visualization of membrane proteins.-->
+<!--    FRIL has the highest epitope detection sensitivity among EM-based immunolabeling techniques,-->
+<!--    enabling quantitative analysis of target protein number and distribution. Manual annotation-->
+<!--    of gold particle labels is laborious and time consuming (gold particle counts can exceed 100,000-->
+<!--    across hundreds of image segments). To automate this process, we developed a new software program-->
+<!--    named ‘Gold Digger’ that uses a modified pix2pix deep learning network capable of detecting and-->
+<!--    labeling gold particles in FRIL image sets. Gold Digger performs beyond the accuracy of current-->
+<!--    computer vision techniques, and includes a user-friendly tool with a graphical interface.-->
+<!--    By allowing for manual error correction, the network can be continuously retrained to improve-->
+<!--    label accuracy. Gold Digger enables high-throughput analysis and quantitation of large datasets-->
+<!--    with few errors and is freely available to the research community.-->
+<!--</p>-->
+{% endblock %}

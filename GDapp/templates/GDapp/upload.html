@@ -1,0 +1,60 @@
+{% extends 'GDapp/base.html' %}
+{% block 'body' %}
+
+<section class="jumbotron text-center">
+    <div class="container">
+      <h1 class = "jumbotron-heading">Upload a File</h1>
+      <p class="lead text-muted">Requirements: Please upload 1 profile to analyze (the file name should contain no spaces).</p>
+      <form method = 'post' enctype = "multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+            <!--<input name="document" type='file'>-->
+          <button type="submit">Upload</button>
+      </form>
+        {% if url %}
+        <p>Uploaded file: <a href = "{{ url  }}">{{ url }}</a></p>
+        <!--link doesn't work if the file has spaces in it-->
+        {% endif %}
+
+        <br><br>
+        <!--for the button to run run.py-->
+      <form action="/external/" method="post">
+            {% csrf_token %}
+          <p>Select a Gold Digger model below and then click "Run GoldDigger"</p>
+          <input type="radio" id="43kGoldDigger" name="model" value="43kGoldDigger">
+          <label for="43kGoldDigger">43k Gold Digger</label> <br>
+          <input type="radio" id="87kGoldDigger" name="model" value="87kGoldDigger">
+          <label for="87kGoldDigger">87k Gold Digger</label> <br>
+
+           <input type="submit" value = "Run GoldDigger">
+      </form>
+
+      <a href = "../../../media/GD_Output.zip" download>
+        <button type = "button"> Download</button>
+      </a>
+        <br><br>
+        <a href= "{% url 'image_upload' %}" class="btn btn-primary my-2">Upload another Image to GoldDigger</a>
+
+    </div>
+</section>
+
+
+
+<!--<br><br>-->
+<!--<h1>Upload a File</h1>-->
+<!--<br><br>-->
+<!--<form method = 'post' enctype = "multipart/form-data">-->
+<!-- {% csrf_token %}-->
+<!--    <input name="document" type='file'>-->
+<!--    <button type="submit">Upload</button>-->
+<!--</form>-->
+<!--{% if url %}-->
+<!--<p>Uploaded file: <a href = "{{ url  }}">{{ url }}</a></p>-->
+<!--&lt;!&ndash;link doesn't work if the file has spaces in it&ndash;&gt;-->
+<!--{% endif %}-->
+
+<!--<br><br>-->
+<!--<a href = "{% url 'home' %}"><h3>Return to Home</h3></a>-->
+
+
+{% endblock %}
