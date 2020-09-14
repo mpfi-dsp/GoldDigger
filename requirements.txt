@@ -6,7 +6,7 @@ chardet==3.0.4
 cryptography==2.1.4
 dominate==2.4.0
 enum34==1.1.6
-futures==3.3.0
+# futures==3.3.0
 idna==2.9
 ipaddress==1.0.17
 jsonpatch==1.25
