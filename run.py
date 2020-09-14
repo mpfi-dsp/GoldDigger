@@ -43,19 +43,22 @@ else:
 
 ## Clear out old stuff
 
-shutil.rmtree('media/Output')
+shutil.rmtree('media/Output', ignore_errors=True)
 os.mkdir('media/Output')
 
-shutil.rmtree('media/Output_Appended/test')
+shutil.rmtree('media/Output_Appended', ignore_errors=True)
+os.mkdir('media/Output_Appended')
+
+shutil.rmtree('media/Output_Appended/test', ignore_errors=True)
 os.mkdir('media/Output_Appended/test')
 
-shutil.rmtree('media/PIX2PIX/results/{0}/test_latest/images'.format(model))
+shutil.rmtree('media/PIX2PIX/results/{0}/test_latest/images'.format(model), ignore_errors=True)
 os.mkdir('media/PIX2PIX/results/{0}/test_latest/images'.format(model))
 
-shutil.rmtree('media/Output_ToStitch')
+shutil.rmtree('media/Output_ToStitch', ignore_errors=True)
 os.mkdir('media/Output_ToStitch')
 
-shutil.rmtree('media/Output_Final')
+shutil.rmtree('media/Output_Final', ignore_errors=True)
 os.mkdir('media/Output_Final')
 
 try:
