@@ -1,6 +1,6 @@
 FROM pytorch/pytorch:1.4-cuda10.1-cudnn7-runtime
-RUN mkdir /project
-WORKDIR /project
+RUN mkdir /usr/src/app
+WORKDIR /usr/src/app
 ADD requirements.txt .
 RUN pip install -r requirements.txt
 
