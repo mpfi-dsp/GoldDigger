@@ -44,22 +44,22 @@ else:
 ## Clear out old stuff
 
 shutil.rmtree('media/Output', ignore_errors=True)
-os.mkdir('media/Output')
+os.makedirs('media/Output')
 
 shutil.rmtree('media/Output_Appended', ignore_errors=True)
-os.mkdir('media/Output_Appended')
+os.makedirs('media/Output_Appended')
 
 shutil.rmtree('media/Output_Appended/test', ignore_errors=True)
-os.mkdir('media/Output_Appended/test')
+os.makedirs('media/Output_Appended/test')
 
 shutil.rmtree('media/PIX2PIX/results/{0}/test_latest/images'.format(model), ignore_errors=True)
-os.mkdir('media/PIX2PIX/results/{0}/test_latest/images'.format(model))
+os.makedirs('media/PIX2PIX/results/{0}/test_latest/images'.format(model))
 
 shutil.rmtree('media/Output_ToStitch', ignore_errors=True)
-os.mkdir('media/Output_ToStitch')
+os.makedirs('media/Output_ToStitch')
 
 shutil.rmtree('media/Output_Final', ignore_errors=True)
-os.mkdir('media/Output_Final')
+os.makedirs('media/Output_Final')
 
 try:
     os.remove('media/GD_Output.zip')
