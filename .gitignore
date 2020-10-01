@@ -1,5 +1,5 @@
-media/PIX2PIX
 .idea/
 __pycache__*
 *.pyc
 /env
+media/Input
