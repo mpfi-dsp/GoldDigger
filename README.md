@@ -23,5 +23,4 @@ docker-compose up
 ```
 
 6. In your browser, go to   
-    http://127.1.1.0:8000
-     
+    http://127.0.0.1:8000
