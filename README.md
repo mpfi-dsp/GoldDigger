@@ -4,14 +4,24 @@ This repository contains the code to have a working local server for GoldDigger.
 
 ## Instructions:
 
-1. install nvidia docker:
-  https://github.com/NVIDIA/nvidia-docker
+1. install nvidia docker:  
+    https://github.com/NVIDIA/nvidia-docker
 
-2. Build the docker image
+2. Install docker-compose:  
+    https://docs.docker.com/compose/install/
+
+3. Download this github repository and extract it into a folder
+
+4. Navigate to that folder and build the docker image
+
 ```
-docker build -t yourusername/golddigger .
+docker-compose build
 ```
-3. run GoldDigger docker container
+5. run the docker container
 ```
-docker run -p 8000:8000 -ti --gpus all -v ${PWD}:/project yourusername/golddigger
+docker-compose up
 ```
+
+6. In your browser, go to   
+    http://127.1.1.0:8000
+     
