@@ -11,3 +11,5 @@ dominate>=2.3.1
 visdom>=0.1.8.3
 imutils
 pandas
+psycopg2-binary==2.8.5
+gunicorn==20.0.4
