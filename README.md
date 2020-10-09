@@ -9,19 +9,26 @@ This repository contains the code to have a working local server for GoldDigger.
 
 2. Download this github repository and extract it into a folder
 
-3. Download the two models and put them in these folders:
+3. In terminal, navigate to the main golddigger directory and download the models using this command.
+```
+sh download_models.sh
+```
+
+If that doesn't work, download them manually and put them in their respective folders folders:
+
     - media/PIX2PIX/checkpoints/43kGoldDigger/  
+
     https://maxplanckflorida.sharepoint.com/:u:/s/dsp-tm/EYAW60h1luRGmW-Qqu2lXCIBX2TAxxMuLrrowH2vpyMIuA?e=aSGdKm
 
     - media/PIX2PIX/checkpoints/87kGoldDigger/  
+
     https://maxplanckflorida.sharepoint.com/:u:/s/dsp-tm/EcTS95eKY9JOsBXFnqlUj70Btlyrm3cbPlMXaRCqzPt0Ng?e=IPQDr1
     
-3. In terminal, navigate to the main golddigger directory and build the docker image with the following command:
-
+4. Build the docker image with the following command:
 ```
 sh build.sh
 ```
-4. Run the docker container:
+5. Run the docker container:
 ```
 sh run_docker.sh
 ```
