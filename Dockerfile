@@ -16,5 +16,4 @@ RUN pip install -r requirements.txt
 RUN pip install opencv-python
 RUN apt-get install python-opencv -y
 
-COPY ./entrypoint.sh .
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+ENTRYPOINT ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
