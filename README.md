@@ -16,11 +16,11 @@ sh download_models.sh
 
 If that doesn't work, download them manually and put them in their respective folders folders:
 
-    - media/PIX2PIX/checkpoints/43kGoldDigger/  
+- media/PIX2PIX/checkpoints/43kGoldDigger/  
 
     https://maxplanckflorida.sharepoint.com/:u:/s/dsp-tm/EYAW60h1luRGmW-Qqu2lXCIBX2TAxxMuLrrowH2vpyMIuA?e=aSGdKm
 
-    - media/PIX2PIX/checkpoints/87kGoldDigger/  
+- media/PIX2PIX/checkpoints/87kGoldDigger/  
 
     https://maxplanckflorida.sharepoint.com/:u:/s/dsp-tm/EcTS95eKY9JOsBXFnqlUj70Btlyrm3cbPlMXaRCqzPt0Ng?e=IPQDr1
     
