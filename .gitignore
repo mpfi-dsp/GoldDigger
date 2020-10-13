@@ -5,3 +5,4 @@ __pycache__*
 /media/Input/
 /media/Output/
 *.png
+/media/Output*
