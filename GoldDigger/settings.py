@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import config
 
 # DEBUG=1
 SECRET_KEY='x-s+84=3++0kwfzz85#mohs8)-(-+gn4bcvwo3i7#k_40yg)v4'
@@ -29,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0','192.168.86.37']
+ALLOWED_HOSTS = config.ALLOWED_HOSTS
 
 
 # Application definition
