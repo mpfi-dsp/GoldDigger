@@ -6,3 +6,4 @@ __pycache__*
 /media/Output/
 *.png
 /media/Output*
+db.sqlite3
