@@ -28,12 +28,14 @@ If that doesn't work, download them manually and put them in their respective fo
 ```
 sh build.sh
 ```
-5. Run the docker container:
+5. Manually edit config.py to set the relevant information
+
+6. Run the docker container:
 ```
 sh run_docker.sh
 ```
 
-6. In your browser, go to   
+7. In your browser, go to   
     http://0.0.0.0:8000
 
-7. Give yourself a high five.
+8. Give yourself a high five.
