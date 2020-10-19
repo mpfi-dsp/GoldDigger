@@ -58,3 +58,10 @@ sh build.sh
     http://0.0.0.0:8000
 
 8. Give yourself a high five.
+
+
+### TO DO:
+- make it clear when files are uploaded
+- update user on status of analysis
+    - unwrap run.py into separate functions
+- make blue mask
