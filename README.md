@@ -30,10 +30,29 @@ sh build.sh
 ```
 5. Manually edit config.py to set the relevant information
 
-6. Run the docker container:
-```
-sh run_docker.sh
-```
+6. Run the docker container:  
+    - quick (if you don't need to see all the terminal outputs):
+    ```
+    sh run_docker.sh
+    ```
+    - full Terminals:
+        1. run redis server  
+        ```
+        docker run -d --name redis1 redis
+        ```
+        2. run gold digger docker container and start celery (async task manager)
+        ```
+        docker run --ti --gpus all -d --name gold-digger-web --link redis1:redis -p 8000:8000 -v ${PWD}:/usr/src/app gold-digger/gold-digger-dev
+        
+        celery -A GoldDigger worker -l info
+        ```
+        3. open a new terminal window and run django server
+        ```
+        docker exec -ti gold-digger-web /bin/bash
+
+        python3 manage.py runserver 0.0.0.0:8000 
+        ```
+
 
 7. In your browser, go to   
     http://0.0.0.0:8000
