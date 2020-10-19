@@ -42,7 +42,7 @@ sh build.sh
         ```
         2. run gold digger docker container and start celery (async task manager)
         ```
-        docker run --ti --gpus all -d --name gold-digger-web --link redis1:redis -p 8000:8000 -v ${PWD}:/usr/src/app gold-digger/gold-digger-dev
+        docker run -ti --gpus all --name gold-digger-web --link redis1:redis -p 8000:8000 -v ${PWD}:/usr/src/app gold-digger/gold-digger-dev
         
         celery -A GoldDigger worker -l info
         ```
@@ -64,4 +64,6 @@ sh build.sh
 - make it clear when files are uploaded
 - update user on status of analysis
     - unwrap run.py into separate functions
+    - clean it up, make it into a class
 - make blue mask
+- make it so the program doesn't fail when there's a file in the media folder
