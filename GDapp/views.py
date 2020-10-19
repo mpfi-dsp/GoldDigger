@@ -6,25 +6,12 @@ import csv
 from django.http import HttpResponse
 from .models import Profile
 
-from subprocess import run, PIPE
 import sys
-
+from .tasks import gd_task
 
 # Create your views here.
 def home(request):
     return render(request, 'GDapp/home.html')
-
-
-# url doesn't work if the file name has spaces in it
-# def upload(request):
-#     context = {}
-#     if request.method == 'POST':
-#         uploaded_file = request.FILES['document']
-#         fs = FileSystemStorage()
-#         name = fs.save(uploaded_file.name, uploaded_file)
-#         url = fs.url(name)
-#         context['url'] = fs.url(name)
-#     return render(request, 'GDapp/upload.html', context)
 
 
 def profile_view(request):
@@ -39,19 +26,16 @@ def profile_view(request):
     return render(request, 'GDapp/upload.html', {'form': form})
 
 
-# def success(request):
-#     return HttpResponse('successfully uploaded')
-
-
-def external(request):
-    inp = request.POST.get('model')
-    out = run([sys.executable, 'run.py', inp], shell=False, stdout=PIPE)
-    print(out)
-    return render(request, 'GDapp/upload.html')
+def run_gd(request):
+    model = request.POST.get('model')
+    # out = run([sys.executable, 'run.py', inp], shell=False, stdout=PIPE)
+    # print(out)
+    task = gd_task.delay(model)
+    return render(request, 'GDapp/run_gd.html', {'task_id': task.task_id})
 
 
 # attempt to make a downloadable csv
 def export(request):
     response = HttpResponse(content_type='text/csv')
-
     writer = csv.writer(response)
+

@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from GDapp import views
 from django.conf.urls.static import static
 from django.conf import settings
@@ -25,7 +25,8 @@ urlpatterns = [
     # path('upload', views.upload, name='upload'),
     path('image_upload/', views.profile_view, name='image_upload'),
     # path('success', views.success, name='success'),
-    path('external/', views.external)
+    path('run_gd/', views.run_gd),
+    path('celery_progress/', include('celery_progress.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
