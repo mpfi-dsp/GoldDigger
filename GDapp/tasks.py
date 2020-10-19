@@ -11,5 +11,6 @@ def gd_task(self, model):
     #     sleep(duration)
     progress_recorder.set_progress(0, 5)
     out = run([sys.executable, 'run.py', model], shell=False, stdout=PIPE)
-    progress_recorder.set_progress(5,5, out)
+    progress_recorder.set_progress(5,5)
+    print(out)
     return 'Done'
