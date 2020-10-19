@@ -7,3 +7,4 @@ __pycache__*
 *.png
 /media/Output*
 db.sqlite3
+*.zip
