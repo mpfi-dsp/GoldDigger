@@ -16,4 +16,4 @@ RUN pip install -r requirements.txt
 RUN pip install opencv-python
 RUN apt-get install python-opencv -y
 
-ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
+# ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
