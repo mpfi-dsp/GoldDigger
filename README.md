@@ -52,6 +52,12 @@ sh build.sh
 
         python3 manage.py runserver 0.0.0.0:8000 
         ```
+        Note: before starting the server, make sure you do the migrations (doesn't have to be every time)
+        ```
+        python3 manage.py makemigrations
+        
+        python3 manage.py migrate
+        ```
 
 
 7. In your browser, go to   
