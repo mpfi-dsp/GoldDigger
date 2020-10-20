@@ -59,12 +59,28 @@ sh build.sh
 
 8. Give yourself a high five.
 
+## Troubleshooting:
 
-### TO DO:
+### To restart the server, just ctrl+c the celery worker terminal and then the django terminal. Then restart the celery worker, and then django.
+
+If you spin up a docker container and it tells you it already exists, you can
+look up the running containers
+```
+docker container ps
+```
+- stop the running container (in this case, gold-digger-web):
+```
+docker stop gold-digger-web
+```
+- remove a container even after it has been stopped
+```
+docker rm gold-digger-web
+```
+
+## TO DO:
 - make it clear when files are uploaded
 - update user on status of analysis
     - unwrap run.py into separate functions
     - clean it up, make it into a class
 - make blue mask
 - make it so the program doesn't fail when there's a file in the media folder
-- make blue mask
