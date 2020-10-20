@@ -11,32 +11,15 @@
       {% csrf_token %}
       {{ form.as_p }}
       <!--<input name="document" type='file'>-->
-      <button type="submit">Upload</button>
+      <button type="submit">Run</button>
     </form>
     {% if url %}
     <p>Uploaded file: <a href="{{ url  }}">{{ url }}</a></p>
     <!--link doesn't work if the file has spaces in it-->
     {% endif %}
 
-    <br><br>
-    <!--for the button to run run.py-->
-    <form action="/run_gd/" method="post">
-      {% csrf_token %}
-      <p>Select a Gold Digger model below and then click "Run GoldDigger"</p>
-      <input type="radio" id="43kGoldDigger" name="model" value="43kGoldDigger">
-      <label for="43kGoldDigger">43k Gold Digger</label> <br>
-      <input type="radio" id="87kGoldDigger" name="model" value="87kGoldDigger">
-      <label for="87kGoldDigger">87k Gold Digger</label> <br>
-
-      <input type="submit" value="Run GoldDigger">
-    </form>
     {% endblock %}
 
-    <a href="../../../media/GD_Output.zip" download>
-      <button type="button"> Download</button>
-    </a>
-    <br><br>
-    <a href="{% url 'image_upload' %}" class="btn btn-primary my-2">Upload another Image to GoldDigger</a>
 
   </div>
 </section>
