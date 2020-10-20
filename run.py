@@ -253,6 +253,7 @@ def get_contour_centers_and_group(cnts, results6, results12, results18):
             elif cv2.contourArea(c) >= 350 and cv2.contourArea(c) < 1500:
                 results18 = results18.append(
                     {'X': cX, 'Y': cY}, ignore_index=True)
+    return results6, results12, results18
 
 
 def save_files_to_csv(results6, results12, results18):
@@ -316,7 +317,7 @@ def run_gold_digger(model='87kGoldDigger', progress_recorder=None):
     progress_setter.update(7, "Identifying green dots")
     cnts, results6, results12, results18 = count_green_dots()
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
-    get_contour_centers_and_group(cnts, results6, results12, results18)
+    results6, results12, results18 = get_contour_centers_and_group(cnts, results6, results12, results18)
     save_files_to_csv(results6, results12, results18)
     clear_out_input_dirs()
     print("SUCCESS!!")
