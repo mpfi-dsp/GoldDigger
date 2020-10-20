@@ -22,9 +22,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    # path('upload', views.upload, name='upload'),
-    path('image_upload/', views.profile_view, name='image_upload'),
-    # path('success', views.success, name='success'),
+    path('image_upload/', views.image_view, name='image_upload'),
     path('run_gd/', views.run_gd),
     path('celery_progress/', include('celery_progress.urls')),
 ]

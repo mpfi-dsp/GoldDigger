@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from .forms import ProfileForm
+from .forms import EMImageForm
 from django.core.files.storage import FileSystemStorage
 
 import csv
 from django.http import HttpResponse
-from .models import Profile
+from .models import EMImage
 
 import sys
 from .tasks import gd_task
@@ -14,15 +14,15 @@ def home(request):
     return render(request, 'GDapp/home.html')
 
 
-def profile_view(request):
+def image_view(request):
     if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES)
+        form = EMImageForm(request.POST, request.FILES)
 
         if form.is_valid():
             form.save()
             # return redirect('success')
     else:
-        form = ProfileForm()
+        form = EMImageForm()
     return render(request, 'GDapp/upload.html', {'form': form})
 
 

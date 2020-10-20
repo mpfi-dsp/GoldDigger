@@ -2,7 +2,7 @@ from django import forms
 from .models import *
 
 
-class ProfileForm(forms.ModelForm):
+class EMImageForm(forms.ModelForm):
     class Meta:
-        model = Profile
-        fields = ['profile']
+        model = EMImage
+        fields = ['image']
