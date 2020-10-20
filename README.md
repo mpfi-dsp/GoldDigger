@@ -64,6 +64,10 @@ sh build.sh
 - make it clear when files are uploaded
 - update user on status of analysis
     - unwrap run.py into separate functions
+<<<<<<< HEAD
     - clean it up, make it into a class
 - make blue mask
 - make it so the program doesn't fail when there's a file in the media folder
+=======
+- make blue mask
+>>>>>>> 8f583b4de75e28de5f8da4044fc5efb333d3c059
