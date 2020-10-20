@@ -3,6 +3,7 @@ from .models import *
 
 
 class EMImageForm(forms.ModelForm):
+
     class Meta:
         model = EMImage
-        fields = ['image']
+        fields = ['image', 'trained_model']

@@ -13,24 +13,21 @@ from .tasks import gd_task
 def home(request):
     return render(request, 'GDapp/home.html')
 
-
 def image_view(request):
     if request.method == 'POST':
         form = EMImageForm(request.POST, request.FILES)
-
+        
         if form.is_valid():
-            form.save()
-            # return redirect('success')
+            instance = form.save()
+            return run_gd(request, {'id':instance.id})
     else:
         form = EMImageForm()
     return render(request, 'GDapp/upload.html', {'form': form})
 
 
-def run_gd(request):
-    model = request.POST.get('model')
-    # out = run([sys.executable, 'run.py', inp], shell=False, stdout=PIPE)
-    # print(out)
-    task = gd_task.delay(model)
+def run_gd(request, inputs):
+    obj = EMImage.objects.get(pk=inputs['id'])
+    task = gd_task.delay(obj.trained_model, obj.image.path)
     return render(request, 'GDapp/run_gd.html', {'task_id': task.task_id})
 
 

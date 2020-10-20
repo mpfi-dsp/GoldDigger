@@ -74,10 +74,11 @@ def clear_out_old_files(model):
 # look in INPUT folder, crop photo and save crop to OUTPUT folder
 # Cut up in order, append white images
 
-def load_data_make_jpeg(folder):
-    file_list = glob.glob(folder)
+def load_data_make_jpeg(image):
+    file_list = pathlib.Path('media/Input', image)
+    # file_list = glob.glob(input_image)
     print(file_list)
-    for entry in file_list:
+    for entry in [file_list]:
 
         img_size = (256, 256, 3)
         img_new = io.imread(entry)
@@ -287,14 +288,14 @@ class ProgressBarWrapper:
                 steps, self.total_steps, message)
 
 
-def run_gold_digger(model='87kGoldDigger', progress_recorder=None):
+def run_gold_digger(model, input_image_list, progress_recorder=None):
     print(f'Running with {model}')
     progress_setter = ProgressBarWrapper(progress_recorder, 20)
     progress_setter.update(1, "starting")
     artifact = get_artifact_status(model)
     clear_out_old_files(model)
     progress_setter.update(2, "loading and cutting up image")
-    file_list, width, height = load_data_make_jpeg('media/Input/*.*')
+    file_list, width, height = load_data_make_jpeg(input_image_list)
     progress_setter.update(4, "combining with white background")
     white = io.imread('media/White/white.png')
     combine_white(white, 'media/Output')
