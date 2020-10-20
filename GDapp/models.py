@@ -3,10 +3,5 @@ from django import forms
 
 
 # Create your models here.
-class Profile(models.Model):
-    profile = models.FileField(upload_to="Input/")
-
-
-
-
-
+class EMImage(models.Model):
+    image = models.FileField(upload_to="Input/")

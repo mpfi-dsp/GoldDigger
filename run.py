@@ -288,6 +288,7 @@ class ProgressBarWrapper:
 
 
 def run_gold_digger(model='87kGoldDigger', progress_recorder=None):
+    print(f'Running with {model}')
     progress_setter = ProgressBarWrapper(progress_recorder, 20)
     progress_setter.update(1, "starting")
     artifact = get_artifact_status(model)
@@ -317,7 +318,8 @@ def run_gold_digger(model='87kGoldDigger', progress_recorder=None):
     progress_setter.update(7, "Identifying green dots")
     cnts, results6, results12, results18 = count_green_dots()
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
-    results6, results12, results18 = get_contour_centers_and_group(cnts, results6, results12, results18)
+    results6, results12, results18 = get_contour_centers_and_group(
+        cnts, results6, results12, results18)
     save_files_to_csv(results6, results12, results18)
     clear_out_input_dirs()
     print("SUCCESS!!")
