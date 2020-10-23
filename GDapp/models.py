@@ -8,6 +8,7 @@ TRAINED_MODEL_CHOICES = [
 
 class EMImage(models.Model):
     image = models.FileField(upload_to="Input/")
+    mask = models.FileField(upload_to="Mask/", blank=True)
     trained_model = models.CharField(max_length=100,
                                      blank=False,
                                      default='87kGoldDigger',

@@ -90,6 +90,8 @@ def load_data_make_jpeg(image):
         width256 = width * 256
 
         img_new = img_new[:height256, :width256, :3]
+        img_mask = io.imread('media/Mask/*.*')
+        img_mask = img_mask[:height256, :width256,:3]
         img_new_w = view_as_blocks(img_new, img_size)
         img_new_w = np.uint8(img_new_w)
         imageio.imwrite('media/Output_Final/' +
@@ -245,15 +247,16 @@ def get_contour_centers_and_group(cnts, results6, results12, results18):
             cY = int(M["m01"] / M["m00"])
 
         if not (cX == 0 and cY == 0):
-            if cv2.contourArea(c) < 75:
-                results6 = results6.append(
-                    {'X': cX, 'Y': cY}, ignore_index=True)
-            elif cv2.contourArea(c) >= 75 and cv2.contourArea(c) < 350:
-                results12 = results12.append(
-                    {'X': cX, 'Y': cY}, ignore_index=True)
-            elif cv2.contourArea(c) >= 350 and cv2.contourArea(c) < 1500:
-                results18 = results18.append(
-                    {'X': cX, 'Y': cY}, ignore_index=True)
+            if img_mask[cX, cY] != (255,255,255):
+                if cv2.contourArea(c) < 75:
+                    results6 = results6.append(
+                        {'X': cX, 'Y': cY}, ignore_index=True)
+                elif cv2.contourArea(c) >= 75 and cv2.contourArea(c) < 350:
+                    results12 = results12.append(
+                        {'X': cX, 'Y': cY}, ignore_index=True)
+                elif cv2.contourArea(c) >= 350 and cv2.contourArea(c) < 1500:
+                    results18 = results18.append(
+                        {'X': cX, 'Y': cY}, ignore_index=True)
     return results6, results12, results18
 
 

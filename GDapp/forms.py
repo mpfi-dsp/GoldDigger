@@ -6,4 +6,4 @@ class EMImageForm(forms.ModelForm):
 
     class Meta:
         model = EMImage
-        fields = ['image', 'trained_model']
+        fields = ['image', 'mask', 'trained_model']
