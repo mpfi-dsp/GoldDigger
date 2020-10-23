@@ -247,6 +247,7 @@ def get_contour_centers_and_group(cnts, results6, results12, results18):
             cY = int(M["m01"] / M["m00"])
 
         if not (cX == 0 and cY == 0):
+<<<<<<< HEAD
             if img_mask[cX, cY] != (255,255,255):
                 if cv2.contourArea(c) < 75:
                     results6 = results6.append(
@@ -257,6 +258,17 @@ def get_contour_centers_and_group(cnts, results6, results12, results18):
                 elif cv2.contourArea(c) >= 350 and cv2.contourArea(c) < 1500:
                     results18 = results18.append(
                         {'X': cX, 'Y': cY}, ignore_index=True)
+=======
+            if cv2.contourArea(c) < 75:
+                results6 = results6.append(
+                    {'X': cX, 'Y': cY}, ignore_index=True)
+            elif cv2.contourArea(c) >= 75 and cv2.contourArea(c) < 350:
+                results12 = results12.append(
+                    {'X': cX, 'Y': cY}, ignore_index=True)
+            elif cv2.contourArea(c) >= 350 and cv2.contourArea(c) < 1500:
+                results18 = results18.append(
+                    {'X': cX, 'Y': cY}, ignore_index=True)
+>>>>>>> c9cc1c8e8f296c429e30f4b03ff400a355e61b45
     return results6, results12, results18
 
 
