@@ -74,14 +74,16 @@ def clear_out_old_files(model):
 # look in INPUT folder, crop photo and save crop to OUTPUT folder
 # Cut up in order, append white images
 
-def load_data_make_jpeg(image):
+def load_data_make_jpeg(image, mask):
     file_list = pathlib.Path('media/Input', image)
+    mask_path = pathlib.Path('media/Mask', mask)
     # file_list = glob.glob(input_image)
     print(file_list)
     for entry in [file_list]:
 
         img_size = (256, 256, 3)
         img_new = io.imread(entry)
+        img_mask = io.imread(mask_path)
         # img_new = (img_new/256).astype('uint8')
         shape = img_new.shape
         height = shape[0] // 256
@@ -90,7 +92,6 @@ def load_data_make_jpeg(image):
         width256 = width * 256
 
         img_new = img_new[:height256, :width256, :3]
-        img_mask = io.imread('media/Mask/*.*')
         img_mask = img_mask[:height256, :width256,:3]
         img_new_w = view_as_blocks(img_new, img_size)
         img_new_w = np.uint8(img_new_w)
@@ -104,7 +105,7 @@ def load_data_make_jpeg(image):
                 # A = np.uint8(A)
                 imageio.imwrite('media/Output/' + str(r) + '.png', A)
                 r += 1
-    return file_list, width, height
+    return file_list, width, height, img_mask
 
 
 def combine_white(white, folderA):
@@ -233,7 +234,7 @@ def count_green_dots():
     return cnts, results6, results12, results18
 
 
-def get_contour_centers_and_group(cnts, results6, results12, results18):
+def get_contour_centers_and_group(cnts, results6, results12, results18, img_mask):
     for c in cnts:
         #    compute the center of the contour, then detect the name of the
         # shape using only the contour
@@ -300,14 +301,14 @@ class ProgressBarWrapper:
                 steps, self.total_steps, message)
 
 
-def run_gold_digger(model, input_image_list, progress_recorder=None):
+def run_gold_digger(model, input_image_list, mask=None, progress_recorder=None):
     print(f'Running with {model}')
     progress_setter = ProgressBarWrapper(progress_recorder, 20)
     progress_setter.update(1, "starting")
     artifact = get_artifact_status(model)
     clear_out_old_files(model)
     progress_setter.update(2, "loading and cutting up image")
-    file_list, width, height = load_data_make_jpeg(input_image_list)
+    file_list, width, height, img_mask = load_data_make_jpeg(input_image_list, mask)
     progress_setter.update(4, "combining with white background")
     white = io.imread('media/White/white.png')
     combine_white(white, 'media/Output')
@@ -332,7 +333,7 @@ def run_gold_digger(model, input_image_list, progress_recorder=None):
     cnts, results6, results12, results18 = count_green_dots()
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
     results6, results12, results18 = get_contour_centers_and_group(
-        cnts, results6, results12, results18)
+        cnts, results6, results12, results18, img_mask)
     save_files_to_csv(results6, results12, results18)
     clear_out_input_dirs()
     print("SUCCESS!!")
