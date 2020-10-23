@@ -9,4 +9,4 @@ __pycache__*
 db.sqlite3
 *.zip
 debug.log
-/media/Mask*
+/media/Mask/*
