@@ -9,9 +9,9 @@ from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
 @shared_task(bind=True)
-def gd_task(self, model, image):
+def gd_task(self, model, image, mask):
     progress_recorder = ProgressRecorder(self)
     # out = run([sys.executable, 'run.py', model], shell=False, stdout=PIPE)
     print(f'\nmodel: {model}, image: {image}\n')
-    run_gold_digger(model, image, progress_recorder)
+    run_gold_digger(model, image, mask, progress_recorder)
     return 'Done'
