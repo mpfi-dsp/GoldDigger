@@ -312,21 +312,29 @@ def update_progress(progress_recorder, step, total_steps, message):
 def save_preview_figure(coordinates):
     img = cv2.imread('media/Output_Final/OutputStitched.png')
     img2 = img[:,:,::-1]
+    plt.figure(1)
     plt.imshow(img2)
     plt.scatter(coordinates.X.values,coordinates.Y.values, facecolors='none',edgecolors='r')
     plt.gca().set_axis_off()
-    # plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, 
-    #             hspace = 0, wspace = 0)
     plt.margins(0,0)
     plt.gca().xaxis.set_major_locator(plt.NullLocator())
     plt.gca().yaxis.set_major_locator(plt.NullLocator())
-    # plt.savefig("filename.pdf", bbox_inches = 'tight',
-    #     pad_inches = 0)
     preview_file_path = 'media/Output_Final/preview.png'
     if os.path.exists(preview_file_path):
         os.remove(preview_file_path)
     plt.savefig(preview_file_path, bbox_inches = 'tight',
         pad_inches = 0)
+
+def save_histogram(coordinates):
+    plt.figure(2)
+    plt.hist(coordinates.Area.values, bins=100)
+    plt.title('Particle Area Histogram')
+    plt.xlabel('Size (px)')
+    plt.ylabel('Count')
+    hist_path = 'media/Output_Final/preview_histogram.png'
+    if os.path.exists(hist_path):
+        os.remove(hist_path)
+    plt.savefig(hist_path, bbox_inches='tight')
 
 
 class ProgressBarWrapper:
@@ -376,6 +384,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, mask=None, pr
     all_coordinates, results6, results12, results18 = get_contour_centers_and_group(particle_group_count,
                                                                    cnts, img_mask)
     save_preview_figure(all_coordinates)
+    save_histogram(all_coordinates)
     save_files_to_csv(results6, results12, results18)
     clear_out_input_dirs()
     print("SUCCESS!!")
