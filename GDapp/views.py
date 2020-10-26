@@ -27,7 +27,12 @@ def image_view(request):
 
 def run_gd(request, inputs):
     obj = EMImage.objects.get(pk=inputs['id'])
-    task = gd_task.delay(obj.trained_model, obj.image.path, obj.mask.path)
+    if obj.mask.name == '':
+        mask = None
+    else:
+        mask = obj.mask.path
+
+    task = gd_task.delay(obj.trained_model, obj.image.path, mask, obj.particle_groups)
     return render(request, 'GDapp/run_gd.html', {'task_id': task.task_id})
 
 
