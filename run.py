@@ -25,6 +25,7 @@ import errno
 import os
 import stat
 import shutil
+# from sklearn.cluster import Kmeans
 
 
 def handleRemoveReadonly(func, path, exc):
@@ -76,14 +77,11 @@ def clear_out_old_files(model):
 
 def load_data_make_jpeg(image, mask):
     file_list = pathlib.Path('media/Input', image)
-    mask_path = pathlib.Path('media/Mask', mask)
-    # file_list = glob.glob(input_image)
     print(file_list)
     for entry in [file_list]:
 
         img_size = (256, 256, 3)
         img_new = io.imread(entry)
-        img_mask = io.imread(mask_path)
         # img_new = (img_new/256).astype('uint8')
         shape = img_new.shape
         height = shape[0] // 256
@@ -92,7 +90,11 @@ def load_data_make_jpeg(image, mask):
         width256 = width * 256
 
         img_new = img_new[:height256, :width256, :3]
-        img_mask = img_mask[:height256, :width256,:3]
+        img_mask = None
+        if mask is not None:
+            mask_path = pathlib.Path('media/Mask', mask)
+            img_mask = io.imread(mask_path)
+            img_mask = img_mask[:height256, :width256, :3]
         img_new_w = view_as_blocks(img_new, img_size)
         img_new_w = np.uint8(img_new_w)
         imageio.imwrite('media/Output_Final/' +
@@ -176,7 +178,13 @@ def stitch_image(folderstart, widthdiv256, heighttimeswidth, artifact):
 
 
 def count_green_dots():
-
+    # From Diego:
+    # 1. Finds green square and then the center of that (x,y)
+    # 2. Then I perform a flood fill on that (x,y) on the original image
+    # 3. So it fills out the entire dark particle
+    # 4. Then I find the contour of that mask and the xy of that new circle
+    # 5. I do this so inconsistencies in the green mask dont affect the area of the gold particle
+    # Basically it just uses the green masks to find a seed point to start flood filling. This makes sure that the mask is the exact size of the gold particle
     img = cv2.imread('media/Output_Final/OutputStitched.png')
     img_original = cv2.imread('media/Output_Final/CroppedVersion.png')
     img_original = np.uint8(img_original)
@@ -227,14 +235,24 @@ def count_green_dots():
     cnts = cv2.findContours(
         flood_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
+    return cnts
 
+def check_if_coordinate_is_in_mask(x,y,mask):
+    if mask is None:
+        return True
+    elif mask[x,y] != (255,255,255):
+        return True
+    else:
+        return False
+
+
+def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
+    # group using k means
+    # report size distributions
+    # show relative size histograms and cutoffs
     results6 = pd.DataFrame(columns=['X', 'Y'])
     results12 = pd.DataFrame(columns=['X', 'Y'])
     results18 = pd.DataFrame(columns=['X', 'Y'])
-    return cnts, results6, results12, results18
-
-
-def get_contour_centers_and_group(cnts, results6, results12, results18, img_mask):
     for c in cnts:
         #    compute the center of the contour, then detect the name of the
         # shape using only the contour
@@ -248,7 +266,7 @@ def get_contour_centers_and_group(cnts, results6, results12, results18, img_mask
             cY = int(M["m01"] / M["m00"])
 
         if not (cX == 0 and cY == 0):
-            if img_mask[cX, cY] != (255,255,255):
+            if check_if_coordinate_is_in_mask(cX, cY, img_mask):
                 if cv2.contourArea(c) < 75:
                     results6 = results6.append(
                         {'X': cX, 'Y': cY}, ignore_index=True)
@@ -267,6 +285,7 @@ def get_contour_centers_and_group(cnts, results6, results12, results18, img_mask
             elif cv2.contourArea(c) >= 350 and cv2.contourArea(c) < 1500:
                 results18 = results18.append(
                     {'X': cX, 'Y': cY}, ignore_index=True)
+
     return results6, results12, results18
 
 
@@ -301,14 +320,15 @@ class ProgressBarWrapper:
                 steps, self.total_steps, message)
 
 
-def run_gold_digger(model, input_image_list, mask=None, progress_recorder=None):
+def run_gold_digger(model, input_image_list, particle_group_count, mask=None, progress_recorder=None):
     print(f'Running with {model}')
     progress_setter = ProgressBarWrapper(progress_recorder, 20)
     progress_setter.update(1, "starting")
     artifact = get_artifact_status(model)
     clear_out_old_files(model)
     progress_setter.update(2, "loading and cutting up image")
-    file_list, width, height, img_mask = load_data_make_jpeg(input_image_list, mask)
+    file_list, width, height, img_mask = load_data_make_jpeg(
+        input_image_list, mask)
     progress_setter.update(4, "combining with white background")
     white = io.imread('media/White/white.png')
     combine_white(white, 'media/Output')
@@ -330,10 +350,10 @@ def run_gold_digger(model, input_image_list, mask=None, progress_recorder=None):
         folderstart, widthdiv256, heighttimeswidth, artifact)
     imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
     progress_setter.update(7, "Identifying green dots")
-    cnts, results6, results12, results18 = count_green_dots()
+    cnts = count_green_dots()
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
-    results6, results12, results18 = get_contour_centers_and_group(
-        cnts, results6, results12, results18, img_mask)
+    results6, results12, results18 = get_contour_centers_and_group(particle_group_count,
+                                                                   cnts, img_mask)
     save_files_to_csv(results6, results12, results18)
     clear_out_input_dirs()
     print("SUCCESS!!")
