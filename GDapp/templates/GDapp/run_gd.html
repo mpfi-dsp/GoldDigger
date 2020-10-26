@@ -1,6 +1,8 @@
 {% extends 'GDapp/upload.html' %}
 {% load static %}
 {% block run %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
 <div class="media">
   <img class="mr-3" src="{% static 'zoolander.gif' %}">
   <div class="media-body">
@@ -10,10 +12,20 @@
     <div id="progress-bar-message">Waiting for progress to start...</div>
     <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
     <script>
-      // vanilla JS version
-      document.addEventListener("DOMContentLoaded", function () {
-        var progressUrl = "{% url 'celery_progress:task_status' task_id %}";
-        CeleryProgressBar.initProgressBar(progressUrl);
+      // JQuery
+      var progressUrl = "{% url 'celery_progress:task_status' task_id %}";
+
+      function customResult(resultElement, result) {
+        $(resultElement).append(
+          ('<p> Result: <br>'
+             + result)
+        );
+      }
+
+      $(function () {
+        CeleryProgressBar.initProgressBar(progressUrl, {
+          onResult: customResult,
+        })
       });
     </script>
     <a href="../../../media/GD_Output.zip" download>
@@ -23,6 +35,7 @@
     <a href="{% url 'image_upload' %}" class="btn btn-primary my-2">Upload another Image to GoldDigger</a>
   </div>
 </div>
-
+<br><br>
+<div id="celery-result"></div>
 
 {% endblock %}
