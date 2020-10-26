@@ -14,4 +14,4 @@ def gd_task(self, model, image, mask, particle_groups):
     # out = run([sys.executable, 'run.py', model], shell=False, stdout=PIPE)
     print(f'\nmodel: {model}, image: {image}\n')
     run_gold_digger(model, image, particle_groups, mask, progress_recorder)
-    return 'Done'
+    return "<img src='../../../media/Output_Final/preview.png'>"

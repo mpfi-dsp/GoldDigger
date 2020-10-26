@@ -253,6 +253,7 @@ def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
     results6 = pd.DataFrame(columns=['X', 'Y'])
     results12 = pd.DataFrame(columns=['X', 'Y'])
     results18 = pd.DataFrame(columns=['X', 'Y'])
+    all_coordinates = pd.DataFrame(columns=['X','Y','Area'])
     for c in cnts:
         #    compute the center of the contour, then detect the name of the
         # shape using only the contour
@@ -266,6 +267,7 @@ def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
             cY = int(M["m01"] / M["m00"])
 
         if not (cX == 0 and cY == 0):
+            all_coordinates = all_coordinates.append({'X': cX, 'Y': cY,'Area':cv2.contourArea(c)}, ignore_index=True)
             if check_if_coordinate_is_in_mask(cX, cY, img_mask):
                 if cv2.contourArea(c) < 75:
                     results6 = results6.append(
@@ -286,7 +288,7 @@ def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
                 results18 = results18.append(
                     {'X': cX, 'Y': cY}, ignore_index=True)
 
-    return results6, results12, results18
+    return all_coordinates, results6, results12, results18
 
 
 def save_files_to_csv(results6, results12, results18):
@@ -306,6 +308,25 @@ def clear_out_input_dirs():
 def update_progress(progress_recorder, step, total_steps, message):
     if progress_recorder is not None:
         progress_recorder.set_progress(step, total_steps, message)
+
+def save_preview_figure(coordinates):
+    img = cv2.imread('media/Output_Final/OutputStitched.png')
+    img2 = img[:,:,::-1]
+    plt.imshow(img2)
+    plt.scatter(coordinates.X.values,coordinates.Y.values, facecolors='none',edgecolors='r')
+    plt.gca().set_axis_off()
+    # plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, 
+    #             hspace = 0, wspace = 0)
+    plt.margins(0,0)
+    plt.gca().xaxis.set_major_locator(plt.NullLocator())
+    plt.gca().yaxis.set_major_locator(plt.NullLocator())
+    # plt.savefig("filename.pdf", bbox_inches = 'tight',
+    #     pad_inches = 0)
+    preview_file_path = 'media/Output_Final/preview.png'
+    if os.path.exists(preview_file_path):
+        os.remove(preview_file_path)
+    plt.savefig(preview_file_path, bbox_inches = 'tight',
+        pad_inches = 0)
 
 
 class ProgressBarWrapper:
@@ -352,8 +373,9 @@ def run_gold_digger(model, input_image_list, particle_group_count, mask=None, pr
     progress_setter.update(7, "Identifying green dots")
     cnts = count_green_dots()
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
-    results6, results12, results18 = get_contour_centers_and_group(particle_group_count,
+    all_coordinates, results6, results12, results18 = get_contour_centers_and_group(particle_group_count,
                                                                    cnts, img_mask)
+    save_preview_figure(all_coordinates)
     save_files_to_csv(results6, results12, results18)
     clear_out_input_dirs()
     print("SUCCESS!!")
