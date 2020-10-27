@@ -10,24 +10,7 @@
       <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
     </div>
     <div id="progress-bar-message">Waiting for progress to start...</div>
-    <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
-    <script>
-      // JQuery
-      var progressUrl = "{% url 'celery_progress:task_status' task_id %}";
-
-      function customResult(resultElement, result) {
-        $(resultElement).append(
-          ('<p> Result: <br>'
-             + result)
-        );
-      }
-
-      $(function () {
-        CeleryProgressBar.initProgressBar(progressUrl, {
-          onResult: customResult,
-        })
-      });
-    </script>
+    
     <a href="../../../media/GD_Output.zip" download>
       <button type="button"> Download</button>
     </a>
@@ -36,6 +19,5 @@
   </div>
 </div>
 <br><br>
-<div id="celery-result"></div>
 
 {% endblock %}

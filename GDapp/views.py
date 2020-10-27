@@ -7,7 +7,6 @@ from django.http import HttpResponse
 from .models import EMImage
 
 import sys
-from .tasks import gd_task
 
 # Create your views here.
 def home(request):
@@ -31,9 +30,8 @@ def run_gd(request, inputs):
         mask = None
     else:
         mask = obj.mask.path
-
-    task = gd_task.delay(obj.trained_model, obj.image.path, mask, obj.particle_groups)
-    return render(request, 'GDapp/run_gd.html', {'task_id': task.task_id})
+    print('run task here')
+    return render(request, 'GDapp/run_gd.html')
 
 
 # attempt to make a downloadable csv
