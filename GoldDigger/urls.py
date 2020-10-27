@@ -24,7 +24,6 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('image_upload/', views.image_view, name='image_upload'),
     path('run_gd/', views.run_gd),
-    path('celery_progress/', include('celery_progress.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
