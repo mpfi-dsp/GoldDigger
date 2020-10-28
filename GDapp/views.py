@@ -11,7 +11,7 @@ import sys
 
 def start_gold_digger(obj):
     gold_digger = GdappConfig.gold_particle_detector
-    gold_digger()
+    gold_digger(obj.id)
 
 # Create your views here.
 def home(request):

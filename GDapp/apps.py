@@ -7,27 +7,31 @@ import threading
 
 channel_layer = get_channel_layer()
 
-def slow_response_function():
+def slow_response_function(pk):
     time.sleep(3)
     print('slow function done')
-    send_a_message()
+    send_a_message(pk)
+    send_a_message(pk,'second message')
 
-def send_a_message():
-    pk = 152
+def send_a_message(pk=None, message=None):
+    if pk is None:
+        pk = 158
+    if message is None:
+        message = 'this is a delayed message from apps.py!'
     pk_group_name = "analysis_%s" % pk
     async_to_sync(channel_layer.group_send)(
         pk_group_name,
         {
             'type': 'analysis_message',
-            'message': 'this is a delayed message from apps.py!'
+            'message': message
         })
 
 def update_front_end_test(pk):
     feu = FrontEndUpdater(pk)
     feu.post_message('Front End Updater Updating')
 
-def test_slow_responder():
-    x = threading.Thread(target=slow_response_function)
+def test_slow_responder(pk):
+    x = threading.Thread(target=slow_response_function, args=[pk])
     x.start()
 
 class GdappConfig(AppConfig):
