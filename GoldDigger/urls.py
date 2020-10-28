@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('image_upload/', views.image_view, name='image_upload'),
-    path('run_gd/', views.run_gd),
+    path('run_gd/<int:pk>', views.run_gd, name='run_gd'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
