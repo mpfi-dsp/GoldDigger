@@ -1,3 +1,4 @@
+from GDapp.prediction.FrontEndUpdater import FrontEndUpdater
 from GDapp.apps import GdappConfig
 from django.shortcuts import render, redirect
 from .forms import EMImageForm
@@ -10,8 +11,13 @@ from .models import EMImage
 import sys
 
 def start_gold_digger(obj):
+    if obj.mask.name == '':
+        mask = None
+    else:
+        mask = obj.mask.path
     gold_digger = GdappConfig.gold_particle_detector
-    gold_digger(obj.id)
+    front_end_updater = FrontEndUpdater(obj.id)
+    gold_digger(obj.trained_model, obj.image_path, obj.particle_groups, mask, front_end_updater)
 
 # Create your views here.
 def home(request):
@@ -31,10 +37,6 @@ def image_view(request):
 
 def run_gd(request, inputs):
     obj = EMImage.objects.get(pk=inputs['pk'])
-    if obj.mask.name == '':
-        mask = None
-    else:
-        mask = obj.mask.path
     print('run task here')
     start_gold_digger(obj)
     return render(request, 'GDapp/run_gd.html', {'pk':obj.id})

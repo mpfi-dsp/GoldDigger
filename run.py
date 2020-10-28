@@ -337,36 +337,36 @@ def save_histogram(coordinates):
     plt.savefig(hist_path, bbox_inches='tight')
 
 
-class ProgressBarWrapper:
+# class ProgressBarWrapper:
 
-    def __init__(self, progress_recorder, total_steps):
-        self.progress_recorder = progress_recorder
-        self.total_steps = total_steps
+#     def __init__(self, front_end_updater, total_steps):
+#         self.front_end_updater = front_end_updater
+#         self.total_steps = total_steps
 
-    def update(self, steps, message):
-        if self.progress_recorder is not None:
-            self.progress_recorder.set_progress(
-                steps, self.total_steps, message)
+#     def update(self, steps, message):
+#         if self.front_end_updater is not None:
+#             self.front_end_updater.set_progress(
+#                 steps, self.total_steps, message)
 
 
-def run_gold_digger(model, input_image_list, particle_group_count, mask=None, progress_recorder=None):
+def run_gold_digger(model, input_image_list, particle_group_count, mask=None, front_end_updater=None):
     print(f'Running with {model}')
-    progress_setter = ProgressBarWrapper(progress_recorder, 20)
-    progress_setter.update(1, "starting")
+    # progress_setter = ProgressBarWrapper(front_end_updater, 20)
+    front_end_updater.update(1, "starting")
     artifact = get_artifact_status(model)
     clear_out_old_files(model)
-    progress_setter.update(2, "loading and cutting up image")
+    front_end_updater.update(2, "loading and cutting up image")
     file_list, width, height, img_mask = load_data_make_jpeg(
         input_image_list, mask)
-    progress_setter.update(4, "combining with white background")
+    front_end_updater.update(4, "combining with white background")
     white = io.imread('media/White/white.png')
     combine_white(white, 'media/Output')
-    progress_setter.update(5, "running PIX2PIX...")
+    front_end_updater.update(5, "running PIX2PIX...")
     os.system(
         'python3 media/PIX2PIX/test.py --dataroot media/Output_Appended/ --name {0} --model pix2pix --direction AtoB --num_test 1000000 --checkpoints_dir media/PIX2PIX/checkpoints/ --results_dir media/PIX2PIX/results/'.format(
             model))
     print("RAN PIX2PIX")
-    progress_setter.update(6, "Finished. stitching files together...")
+    front_end_updater.update(6, "Finished. stitching files together...")
     # Take only the Fake_B photos and stich together
     file_list = glob.glob(
         'media/PIX2PIX/results/{0}/test_latest/images/*_fake_B.png'.format(model))
@@ -378,7 +378,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, mask=None, pr
     picture, file_list = stitch_image(
         folderstart, widthdiv256, heighttimeswidth, artifact)
     imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
-    progress_setter.update(7, "Identifying green dots")
+    front_end_updater.update(7, "Identifying green dots")
     cnts = count_green_dots()
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
     all_coordinates, results6, results12, results18 = get_contour_centers_and_group(particle_group_count,
@@ -388,7 +388,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, mask=None, pr
     save_files_to_csv(results6, results12, results18)
     clear_out_input_dirs()
     print("SUCCESS!!")
-    progress_setter.update(8, "Saving files")
+    front_end_updater.update(8, "Saving files")
     shutil.make_archive('media/GD_Output', 'zip', 'media/Output_Final')
     print('CREATED ZIP FILE')
-    progress_setter.update(9, "All done")
+    front_end_updater.update(9, "All done")

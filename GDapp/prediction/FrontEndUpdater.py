@@ -10,6 +10,11 @@ class FrontEndUpdater:
 
     def __init__(self, pk):
         self.pk = pk
+        self.total_count=20
+
+    def update(self, counter, message):
+        self.update_progress(counter/20)
+        self.post_message(message)
 
     def update_progress(self, progress_percentage):
         # message = "progress is at {}%!".format(progress_percentage)
