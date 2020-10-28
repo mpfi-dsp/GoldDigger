@@ -1,3 +1,4 @@
+from run import run_gold_digger
 from GDapp.prediction.FrontEndUpdater import FrontEndUpdater
 from django.apps import AppConfig
 from channels.layers import get_channel_layer
@@ -36,4 +37,4 @@ def test_slow_responder(pk):
 
 class GdappConfig(AppConfig):
     name = 'GDapp'
-    gold_particle_detector = test_slow_responder
+    gold_particle_detector = run_gold_digger
