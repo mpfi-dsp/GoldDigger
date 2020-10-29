@@ -81,6 +81,14 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
         })
 
     # receive message from pk group
+    async def error_message(self, event):
+        message = event['message']
+        # send message to websocket
+        await self.send_json({
+            'error': message,
+        })
+
+    # receive message from pk group
     async def finished_message(self, event):
         message = event['finished']
         results_url = event['results_url']

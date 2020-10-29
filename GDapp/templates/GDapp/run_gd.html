@@ -23,7 +23,7 @@
 </div>
 <br><br>
 <hr>
-<h4 id="ResultsLabel"></h4>
+<h4 id="results-label"></h4>
 <br><br>
 <div class="container">
   <div class="row">
@@ -35,6 +35,7 @@
     </div>
   </div>
 </div>
+<div id="error-log"></div>
 
 
 <script>
@@ -56,11 +57,15 @@
     } else if (data['finished'] != null) {
       console.log("Finished")
       document.querySelector('#progress-bar').innerHTML = ("Finished");
-      document.querySelector('#ResultsLabel').innerHTML = ("Results");
+      document.querySelector('#results-label').innerHTML = ("Results");
       document.querySelector('#results-button').className = "btn btn-primary btn-md";
       document.querySelector('#results-button').setAttribute("href", data["results_url"]);
       document.querySelector('#analyzed-image-preview').setAttribute("src", data["analyzed_image_url"])
       document.querySelector('#histogram-image-preview').setAttribute("src", data["histogram_image_url"])
+    } else if (data['error'] != null) {
+      console.log("Error!")
+      document.querySelector('#results-label').innerHTML = ("Error");
+      document.querySelector('#error-log').innerHTML = (data['error'])
     }
   };
   chatSocket.onclose = function (e) {

@@ -29,6 +29,18 @@ class FrontEndUpdater:
         self.__send_a_message("Analysis Done")
         self.__send_finished()
 
+    def error_message(self, message):
+        self.__send_error_message(message)
+
+    def __send_error_message(self, message):
+        pk_group_name = "analysis_%s" % self.pk
+        async_to_sync(channel_layer.group_send)(
+            pk_group_name,
+            {
+                'type': 'error_message',
+                'message': message
+            })
+
     def __send_a_message(self, message):
         pk_group_name = "analysis_%s" % self.pk
         async_to_sync(channel_layer.group_send)(
@@ -50,13 +62,10 @@ class FrontEndUpdater:
     def __send_finished(self):
         print("does this work even")
         pk_group_name = "analysis_%s" % self.pk
-        # spine_coordinates_url = get_coordinates_url(self.pk)
-        # analyzed_image_url = get_analyzed_image_url(self.pk)
         # TODO: change this to get a personalized result based on pk
         results_url = "../../../media/GD_Output.zip"
         analyzed_image_url = get_analyzed_image_url(self.pk)
         histogram_image_url = get_histogram_image_url(self.pk)
-
         async_to_sync(channel_layer.group_send)(
             pk_group_name,
             {
@@ -65,5 +74,4 @@ class FrontEndUpdater:
                 'results_url': results_url,
                 'analyzed_image_url': analyzed_image_url,
                 'histogram_image_url': histogram_image_url,
-
             })
