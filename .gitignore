@@ -11,3 +11,5 @@ db.sqlite3
 debug.log
 /media/Mask/*
 .fuse_hidden*
+/results*
+/analyzed*
