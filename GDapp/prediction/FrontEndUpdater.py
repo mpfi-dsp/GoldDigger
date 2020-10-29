@@ -10,10 +10,10 @@ class FrontEndUpdater:
 
     def __init__(self, pk):
         self.pk = pk
-        self.total_count=20
+        self.total_count = 20
 
     def update(self, counter, message):
-        self.update_progress(counter/20)
+        self.update_progress(counter/20 * 100)
         self.post_message(message)
 
     def update_progress(self, progress_percentage):
@@ -47,14 +47,17 @@ class FrontEndUpdater:
             })
 
     def __send_finished(self):
+        print("does this work even")
         pk_group_name = "analysis_%s" % self.pk
-        spine_coordinates_url = get_coordinates_url(self.pk)
-        analyzed_image_url = get_analyzed_image_url(self.pk)
+        # spine_coordinates_url = get_coordinates_url(self.pk)
+        # analyzed_image_url = get_analyzed_image_url(self.pk)
+        # TODO: change this to get a personalized result based on pk
+        results_url = "../../../media/GD_Output.zip"
+
         async_to_sync(channel_layer.group_send)(
             pk_group_name,
             {
                 'type': 'finished_message',
                 'finished': "finished",
-                'spine_coordinates_url': spine_coordinates_url,
-                'analyzed_image_url': analyzed_image_url,
+                'results_url': results_url,
             })
