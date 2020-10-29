@@ -22,4 +22,7 @@ def run_gold_digger_task(self, pk):
     else:
         mask = obj.mask.path
     front_end_updater = FrontEndUpdater(pk)
-    run_gold_digger(obj.trained_model, obj.image.path, obj.particle_groups, mask, front_end_updater)
+    try:
+        run_gold_digger(obj.trained_model, obj.image.path, obj.particle_groups, mask, front_end_updater)
+    except Exception as e:
+        front_end_updater.error_message(str(e))
