@@ -1,4 +1,5 @@
-from run import run_gold_digger
+# from run import run_gold_digger
+from GDapp.tasks import celery_timer_task
 from GDapp.prediction.FrontEndUpdater import FrontEndUpdater
 from django.apps import AppConfig
 from channels.layers import get_channel_layer
@@ -13,6 +14,11 @@ def slow_response_function(pk):
     print('slow function done')
     send_a_message(pk)
     send_a_message(pk,'second message')
+
+def celery_function(pk):
+    print(pk)
+    celery_timer_task.delay(pk)
+
 
 def send_a_message(pk=None, message=None):
     if pk is None:
@@ -37,4 +43,6 @@ def test_slow_responder(pk):
 
 class GdappConfig(AppConfig):
     name = 'GDapp'
-    gold_particle_detector = run_gold_digger
+    # gold_particle_detector = run_gold_digger
+    gold_particle_detector = celery_function
+    

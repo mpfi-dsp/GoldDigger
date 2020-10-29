@@ -13,6 +13,7 @@ WORKDIR /usr/src/app
 ADD requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+RUN apt-get update
 RUN pip install opencv-python
 RUN apt-get install python-opencv -y
 
