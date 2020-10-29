@@ -383,3 +383,4 @@ def run_gold_digger(model, input_image_list, particle_group_count, mask=None, fr
     shutil.make_archive('media/GD_Output', 'zip', 'media/Output_Final')
     print('CREATED ZIP FILE')
     front_end_updater.update(9, "All done")
+    front_end_updater.analysis_done()

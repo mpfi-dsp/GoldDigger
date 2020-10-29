@@ -84,12 +84,10 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
     # receive message from pk group
     async def finished_message(self, event):
         message = event['finished']
-        spine_coordinates_url = event['spine_coordinates_url']
-        analyzed_image_url = event['analyzed_image_url']
+        results_url = event['results_url']
 
         # send message to websocket
         await self.send_json({
             'finished': message,
-            'spine_coordinates_url': spine_coordinates_url,
-            'analyzed_image_url': analyzed_image_url
+            'results_url': results_url,
         })

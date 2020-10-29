@@ -6,40 +6,30 @@
 <div class="media">
   <img class="mr-3" src="{% static 'zoolander.gif' %}">
   <div class="media-body">
-    <div class='progress-wrapper'>
+    <!-- <div class='progress-wrapper'>
       <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
     </div>
-    <div id="progress-bar-message">Waiting for progress to start...</div>
+    <div id="progress-bar-message">Waiting for progress to start...</div> -->
 
-    <a href="../../../media/GD_Output.zip" download>
-      <button type="button"> Download</button>
-    </a>
-    <br><br>
-    <a href="{% url 'image_upload' %}" class="btn btn-primary my-2">Upload another Image to GoldDigger</a>
+    <a href="" class="btn btn-primary btn-md disabled" id="results-button">Download Results</a>
+
+    <h5>Progress:</h5>
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" id="progress-bar"
+        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"> Progress
+      </div>
+    </div>
+    <h5>Status:</h5>
+    <p id="message_display"></p>
+    <br>
+    <br>
+
   </div>
 </div>
 <br><br>
 
-{% block latest_image %}
-<img id="analyzed-image-preview" src="" style="max-width:512px;">
-{% endblock latest_image %}
-
-{% block latest_coordinates %}
-<a href="" class="btn btn-primary btn-md disabled" id="csv-button">Download Spine Coordinates</a>
-{% endblock latest_coordinates %}
-
-
-<h2> Current Analysis </h2>
-<h5>Progress:</h5>
-<div class="progress">
-  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" id="progress-bar"
-    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"> Progress
-  </div>
-</div>
-<h5>Status:</h5>
-<p id="message_display"></p>
-<br>
-<br>
+<br><br>
+<!-- <a href="{% url 'image_upload' %}" class="btn btn-primary my-2">Upload another Image to GoldDigger</a> -->
 
 
 <script>
@@ -57,13 +47,12 @@
       document.querySelector('#message_display').innerHTML = (document.querySelector('#message_display').innerHTML + "<br>" + message);
     } else if (data['progress'] != null) {
       const progress = data['progress'];
-      document.querySelector('#progress-bar').style.width = (progress + '%');
+      document.querySelector('#progress-bar').style.width = (progress + "%");
     } else if (data['finished'] != null) {
-      console.log(data['finished']);
-      console.log('it is finished now what?');
-      document.querySelector('#csv-button').className = "btn btn-primary btn-md";
-      document.querySelector('#csv-button').setAttribute("href", data["spine_coordinates_url"]);
-      document.querySelector('#analyzed-image-preview').setAttribute("src", data["analyzed_image_url"])
+      console.log("Finished")
+      document.querySelector('#results-button').className = "btn btn-primary btn-md";
+      document.querySelector('#results-button').setAttribute("href", data["results_url"]);
+      document.querySelector('#analyzed-image-preview').setAttribute("src", " ")
     }
   };
 
