@@ -1,3 +1,4 @@
+from GDapp.tasks import celery_timer_task
 from GDapp.prediction.FrontEndUpdater import FrontEndUpdater
 from GDapp.apps import GdappConfig
 from django.shortcuts import render, redirect
@@ -16,8 +17,9 @@ def start_gold_digger(obj):
     else:
         mask = obj.mask.path
     gold_digger = GdappConfig.gold_particle_detector
-    front_end_updater = FrontEndUpdater(obj.id)
-    gold_digger(obj.trained_model, obj.image_path, obj.particle_groups, mask, front_end_updater)
+    # front_end_updater = FrontEndUpdater(obj.id)
+    gold_digger(obj.id)
+    # gold_digger(obj.trained_model, obj.image.path, obj.particle_groups, mask, front_end_updater)
 
 # Create your views here.
 def home(request):
@@ -38,7 +40,9 @@ def image_view(request):
 def run_gd(request, inputs):
     obj = EMImage.objects.get(pk=inputs['pk'])
     print('run task here')
-    start_gold_digger(obj)
+    celery_timer_task.delay(inputs['pk'])
+    print('after task')
+    # start_gold_digger(obj)
     return render(request, 'GDapp/run_gd.html', {'pk':obj.id})
 
 

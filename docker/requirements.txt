@@ -5,8 +5,8 @@ scikit-image~=0.17.2
 scipy~=1.3.2
 matplotlib~=3.3.1
 imageio~=2.9.0
-torch>=1.4.0
-torchvision>=0.5.0
+# torch>=1.4.0
+# torchvision>=0.5.0
 dominate>=2.4.0
 visdom>=0.1.8.8
 imutils
@@ -14,10 +14,12 @@ pandas
 # psycopg2-binary==2.8.5
 gunicorn==20.0.4
 imagecodecs
-# celery~=4.0
+celery~=4.0
 sklearn
 redis
-# django-celery-results
+# django-redis
+django-celery-results
+# git+https://github.com/celery/django-celery-results.git@ed94080cea3d68a38f9ff048657a37b08e74fc35#egg=django-celery-results
 # celery-progress
 channels
 channels_redis
