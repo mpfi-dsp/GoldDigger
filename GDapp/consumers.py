@@ -12,7 +12,6 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
             self.pk_group_name,
             self.channel_name
         )
-
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -85,9 +84,13 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
     async def finished_message(self, event):
         message = event['finished']
         results_url = event['results_url']
+        analyzed_image_url = event['analyzed_image_url']
+        histogram_image_url = event['histogram_image_url']
 
         # send message to websocket
         await self.send_json({
             'finished': message,
             'results_url': results_url,
+            'analyzed_image_url':analyzed_image_url,
+            'histogram_image_url':histogram_image_url
         })
