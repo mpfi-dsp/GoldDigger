@@ -6,17 +6,12 @@
 <div class="media">
   <img class="mr-3" src="{% static 'zoolander.gif' %}">
   <div class="media-body">
-    <!-- <div class='progress-wrapper'>
-      <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
-    </div>
-    <div id="progress-bar-message">Waiting for progress to start...</div> -->
-
     <a href="" class="btn btn-primary btn-md disabled" id="results-button">Download Results</a>
-
     <h5>Progress:</h5>
     <div class="progress">
       <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" id="progress-bar"
-        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"> Progress
+        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+        Progress
       </div>
     </div>
     <h5>Status:</h5>
@@ -27,9 +22,19 @@
   </div>
 </div>
 <br><br>
-
+<hr>
+<h4 id="ResultsLabel"></h4>
 <br><br>
-<!-- <a href="{% url 'image_upload' %}" class="btn btn-primary my-2">Upload another Image to GoldDigger</a> -->
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <img id="analyzed-image-preview" src="" style="max-width:512px;">
+    </div>
+    <div class="col-sm">
+      <img id="histogram-image-preview" src="" style="max-width:512px;">
+    </div>
+  </div>
+</div>
 
 
 <script>
@@ -50,12 +55,14 @@
       document.querySelector('#progress-bar').style.width = (progress + "%");
     } else if (data['finished'] != null) {
       console.log("Finished")
+      document.querySelector('#progress-bar').innerHTML = ("Finished");
+      document.querySelector('#ResultsLabel').innerHTML = ("Results");
       document.querySelector('#results-button').className = "btn btn-primary btn-md";
       document.querySelector('#results-button').setAttribute("href", data["results_url"]);
-      document.querySelector('#analyzed-image-preview').setAttribute("src", " ")
+      document.querySelector('#analyzed-image-preview').setAttribute("src", data["analyzed_image_url"])
+      document.querySelector('#histogram-image-preview').setAttribute("src", data["histogram_image_url"])
     }
   };
-
   chatSocket.onclose = function (e) {
     console.error('Analysis socket closed unexpectedly');
   };

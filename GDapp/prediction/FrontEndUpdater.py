@@ -1,3 +1,4 @@
+from GDapp.models import get_analyzed_image_url, get_histogram_image_url
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
@@ -53,6 +54,8 @@ class FrontEndUpdater:
         # analyzed_image_url = get_analyzed_image_url(self.pk)
         # TODO: change this to get a personalized result based on pk
         results_url = "../../../media/GD_Output.zip"
+        analyzed_image_url = get_analyzed_image_url(self.pk)
+        histogram_image_url = get_histogram_image_url(self.pk)
 
         async_to_sync(channel_layer.group_send)(
             pk_group_name,
@@ -60,4 +63,7 @@ class FrontEndUpdater:
                 'type': 'finished_message',
                 'finished': "finished",
                 'results_url': results_url,
+                'analyzed_image_url': analyzed_image_url,
+                'histogram_image_url': histogram_image_url,
+
             })

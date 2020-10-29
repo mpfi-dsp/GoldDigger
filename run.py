@@ -1,4 +1,5 @@
 # imports
+from GDapp.models import add_analyzed_image, add_gold_particle_coordinates, add_histogram_image
 import os
 from skimage import io  # library for python to help access pictures
 import numpy as np  # help do math in python
@@ -25,6 +26,7 @@ import errno
 import os
 import stat
 import shutil
+from django.conf import settings
 # from sklearn.cluster import Kmeans
 
 
@@ -281,16 +283,6 @@ def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
 
     return all_coordinates, results6, results12, results18
 
-
-def save_files_to_csv(results6, results12, results18):
-    export_csv = results6.to_csv(r'media/Output_Final/Results6nm.csv', index=None,
-                                 header=True)
-    export_csv = results12.to_csv(r'media/Output_Final/Results12nm.csv', index=None,
-                                  header=True)
-    export_csv = results18.to_csv(r'media/Output_Final/Results18nm.csv', index=None,
-                                  header=True)
-
-
 def clear_out_input_dirs():
     shutil.rmtree('media/Input')
     os.mkdir('media/Input')
@@ -300,7 +292,7 @@ def update_progress(progress_recorder, step, total_steps, message):
     if progress_recorder is not None:
         progress_recorder.set_progress(step, total_steps, message)
 
-def save_preview_figure(coordinates):
+def save_preview_figure(coordinates, front_end_updater):
     img = cv2.imread('media/Output_Final/OutputStitched.png')
     img2 = img[:,:,::-1]
     plt.figure(1)
@@ -315,8 +307,10 @@ def save_preview_figure(coordinates):
         os.remove(preview_file_path)
     plt.savefig(preview_file_path, bbox_inches = 'tight',
         pad_inches = 0)
+    add_analyzed_image(front_end_updater.pk, preview_file_path)
 
-def save_histogram(coordinates):
+
+def save_histogram(coordinates, front_end_updater):
     plt.figure(2)
     plt.hist(coordinates.Area.values, bins=100)
     plt.title('Particle Area Histogram')
@@ -326,19 +320,21 @@ def save_histogram(coordinates):
     if os.path.exists(hist_path):
         os.remove(hist_path)
     plt.savefig(hist_path, bbox_inches='tight')
+    add_histogram_image(front_end_updater.pk, hist_path)
 
-
-# class ProgressBarWrapper:
-
-#     def __init__(self, front_end_updater, total_steps):
-#         self.front_end_updater = front_end_updater
-#         self.total_steps = total_steps
-
-#     def update(self, steps, message):
-#         if self.front_end_updater is not None:
-#             self.front_end_updater.set_progress(
-#                 steps, self.total_steps, message)
-
+def save_all_results(coordinates, front_end_updater):
+    sub_path = 'results'
+    results_path = os.path.join(settings.MEDIA_ROOT, sub_path)
+    if not os.path.isdir(results_path):
+        os.makedirs(results_path)
+    timestr = time.strftime("%Y%m%d%H%M%S")
+    coordinates_path_relative = os.path.join(sub_path, 'coordinates' + timestr + '.csv')
+    coordinates_path_absolute = os.path.join(settings.MEDIA_ROOT, coordinates_path_relative)
+    coordinates.to_csv(coordinates_path_absolute, index=None,
+                                 header=True)
+    add_gold_particle_coordinates(front_end_updater.pk, coordinates_path_absolute)
+    save_preview_figure(coordinates,front_end_updater)
+    save_histogram(coordinates, front_end_updater)
 
 def run_gold_digger(model, input_image_list, particle_group_count, mask=None, front_end_updater=None):
     print(f'Running with {model}')
@@ -374,9 +370,8 @@ def run_gold_digger(model, input_image_list, particle_group_count, mask=None, fr
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
     all_coordinates, results6, results12, results18 = get_contour_centers_and_group(particle_group_count,
                                                                    cnts, img_mask)
-    save_preview_figure(all_coordinates)
-    save_histogram(all_coordinates)
-    save_files_to_csv(results6, results12, results18)
+    save_all_results(all_coordinates, front_end_updater)
+
     clear_out_input_dirs()
     print("SUCCESS!!")
     front_end_updater.update(8, "Saving files")
