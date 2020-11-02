@@ -94,3 +94,4 @@ docker rm gold-digger-web
 - preview blue mask 
 - make sure image and mask are the same size
 - show preview image of result
+- convert run.py into an object oriented file
