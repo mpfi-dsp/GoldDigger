@@ -262,24 +262,28 @@ def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
         if not (cX == 0 and cY == 0):
             all_coordinates = all_coordinates.append({'X': cX, 'Y': cY,'Area':cv2.contourArea(c)}, ignore_index=True)
             if check_if_coordinate_is_in_mask(cX, cY, img_mask):
-                if cv2.contourArea(c) < 75:
-                    results6 = results6.append(
+                if particle_group_count == 1:
+                    if cv2.contourArea(c) < 1500:
+                        results6 = results6.append(
                         {'X': cX, 'Y': cY}, ignore_index=True)
-                elif cv2.contourArea(c) >= 75 and cv2.contourArea(c) < 350:
-                    results12 = results12.append(
-                        {'X': cX, 'Y': cY}, ignore_index=True)
-                elif cv2.contourArea(c) >= 350 and cv2.contourArea(c) < 1500:
-                    results18 = results18.append(
-                        {'X': cX, 'Y': cY}, ignore_index=True)
-            if cv2.contourArea(c) < 75:
-                results6 = results6.append(
-                    {'X': cX, 'Y': cY}, ignore_index=True)
-            elif cv2.contourArea(c) >= 75 and cv2.contourArea(c) < 350:
-                results12 = results12.append(
-                    {'X': cX, 'Y': cY}, ignore_index=True)
-            elif cv2.contourArea(c) >= 350 and cv2.contourArea(c) < 1500:
-                results18 = results18.append(
-                    {'X': cX, 'Y': cY}, ignore_index=True)
+                if particle_group_count == 2:
+                    if cv2.contourArea(c) < 100:
+                        results6 = results6.append(
+                           {'X': cX, 'Y': cY}, ignore_index=True)
+                    elif cv2.contourArea(c) >= 100 and cv2.contourArea(c) < 1500:
+                        results12 = results12.append(
+                           {'X': cX, 'Y': cY}, ignore_index=True)
+                if particle_group_count == 3:
+                    if cv2.contourArea(c) < 75:
+                        results6 = results6.append(
+                           {'X': cX, 'Y': cY}, ignore_index=True)
+                    elif cv2.contourArea(c) >= 75 and cv2.contourArea(c) < 350:
+                        results12 = results12.append(
+                           {'X': cX, 'Y': cY}, ignore_index=True)
+                    elif cv2.contourArea(c) >= 350 and cv2.contourArea(c) < 1500:
+                        results18 = results18.append(
+                           {'X': cX, 'Y': cY}, ignore_index=True)
+
 
     return all_coordinates, results6, results12, results18
 
