@@ -233,10 +233,10 @@ def count_green_dots():
 def check_if_coordinate_is_in_mask(x,y,mask):
     if mask is None:
         return True
-    elif mask[x,y] != (255,255,255):
-        return True
-    else:
+    elif np.array_equal(mask[x,y], np.array((255,255,255))): #if coordinate is in white region on the mask image, return false (do not count it)
         return False
+    else: #if coordinate is not in white region return true (do count it)
+        return True
 
 
 def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
@@ -261,7 +261,7 @@ def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
 
         if not (cX == 0 and cY == 0):
             all_coordinates = all_coordinates.append({'X': cX, 'Y': cY,'Area':cv2.contourArea(c)}, ignore_index=True)
-            if check_if_coordinate_is_in_mask(cX, cY, img_mask):
+            if check_if_coordinate_is_in_mask(cY, cX, img_mask):
                 if particle_group_count == 1:
                     if cv2.contourArea(c) < 1500:
                         results6 = results6.append(
