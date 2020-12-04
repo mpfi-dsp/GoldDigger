@@ -265,7 +265,7 @@ def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
             all_coordinates = all_coordinates.append({'X': cX, 'Y': cY,'Area':cv2.contourArea(c)}, ignore_index=True)
             if check_if_coordinate_is_in_mask(cY, cX, img_mask):
                 if particle_group_count == 1:
-                    if cv2.contourArea(c) < 1500:
+                    if cv2.contourArea(c) > 1 and cv2.contourArea(c) < 1500:
                         results6 = results6.append(
                         {'X': cX, 'Y': cY}, ignore_index=True)
                 if particle_group_count == 2:
@@ -331,10 +331,10 @@ def save_histogram(coordinates, front_end_updater):
 
 #eleanor added for coordinates6nm
 def save_coordinates6nm(coordinates6nm, front_end_updater):
-    coordinates6nm_path = 'media/Output_Final/coordinates6nm.csv'
+    coordinates6nm_path = 'media/Output_Final/coordinatesGroup1.csv'
     if os.path.exists(coordinates6nm_path):
         os.remove(coordinates6nm_path)
-    coordinates6nm.to_csv(coordinates6nm_path)
+    coordinates6nm.to_csv(coordinates6nm_path, index = False)
     add_coordinates6nm(front_end_updater.pk, coordinates6nm_path)
 
 
