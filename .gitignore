@@ -17,5 +17,7 @@ debug.log
 /media2/*
 /media2/Input/
 /media2/Mask/
+/media2/Input
+/media2/Mask
 /media2/Input/*
 /media2/Mask/*
