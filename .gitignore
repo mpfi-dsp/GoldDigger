@@ -13,3 +13,7 @@ debug.log
 .fuse_hidden*
 */results/
 */analyzed/
+/media2
+/media2/*
+/media2/Input/
+/media2/Mask/
