@@ -265,7 +265,7 @@ def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
             all_coordinates = all_coordinates.append({'X': cX, 'Y': cY,'Area':cv2.contourArea(c)}, ignore_index=True)
             if check_if_coordinate_is_in_mask(cY, cX, img_mask):
                 if particle_group_count == 1:
-                    if cv2.contourArea(c) > 5 and cv2.contourArea(c) < 1500:
+                    if cv2.contourArea(c) > 2 and cv2.contourArea(c) < 1500:
                         results6 = results6.append(
                         {'X': cX, 'Y': cY}, ignore_index=True)
                 if particle_group_count == 2:
