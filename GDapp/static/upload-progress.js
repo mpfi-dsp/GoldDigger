@@ -1,4 +1,3 @@
-console.log('hello world from main.js')
 const uploadForm = document.getElementById('upload-form')
 const input = document.getElementById('id_image')
 const alertBox = document.getElementById('alert-box')

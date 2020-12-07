@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% block body %}
 {% load static %}
+
 <section class="jumbotron text-center">
   <div class="container">
     {% block run %}
+    <script src={% static 'upload-progress.js' %} defer></script>
     <h1 class="jumbotron-heading">Upload a File</h1>
     <p class="lead text-muted">Requirements: Please upload 1 profile to analyze (the file name should contain no
       spaces).</p>
