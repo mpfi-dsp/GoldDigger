@@ -11,15 +11,6 @@ from .models import EMImage
 
 import sys
 
-# def start_gold_digger(obj):
-#     if obj.mask.name == '':
-#         mask = None
-#     else:
-#         mask = obj.mask.path
-#     gold_digger = GdappConfig.gold_particle_detector
-#     # front_end_updater = FrontEndUpdater(obj.id)
-#     gold_digger(obj.id)
-#     # gold_digger(obj.trained_model, obj.image.path, obj.particle_groups, mask, front_end_updater)
 
 def home(request):
     return render(request, 'GDapp/home.html')
@@ -27,7 +18,9 @@ def home(request):
 def image_view(request):
     if request.method == 'POST':
         form = EMImageForm(request.POST, request.FILES)
+        # if request.is_ajax():
         if form.is_valid():
+            print('forms valid')
             instance = form.save()
             return run_gd(request, {'pk':instance.id})
     else:
