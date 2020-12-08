@@ -18,7 +18,6 @@ def home(request):
 def image_view(request):
     if request.method == 'POST':
         form = EMImageForm(request.POST, request.FILES)
-        # if request.is_ajax():
         if form.is_valid():
             print('forms valid')
             instance = form.save()

@@ -68,11 +68,12 @@ def clear_out_old_files(model):
 # look in INPUT folder, crop photo and save crop to OUTPUT folder
 # Cut up in order, append white images
 
-def load_data_make_jpeg(image, mask):
+def load_data_make_jpeg(image, mask, front_end_updater):
     file_list = pathlib.Path('media/Input', image)
     print(file_list)
     for entry in [file_list]:
-
+        front_end_updater.post_message('loading image')
+        front_end_updater.update_progress(10, 1)
         img_size = (256, 256, 3)
         img_new = io.imread(entry)
         # img_new = (img_new/256).astype('uint8')
@@ -88,15 +89,23 @@ def load_data_make_jpeg(image, mask):
             mask_path = pathlib.Path('media/Mask', mask)
             img_mask = io.imread(mask_path)
             img_mask = img_mask[:height256, :width256, :3]
-            imageio.imwrite('media/Output_Final/' + 'CroppedMask'+'.png', img_mask)
-
+            imageio.imwrite('media/Output_Final/' +
+                            'CroppedMask'+'.png', img_mask)
+        front_end_updater.update_progress(50, 1)
         img_new_w = view_as_blocks(img_new, img_size)
         img_new_w = np.uint8(img_new_w)
         imageio.imwrite('media/Output_Final/' +
                         'CroppedVersion' + '.png', img_new)
         r = 0
+        total_progress = img_new_w.shape[0] * img_new_w.shape[1]
+        current_progress = 0
+        front_end_updater.post_message('cutting up image')
+        front_end_updater.update_progress(90, 1)
         for i in range(img_new_w.shape[0]):
             for j in range(img_new_w.shape[1]):
+                current_progress += 1
+                front_end_updater.update_progress(
+                    current_progress/total_progress * 100, 1)
                 A = np.zeros((img_size[0], img_size[1], 3))
                 A[:, :, :] = img_new_w[i, j, :, :]
                 # A = np.uint8(A)
@@ -105,10 +114,15 @@ def load_data_make_jpeg(image, mask):
     return file_list, width, height, img_mask
 
 
-def combine_white(white, folderA):
+def combine_white(white, folderA, front_end_updater):
     print(os.getcwd())
     os.chdir(folderA)
+    total_progress = len(os.listdir('.'))
+    current_progress = 0
     for file in os.listdir('.'):
+        front_end_updater.update_progress(
+            current_progress/total_progress * 100, 1)
+        current_progress += 1
         imA = io.imread(file)
         newimage = np.concatenate((imA, white), axis=1)
         imageio.imwrite('../Output_Appended/test/' + file, newimage)
@@ -232,12 +246,14 @@ def count_green_dots():
     cnts = imutils.grab_contours(cnts)
     return cnts
 
-def check_if_coordinate_is_in_mask(x,y,mask):
+
+def check_if_coordinate_is_in_mask(x, y, mask):
     if mask is None:
         return True
-    elif np.array_equal(mask[x,y], np.array((255,255,255))): #if coordinate is in white region on the mask image, return false (do not count it)
+    # if coordinate is in white region on the mask image, return false (do not count it)
+    elif np.array_equal(mask[x, y], np.array((255, 255, 255))):
         return False
-    else: #if coordinate is not in white region return true (do count it)
+    else:  # if coordinate is not in white region return true (do count it)
         return True
 
 
@@ -248,7 +264,7 @@ def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
     results6 = pd.DataFrame(columns=['X', 'Y'])
     results12 = pd.DataFrame(columns=['X', 'Y'])
     results18 = pd.DataFrame(columns=['X', 'Y'])
-    all_coordinates = pd.DataFrame(columns=['X','Y','Area'])
+    all_coordinates = pd.DataFrame(columns=['X', 'Y', 'Area'])
     for c in cnts:
         #    compute the center of the contour, then detect the name of the
         # shape using only the contour
@@ -262,32 +278,33 @@ def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
             cY = int(M["m01"] / M["m00"])
 
         if not (cX == 0 and cY == 0):
-            all_coordinates = all_coordinates.append({'X': cX, 'Y': cY,'Area':cv2.contourArea(c)}, ignore_index=True)
+            all_coordinates = all_coordinates.append(
+                {'X': cX, 'Y': cY, 'Area': cv2.contourArea(c)}, ignore_index=True)
             if check_if_coordinate_is_in_mask(cY, cX, img_mask):
                 if particle_group_count == 1:
                     if cv2.contourArea(c) > 2 and cv2.contourArea(c) < 1500:
                         results6 = results6.append(
-                        {'X': cX, 'Y': cY}, ignore_index=True)
+                            {'X': cX, 'Y': cY}, ignore_index=True)
                 if particle_group_count == 2:
                     if cv2.contourArea(c) < 100:
                         results6 = results6.append(
-                           {'X': cX, 'Y': cY}, ignore_index=True)
+                            {'X': cX, 'Y': cY}, ignore_index=True)
                     elif cv2.contourArea(c) >= 100 and cv2.contourArea(c) < 1500:
                         results12 = results12.append(
-                           {'X': cX, 'Y': cY}, ignore_index=True)
+                            {'X': cX, 'Y': cY}, ignore_index=True)
                 if particle_group_count == 3:
                     if cv2.contourArea(c) < 75:
                         results6 = results6.append(
-                           {'X': cX, 'Y': cY}, ignore_index=True)
+                            {'X': cX, 'Y': cY}, ignore_index=True)
                     elif cv2.contourArea(c) >= 75 and cv2.contourArea(c) < 350:
                         results12 = results12.append(
-                           {'X': cX, 'Y': cY}, ignore_index=True)
+                            {'X': cX, 'Y': cY}, ignore_index=True)
                     elif cv2.contourArea(c) >= 350 and cv2.contourArea(c) < 1500:
                         results18 = results18.append(
-                           {'X': cX, 'Y': cY}, ignore_index=True)
-
+                            {'X': cX, 'Y': cY}, ignore_index=True)
 
     return all_coordinates, results6, results12, results18
+
 
 def clear_out_input_dirs():
     shutil.rmtree('media/Input')
@@ -298,21 +315,23 @@ def update_progress(progress_recorder, step, total_steps, message):
     if progress_recorder is not None:
         progress_recorder.set_progress(step, total_steps, message)
 
+
 def save_preview_figure(coordinates, front_end_updater):
     img = cv2.imread('media/Output_Final/OutputStitched.png')
-    img2 = img[:,:,::-1]
+    img2 = img[:, :, ::-1]
     plt.figure(1)
     plt.imshow(img2)
-    plt.scatter(coordinates.X.values,coordinates.Y.values, facecolors='none',edgecolors='r')
+    plt.scatter(coordinates.X.values, coordinates.Y.values,
+                facecolors='none', edgecolors='r')
     plt.gca().set_axis_off()
-    plt.margins(0,0)
+    plt.margins(0, 0)
     plt.gca().xaxis.set_major_locator(plt.NullLocator())
     plt.gca().yaxis.set_major_locator(plt.NullLocator())
     preview_file_path = 'media/Output_Final/preview.png'
     if os.path.exists(preview_file_path):
         os.remove(preview_file_path)
-    plt.savefig(preview_file_path, bbox_inches = 'tight',
-        pad_inches = 0)
+    plt.savefig(preview_file_path, bbox_inches='tight',
+                pad_inches=0)
     add_analyzed_image(front_end_updater.pk, preview_file_path)
 
 
@@ -329,15 +348,13 @@ def save_histogram(coordinates, front_end_updater):
     add_histogram_image(front_end_updater.pk, hist_path)
 
 
-#eleanor added for coordinates6nm
+# eleanor added for coordinates6nm
 def save_coordinates6nm(coordinates6nm, front_end_updater):
     coordinates6nm_path = 'media/Output_Final/coordinatesGroup1.csv'
     if os.path.exists(coordinates6nm_path):
         os.remove(coordinates6nm_path)
-    coordinates6nm.to_csv(coordinates6nm_path, index = False)
+    coordinates6nm.to_csv(coordinates6nm_path, index=False)
     add_coordinates6nm(front_end_updater.pk, coordinates6nm_path)
-
-
 
 
 def save_all_results(coordinates, coordinates6nm, front_end_updater):
@@ -346,35 +363,40 @@ def save_all_results(coordinates, coordinates6nm, front_end_updater):
     if not os.path.isdir(results_path):
         os.makedirs(results_path)
     timestr = time.strftime("%Y%m%d%H%M%S")
-    coordinates_path_relative = os.path.join(sub_path, 'coordinates' + timestr + '.csv')
-    coordinates_path_absolute = os.path.join(settings.MEDIA_ROOT, coordinates_path_relative)
+    coordinates_path_relative = os.path.join(
+        sub_path, 'coordinates' + timestr + '.csv')
+    coordinates_path_absolute = os.path.join(
+        settings.MEDIA_ROOT, coordinates_path_relative)
     coordinates.to_csv(coordinates_path_absolute, index=None,
-                                 header=True)
-    add_gold_particle_coordinates(front_end_updater.pk, coordinates_path_absolute)
+                       header=True)
+    add_gold_particle_coordinates(
+        front_end_updater.pk, coordinates_path_absolute)
 
-    #Eleanor added for 6nm
-    coordinates6nm_path_relative = os.path.join(sub_path, 'coordinates6nm' + timestr + '.csv')
-    coordinates6nm_path_absolute = os.path.join(settings.MEDIA_ROOT, coordinates6nm_path_relative)
+    # Eleanor added for 6nm
+    coordinates6nm_path_relative = os.path.join(
+        sub_path, 'coordinates6nm' + timestr + '.csv')
+    coordinates6nm_path_absolute = os.path.join(
+        settings.MEDIA_ROOT, coordinates6nm_path_relative)
     coordinates6nm.to_csv(coordinates6nm_path_absolute, index=None,
-                                 header=True)
+                          header=True)
     add_coordinates6nm(front_end_updater.pk, coordinates6nm_path_absolute)
 
     save_coordinates6nm(coordinates6nm, front_end_updater)
-    save_preview_figure(coordinates6nm,front_end_updater)
+    save_preview_figure(coordinates6nm, front_end_updater)
     save_histogram(coordinates, front_end_updater)
+
 
 def run_gold_digger(model, input_image_list, particle_group_count, mask=None, front_end_updater=None):
     print(f'Running with {model}')
-    # progress_setter = ProgressBarWrapper(front_end_updater, 20)
     front_end_updater.update(1, "starting")
     artifact = get_artifact_status(model)
     clear_out_old_files(model)
     front_end_updater.update(2, "loading and cutting up image")
     file_list, width, height, img_mask = load_data_make_jpeg(
-        input_image_list, mask)
+        input_image_list, mask, front_end_updater)
     front_end_updater.update(4, "combining with white background")
     white = io.imread('media/White/white.png')
-    combine_white(white, 'media/Output')
+    combine_white(white, 'media/Output', front_end_updater)
     front_end_updater.update(5, "running PIX2PIX...")
     os.system(
         'python3 media/PIX2PIX/test.py --dataroot media/Output_Appended/ --name {0} --model pix2pix --direction AtoB --num_test 1000000 --checkpoints_dir media/PIX2PIX/checkpoints/ --results_dir media/PIX2PIX/results/'.format(
@@ -396,7 +418,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, mask=None, fr
     cnts = count_green_dots()
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
     all_coordinates, results6, results12, results18 = get_contour_centers_and_group(particle_group_count,
-                                                                   cnts, img_mask)
+                                                                                    cnts, img_mask)
     save_all_results(all_coordinates, results6, front_end_updater)
 
     clear_out_input_dirs()

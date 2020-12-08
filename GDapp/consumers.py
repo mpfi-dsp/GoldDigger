@@ -29,18 +29,20 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
         if json_type == "analysis_message":
             await self.send_message(content['message'])
         elif json_type == "progress_percent":
-            await self.send_progress(content['progress'])
+            await self.send_progress(content['progress'], content['progress_bar_index'], content['progress_message'])
         elif json_type == "finished":
             await self.send_progress(content['finished'])
 
 
-    async def send_progress(self, progress):
+    async def send_progress(self, progress, progress_bar_index, progress_message):
 
         await self.channel_layer.group_send(
             self.pk_group_name,
             {
                 'type': 'progress_percent',
-                'progress': progress
+                'progress': progress,
+                'progress_bar_index': progress_bar_index,
+                'progress_message': progress_message,
             }
         )
 
@@ -66,9 +68,13 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
 
     async def progress_percent(self, event):
         progress = event['progress']
+        progress_bar_index = event['progress_bar_index']
+        progress_message = event['progress_message']
         # send progress to websocket
         await self.send_json({
-            'progress': progress
+            'progress': progress,
+            'progress_bar_index':progress_bar_index,
+            'progress_message': progress_message,
         })
 
     # receive message from pk group

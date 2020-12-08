@@ -26,7 +26,6 @@ runBtn.addEventListener('click', () => {
             xhr.upload.addEventListener('progress', e => {
                 if (e.lengthComputable) {
                     const percent = e.loaded / e.total * 100
-                    console.log(percent)
                     alertBox.innerHTML =    `<div class="alert alert-success" role="alert">
                                                 Uploading Images...
                                             </div>`
@@ -40,7 +39,6 @@ runBtn.addEventListener('click', () => {
 
         },
         success: function (response) {
-            console.log(response)
         },
         error: function (error) {
             console.log(error)

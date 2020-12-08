@@ -12,16 +12,17 @@ class FrontEndUpdater:
     def __init__(self, pk):
         self.pk = pk
         self.total_count = 20
+        self.latest_message = "Progress"
 
     def update(self, counter, message):
-        self.update_progress(counter/20 * 100)
         self.post_message(message)
+        self.update_progress(counter/20 * 100, 0)
 
-    def update_progress(self, progress_percentage):
-        # message = "progress is at {}%!".format(progress_percentage)
-        self.__send_progress(progress_percentage)
+    def update_progress(self, progress_percentage, progress_bar_index='0'):
+        self.__send_progress(progress_percentage, progress_bar_index, self.latest_message)
 
     def post_message(self, message):
+        self.latest_message = message
         self.__send_a_message(message)
 
     def analysis_done(self):
@@ -50,13 +51,15 @@ class FrontEndUpdater:
                 'message': message
             })
 
-    def __send_progress(self, progress):
+    def __send_progress(self, progress, progress_bar_index, progress_message):
         pk_group_name = "analysis_%s" % self.pk
         async_to_sync(channel_layer.group_send)(
             pk_group_name,
             {
                 'type': 'progress_percent',
-                'progress': progress
+                'progress': progress,
+                'progress_bar_index': progress_bar_index,
+                'progress_message': progress_message
             })
 
     def __send_finished(self):

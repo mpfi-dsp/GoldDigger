@@ -9,9 +9,14 @@
     <a href="" class="btn btn-primary btn-md disabled" id="results-button">Download Results</a>
     <h5>Progress:</h5>
     <div class="progress">
-      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" id="progress-bar"
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" id="progress-bar-0"
         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
         Progress
+      </div>
+    </div>
+    <div class="progress">
+      <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" id="progress-bar-1"
+        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
       </div>
     </div>
     <h5>Status:</h5>
@@ -53,10 +58,14 @@
       document.querySelector('#message_display').innerHTML = (document.querySelector('#message_display').innerHTML + "<br>" + message);
     } else if (data['progress'] != null) {
       const progress = data['progress'];
-      document.querySelector('#progress-bar').style.width = (progress + "%");
+      const ind = data['progress_bar_index']
+      const msg = data['progress_message']
+      document.querySelector(`#progress-bar-${ind}`).style.width = (progress + "%");
+      document.querySelector(`#progress-bar-${ind}`).innerHTML = (msg);
+
     } else if (data['finished'] != null) {
       console.log("Finished")
-      document.querySelector('#progress-bar').innerHTML = ("Finished");
+      document.querySelector('#progress-bar-0').innerHTML = ("Finished");
       document.querySelector('#results-label').innerHTML = ("Results");
       document.querySelector('#results-button').className = "btn btn-primary btn-md";
       document.querySelector('#results-button').setAttribute("href", data["results_url"]);
