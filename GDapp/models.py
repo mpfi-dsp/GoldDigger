@@ -13,6 +13,8 @@ TRAINED_MODEL_CHOICES = [
 class EMImage(models.Model):
     image = models.FileField(upload_to="Input/", blank=True, default='')
     mask = models.FileField(upload_to="Mask/", blank=True)
+    threshold_string = models.CharField(max_length=200, blank=True)
+    
     particle_groups = models.IntegerField(
         blank=False, default=1, validators=[MinValueValidator(1)])
     trained_model = models.CharField(max_length=100,

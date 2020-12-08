@@ -241,14 +241,14 @@ def check_if_coordinate_is_in_mask(x,y,mask):
         return True
 
 
-def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
+def get_contour_centers(cnts, img_mask):
     # group using k means
     # report size distributions
     # show relative size histograms and cutoffs
-    results6 = pd.DataFrame(columns=['X', 'Y'])
-    results12 = pd.DataFrame(columns=['X', 'Y'])
-    results18 = pd.DataFrame(columns=['X', 'Y'])
+    
     all_coordinates = pd.DataFrame(columns=['X','Y','Area'])
+    coords_in_mask = pd.DataFrame(columns=['X','Y','Area'])
+    
     for c in cnts:
         #    compute the center of the contour, then detect the name of the
         # shape using only the contour
@@ -262,32 +262,47 @@ def get_contour_centers_and_group(particle_group_count, cnts, img_mask):
             cY = int(M["m01"] / M["m00"])
 
         if not (cX == 0 and cY == 0):
-            all_coordinates = all_coordinates.append({'X': cX, 'Y': cY,'Area':cv2.contourArea(c)}, ignore_index=True)
+            all_coordinates = all_coordinates.append({'X': cX, 'Y': cY,'Area':cv2.contourArea(c)}, 
+                                                     ignore_index=True)
+            
             if check_if_coordinate_is_in_mask(cY, cX, img_mask):
-                if particle_group_count == 1:
-                    if cv2.contourArea(c) > 2 and cv2.contourArea(c) < 1500:
-                        results6 = results6.append(
-                        {'X': cX, 'Y': cY}, ignore_index=True)
-                if particle_group_count == 2:
-                    if cv2.contourArea(c) < 100:
-                        results6 = results6.append(
-                           {'X': cX, 'Y': cY}, ignore_index=True)
-                    elif cv2.contourArea(c) >= 100 and cv2.contourArea(c) < 1500:
-                        results12 = results12.append(
-                           {'X': cX, 'Y': cY}, ignore_index=True)
-                if particle_group_count == 3:
-                    if cv2.contourArea(c) < 75:
-                        results6 = results6.append(
-                           {'X': cX, 'Y': cY}, ignore_index=True)
-                    elif cv2.contourArea(c) >= 75 and cv2.contourArea(c) < 350:
-                        results12 = results12.append(
-                           {'X': cX, 'Y': cY}, ignore_index=True)
-                    elif cv2.contourArea(c) >= 350 and cv2.contourArea(c) < 1500:
-                        results18 = results18.append(
-                           {'X': cX, 'Y': cY}, ignore_index=True)
+
+                # add condition to get rid of some of the crazy outliers in histogram later on 
+                if cv2.contourArea(c) < 1500:
+                    coords_in_mask = coords_in_mask.append({'X': cX, 'Y': cY,'Area':cv2.contourArea(c)}, 
+                                                       ignore_index=True)
+    return all_coordinates, coords_in_mask
+
+def sort_from_thresholds(coords_in_mask, particle_group_count, thresholds_list_string):
+    
+    thresholds_list = [int(s) for s in thresholds_list_string.split(',')]
+    
+    results1 = pd.DataFrame(columns=['X', 'Y'])
+    results2 = pd.DataFrame(columns=['X', 'Y'])
+    results3 = pd.DataFrame(columns=['X', 'Y'])
+    
+    for index, row in coords_in_mask.iterrows():
+        
+        if particle_group_count == 1:
+            if row['Area'] > thresholds_list[0] and row['Area'] < thresholds_list[1]:
+                results1 = results1.append({'X': row['X'], 'Y': row['Y']}, ignore_index=True)
+                        
+        if particle_group_count == 2:
+            if row['Area'] > thresholds_list[0] and row['Area'] < thresholds_list[1]:
+                results1 = results1.append({'X': row['X'], 'Y': row['Y']}, ignore_index=True)
+            elif row['Area'] > thresholds_list[2] and row['Area'] < thresholds_list[3]:
+                results2 = results2.append({'X': row['X'], 'Y': row['Y']}, ignore_index=True)
+                        
+        if particle_group_count == 3:
+            if row['Area'] > thresholds_list[0] and row['Area'] < thresholds_list[1]:
+                results1 = results1.append({'X': row['X'], 'Y': row['Y']}, ignore_index=True)
+            elif row['Area'] > thresholds_list[2] and row['Area'] < thresholds_list[3]:
+                results2= results2.append({'X': row['X'], 'Y': row['Y']}, ignore_index=True)
+            elif row['Area'] > thresholds_list[4] and row['Area'] < thresholds_list[5]:
+                results3 = results3.append({'X': row['X'], 'Y': row['Y']}, ignore_index=True)
 
 
-    return all_coordinates, results6, results12, results18
+    return results1, results2, results3
 
 def clear_out_input_dirs():
     shutil.rmtree('media/Input')
@@ -363,7 +378,7 @@ def save_all_results(coordinates, coordinates6nm, front_end_updater):
     save_preview_figure(coordinates6nm,front_end_updater)
     save_histogram(coordinates, front_end_updater)
 
-def run_gold_digger(model, input_image_list, particle_group_count, mask=None, front_end_updater=None):
+def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string='2, 1000', mask=None, front_end_updater=None):
     print(f'Running with {model}')
     # progress_setter = ProgressBarWrapper(front_end_updater, 20)
     front_end_updater.update(1, "starting")
@@ -395,9 +410,13 @@ def run_gold_digger(model, input_image_list, particle_group_count, mask=None, fr
     front_end_updater.update(7, "Identifying green dots")
     cnts = count_green_dots()
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
-    all_coordinates, results6, results12, results18 = get_contour_centers_and_group(particle_group_count,
-                                                                   cnts, img_mask)
-    save_all_results(all_coordinates, results6, front_end_updater)
+    all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
+    
+
+    results1, results2, results3 = sort_from_thresholds(coords_in_mask, 
+                                                        particle_group_count, thresholds_list_string)
+    
+    save_all_results(coords_in_mask, results1, front_end_updater)
 
     clear_out_input_dirs()
     print("SUCCESS!!")
