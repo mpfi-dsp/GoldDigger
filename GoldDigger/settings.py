@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'GDapp',
     'channels',
     'django_celery_results',
+    'chunked_upload',
 ]
 
 MIDDLEWARE = [

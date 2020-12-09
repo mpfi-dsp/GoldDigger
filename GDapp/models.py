@@ -3,12 +3,14 @@ from django.db import models
 from django import forms
 from django.core.validators import MinValueValidator
 from django.core.files import File
+from chunked_upload.models import ChunkedUpload
 
 TRAINED_MODEL_CHOICES = [
     ('43kGoldDigger', '43kGoldDigger'),
     ('87kGoldDigger', '87kGoldDigger')
 ]
 
+MyChunkedUpload = ChunkedUpload
 
 class EMImage(models.Model):
     image = models.FileField(upload_to="Input/", blank=True, default='')
