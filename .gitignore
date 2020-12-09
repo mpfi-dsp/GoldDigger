@@ -21,3 +21,5 @@ debug.log
 /media2/Mask
 /media2/Input/*
 /media2/Mask/*
+*.part
+/media/chunked_uploads

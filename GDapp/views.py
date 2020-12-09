@@ -7,7 +7,7 @@ from django.core.files.storage import FileSystemStorage
 from django.views.generic.list import ListView
 import csv
 from django.http import HttpResponse
-from .models import EMImage, MyChunkedUpload
+from .models import EMImage, MyChunkedUpload, add_image
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 from django.views.generic.base import TemplateView
 
@@ -15,8 +15,8 @@ from django.views.generic.base import TemplateView
 import sys
 
 
-class ChunkedUploadDemo(TemplateView):
-    template_name = 'upload.html'
+# class ChunkedUploadDemo(TemplateView):
+#     template_name = 'upload.html'
 
 class MyChunkedUploadView(ChunkedUploadView):
 
@@ -26,6 +26,7 @@ class MyChunkedUploadView(ChunkedUploadView):
     def check_permissions(self, request):
         # Allow non authenticated users to make uploads
         pass
+
 
 class MyChunkedUploadCompleteView(ChunkedUploadCompleteView):
 
@@ -39,17 +40,25 @@ class MyChunkedUploadCompleteView(ChunkedUploadCompleteView):
         # Do something with the uploaded file. E.g.:
         # * Store the uploaded file on another model:
         # SomeModel.objects.create(user=request.user, file=uploaded_file)
+        # self.instance = EMImage.objects.create(image=uploaded_file)
         # * Pass it as an argument to a function:
         # function_that_process_file(uploaded_file)
+        # print(uploaded_file)
         pass
 
     def get_response_data(self, chunked_upload, request):
+        # form = EMImageForm(instance=self.instance)
+        # return render(request, "GDapp/upload.html", {'form': form})
+        print(chunked_upload)
         return {'message': ("You successfully uploaded '%s' (%s bytes)!" %
-                            (chunked_upload.filename, chunked_upload.offset))}
+                            (chunked_upload.filename, chunked_upload.offset)),
+                'upload_id': chunked_upload.upload_id,
+                'filename': chunked_upload.filename}
 
 
 def home(request):
     return render(request, 'GDapp/home.html')
+
 
 def image_view(request):
     if request.method == 'POST':
@@ -57,6 +66,7 @@ def image_view(request):
         if form.is_valid():
             print('forms valid')
             instance = form.save()
+            add_image(instance.id, instance.chunked_file_path)
             return run_gd(request, {'pk':instance.id})
     else:
         form = EMImageForm()
@@ -67,11 +77,10 @@ def run_gd(request, inputs):
     pk = inputs['pk']
     gold_digger = GdappConfig.gold_particle_detector
     gold_digger(pk)
-    return render(request, 'GDapp/run_gd.html', {'pk':pk})
+    return render(request, 'GDapp/run_gd.html', {'pk': pk})
 
 
 # attempt to make a downloadable csv
 def export(request):
     response = HttpResponse(content_type='text/csv')
     writer = csv.writer(response)
-

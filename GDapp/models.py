@@ -31,6 +31,13 @@ class EMImage(models.Model):
     #eleanor added coordinates6nm
     coordinates6nm = models.FileField(
             upload_to="analyzed/coordinates6nm", null=True)
+    chunked_file_path = models.CharField(max_length=500, blank=True, default="")
+
+def add_image(pk, url):
+    gd_data = EMImage.objects.get(pk=pk)
+    temp_image = File(open(url, "rb"))
+    _, ext = os.path.splitext(url)
+    gd_data.image.save(f'image{pk}{ext}', temp_image)
 
 def add_histogram_image(pk, url):
     gd_data = EMImage.objects.get(pk=pk)
