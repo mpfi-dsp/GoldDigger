@@ -31,7 +31,11 @@ class EMImage(models.Model):
     #eleanor added coordinates6nm
     coordinates6nm = models.FileField(
             upload_to="analyzed/coordinates6nm", null=True)
-    chunked_file_path = models.CharField(max_length=500, blank=True, default="")
+    chunked_image_id = models.CharField(max_length=500, blank=True, default="")
+    chunked_mask_id = models.CharField(max_length=500, blank=True, default="")
+    chunked_image_linked = models.ForeignKey(MyChunkedUpload, null=True, on_delete=models.CASCADE)
+    preloaded_pk = models.CharField(max_length=10, blank=True, default="")
+
 
 def add_image(pk, url):
     gd_data = EMImage.objects.get(pk=pk)

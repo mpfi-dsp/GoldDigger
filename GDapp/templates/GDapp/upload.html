@@ -5,20 +5,6 @@
 <section class="jumbotron text-center">
   <div class="container">
     {% block run %}
-    <h1 class="jumbotron-heading">Upload a File</h1>
-    <p class="lead text-muted">Requirements: Please upload 1 profile to analyze</p>
-
-    <div id="alert-box"></div>
-    <div id="image-box"></div>
-    <br>
-    <form method='post' enctype="multipart/form-data" action="" id="upload-form">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <!--<input name="document" type='file'>-->
-      <button type="submit" id="run-btn">Run</button>
-    </form>
-    <div id="progress-box" class="not-visible">Progress</div>
-
     <script src={% static 'GDapp/js/jquery.js' %}></script>
     <script src={% static 'GDapp/js/jquery.ui.widget.js' %}></script>
     <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
@@ -28,81 +14,99 @@
     <!-- Calculate md5 -->
     <script src={% static 'GDapp/js/spark-md5.js' %}></script>
 
-    <!-- {% csrf_token %} -->
-    <input id="chunked_upload" type="file" name="the_file">
+    <h1 class="jumbotron-heading">Upload a File</h1>
+    <p class="lead text-muted">Requirements: Please upload 1 profile to analyze</p>
 
-    <p id="progress"></p>
-    <div id="messages"></div>
+    <div id="alert-box"></div>
+    <div id="image-box"></div>
+    <br>
+    <form method='post' enctype="multipart/form-data" action="" id="upload-form">
+      {% csrf_token %}
+      {{form.as_p}}
+      <!-- <input name="document" type='file'> -->
 
-    <script type="text/javascript">
-      var md5 = "",
-        csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
-        form_data = [{ "name": "csrfmiddlewaretoken", "value": csrf }];
-      function calculate_md5(file, chunk_size) {
-        var slice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
-          chunks = chunks = Math.ceil(file.size / chunk_size),
-          current_chunk = 0,
-          spark = new SparkMD5.ArrayBuffer();
-        function onload(e) {
-          spark.append(e.target.result);  // append chunk
-          current_chunk++;
-          if (current_chunk < chunks) {
-            read_next_chunk();
-          } else {
-            md5 = spark.end();
-          }
-        };
-        function read_next_chunk() {
-          var reader = new FileReader();
-          reader.onload = onload;
-          var start = current_chunk * chunk_size,
-            end = Math.min(start + chunk_size, file.size);
-          reader.readAsArrayBuffer(slice.call(file, start, end));
-        };
-        read_next_chunk();
-      }
-      $("#chunked_upload").fileupload({
-        url: "{% url 'api_chunked_upload' %}",
-        dataType: "json",
-        maxChunkSize: 1000000, // Chunks of 1000 kB
-        formData: form_data,
-        add: function (e, data) { // Called before starting upload
-          $("#messages").empty();
-          // If this is the second file you're uploading we need to remove the
-          // old upload_id and just keep the csrftoken (which is always first).
-          form_data.splice(1);
-          calculate_md5(data.files[0], 1000000);  // Again, chunks of 1000 kB
-          data.submit();
-        },
-        chunkdone: function (e, data) { // Called after uploading each chunk
-          if (form_data.length < 2) {
-            form_data.push(
-              { "name": "upload_id", "value": data.result.upload_id }
-            );
-          }
-          //$("#messages").append($('<p>').text(JSON.stringify(data.result)));
-          var progress = parseInt(data.loaded / data.total * 100.0, 10);
-          $("#progress").text(Array(progress).join("=") + "> " + progress + "%");
-        },
-        done: function (e, data) { // Called when the file has completely uploaded
-          $.ajax({
-            type: "POST",
-            url: "{% url 'api_chunked_upload_complete' %}",
-            data: {
-              csrfmiddlewaretoken: csrf,
-              upload_id: data.result.upload_id,
-              md5: md5
-            },
-            dataType: "json",
-            success: function (data) {
-              //return_dict = JSON.stringify(data)
-              $("#messages").append($('<p>').text(data.message));
-                document.getElementById("id_chunked_file_path").value = "media/chunked_uploads/" + data.upload_id + ".part"
+
+      <!-- {% csrf_token %} -->
+      <input id="chunked_upload" type="file" name="the_file">
+
+      <p id="progress"></p>
+      <div id="messages"></div>
+
+      <script type="text/javascript">
+        var md5 = "",
+          csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
+          form_data = [{ "name": "csrfmiddlewaretoken", "value": csrf }];
+        function calculate_md5(file, chunk_size) {
+          var slice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+            chunks = chunks = Math.ceil(file.size / chunk_size),
+            current_chunk = 0,
+            spark = new SparkMD5.ArrayBuffer();
+          function onload(e) {
+            spark.append(e.target.result);  // append chunk
+            current_chunk++;
+            if (current_chunk < chunks) {
+              read_next_chunk();
+            } else {
+              md5 = spark.end();
             }
-          });
-        },
-      });
-    </script>
+          };
+          function read_next_chunk() {
+            var reader = new FileReader();
+            reader.onload = onload;
+            var start = current_chunk * chunk_size,
+              end = Math.min(start + chunk_size, file.size);
+            reader.readAsArrayBuffer(slice.call(file, start, end));
+          };
+          read_next_chunk();
+        }
+        $("#chunked_upload").fileupload({
+          url: "{% url 'api_chunked_upload' %}",
+          dataType: "json",
+          maxChunkSize: 1000000, // Chunks of 1000 kB
+          formData: form_data,
+          add: function (e, data) { // Called before starting upload
+            $("#messages").empty();
+            // If this is the second file you're uploading we need to remove the
+            // old upload_id and just keep the csrftoken (which is always first).
+            form_data.splice(1);
+            calculate_md5(data.files[0], 1000000);  // Again, chunks of 1000 kB
+            data.submit();
+          },
+          chunkdone: function (e, data) { // Called after uploading each chunk
+            if (form_data.length < 2) {
+              form_data.push(
+                { "name": "upload_id", "value": data.result.upload_id }
+              );
+            }
+            //$("#messages").append($('<p>').text(JSON.stringify(data.result)));
+            var progress = parseInt(data.loaded / data.total * 100.0, 10);
+            $("#progress").text(Array(progress).join("=") + "> " + progress + "%");
+          },
+          done: function (e, data) { // Called when the file has completely uploaded
+            $.ajax({
+              type: "POST",
+              url: "{% url 'api_chunked_upload_complete' %}",
+              data: {
+                csrfmiddlewaretoken: csrf,
+                upload_id: data.result.upload_id,
+                md5: md5
+              },
+              dataType: "json",
+              success: function (data) {
+                //return_dict = JSON.stringify(data)
+                $("#messages").append($('<p>').text(data.message));
+                document.getElementById("id_preloaded_pk").value = data.pk
+                document.getElementById("run-btn").classList.remove('not-visible')
+              }
+            });
+          },
+        });
+      </script>
+      <button type="submit" id="run-btn", class="btn btn-primary not-visible">Run</button>
+
+    </form>
+    <div id="progress-box" class="not-visible">Progress</div>
+
 
     {% endblock run %}
 

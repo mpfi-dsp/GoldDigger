@@ -40,20 +40,25 @@ class MyChunkedUploadCompleteView(ChunkedUploadCompleteView):
         # Do something with the uploaded file. E.g.:
         # * Store the uploaded file on another model:
         # SomeModel.objects.create(user=request.user, file=uploaded_file)
-        # self.instance = EMImage.objects.create(image=uploaded_file)
+        instance = EMImage.objects.create(image=uploaded_file)
+        self.pk = instance.id
+        # print(request.POST['upload_id'])
+        # print(request.FILES or None)
         # * Pass it as an argument to a function:
         # function_that_process_file(uploaded_file)
         # print(uploaded_file)
-        pass
+        # pass
+        # print(self.model.id)
 
     def get_response_data(self, chunked_upload, request):
         # form = EMImageForm(instance=self.instance)
         # return render(request, "GDapp/upload.html", {'form': form})
-        print(chunked_upload)
+        # print(request.POST)
         return {'message': ("You successfully uploaded '%s' (%s bytes)!" %
                             (chunked_upload.filename, chunked_upload.offset)),
                 'upload_id': chunked_upload.upload_id,
-                'filename': chunked_upload.filename}
+                'filename': chunked_upload.filename,
+                'pk': self.pk}
 
 
 def home(request):
@@ -65,9 +70,11 @@ def image_view(request):
         form = EMImageForm(request.POST, request.FILES)
         if form.is_valid():
             print('forms valid')
-            instance = form.save()
-            add_image(instance.id, instance.chunked_file_path)
-            return run_gd(request, {'pk':instance.id})
+            obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
+            obj.trained_model = form.cleaned_data['trained_model']
+            obj.particle_groups = form.cleaned_data['particle_groups']
+            obj.save()
+            return run_gd(request, {'pk':obj.id})
     else:
         form = EMImageForm()
     return render(request, 'GDapp/upload.html', {'form': form})
