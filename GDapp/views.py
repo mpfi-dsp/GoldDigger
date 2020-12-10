@@ -9,14 +9,11 @@ import csv
 from django.http import HttpResponse
 from .models import EMImage, MyChunkedUpload, add_image
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
-from django.views.generic.base import TemplateView
+from django.views.generic import ListView
 
 
 import sys
 
-
-# class ChunkedUploadDemo(TemplateView):
-#     template_name = 'upload.html'
 
 class MyChunkedUploadView(ChunkedUploadView):
 
@@ -60,6 +57,11 @@ class MyChunkedUploadCompleteView(ChunkedUploadCompleteView):
                 'filename': chunked_upload.filename,
                 'pk': self.pk}
 
+class RunListView(ListView):
+    model = EMImage
+    context_object_name = 'run_list'
+    queryset = EMImage.objects.exclude(analyzed_image='').order_by('-id')
+    template_name = 'runs.html'
 
 def home(request):
     return render(request, 'GDapp/home.html')
