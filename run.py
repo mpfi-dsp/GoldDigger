@@ -1,5 +1,5 @@
 # imports
-from GDapp.models import add_analyzed_image, add_gold_particle_coordinates, add_histogram_image, add_coordinates6nm
+from GDapp.models import add_analyzed_image, add_gold_particle_coordinates, add_histogram_image, add_coordinatesGroup1
 import os
 from skimage import io  # library for python to help access pictures
 import numpy as np  # help do math in python
@@ -369,7 +369,7 @@ def save_coordinates6nm(coordinates6nm, front_end_updater):
     if os.path.exists(coordinates6nm_path):
         os.remove(coordinates6nm_path)
     coordinates6nm.to_csv(coordinates6nm_path, index=False)
-    add_coordinates6nm(front_end_updater.pk, coordinates6nm_path)
+    add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path)
 
 
 def save_all_results(coordinates, coordinates6nm, front_end_updater):
@@ -394,7 +394,7 @@ def save_all_results(coordinates, coordinates6nm, front_end_updater):
         settings.MEDIA_ROOT, coordinates6nm_path_relative)
     coordinates6nm.to_csv(coordinates6nm_path_absolute, index=None,
                           header=True)
-    add_coordinates6nm(front_end_updater.pk, coordinates6nm_path_absolute)
+    add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path_absolute)
 
     save_coordinates6nm(coordinates6nm, front_end_updater)
     save_preview_figure(coordinates6nm, front_end_updater)
