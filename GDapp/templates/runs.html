@@ -20,13 +20,11 @@
             <tr>
                 <th scope="row">{{ run.id }}</th>
                 <td>
-                    <a href="{{ run.get_absolute_url }}">{{ run.created_at }}</a><br>
+                    {{ run.created_at }}<br>
                     {{ run.trained_model}} <br>
                     <a href="{{ run.gold_particle_coordinates.url }}">Download Coordinates</a><br>
                     <a href="{{ run.gold_particle_coordinates6nm.url }}">6nm Coordinates</a>
                 </td>
-
-
                 <td><img src="/media/{{ run.analyzed_image }}" width="150"></td>
                 <td>
                     {% if run.mask %}<img src="/media/{{ run.mask }}" width="150">{% endif %}</td>

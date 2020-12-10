@@ -11,6 +11,7 @@ TRAINED_MODEL_CHOICES = [
 ]
 
 MyChunkedUpload = ChunkedUpload
+MyChunkedMaskUpload = ChunkedUpload
 
 class EMImage(models.Model):
     image = models.FileField(upload_to="Input/", blank=True, default='')
