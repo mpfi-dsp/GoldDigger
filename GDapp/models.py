@@ -14,7 +14,7 @@ class EMImage(models.Model):
     image = models.FileField(upload_to="Input/", blank=True, default='')
     mask = models.FileField(upload_to="Mask/", blank=True)
     threshold_string = models.CharField(max_length=200, blank=True)
-    
+
     particle_groups = models.IntegerField(
         blank=False, default=1, validators=[MinValueValidator(1)])
     trained_model = models.CharField(max_length=100,
@@ -29,8 +29,13 @@ class EMImage(models.Model):
         upload_to="analyzed/histograms", null=True)
 
     #eleanor added coordinates6nm
-    coordinates6nm = models.FileField(
-            upload_to="analyzed/coordinates6nm", null=True)
+    coordinatesGroup1 = models.FileField(
+            upload_to="analyzed/coordinatesGroup1", null=True)
+
+    chunked_image_id = models.CharField(max_length=500, blank=True, default="")
+    chunked_mask_id = models.CharField(max_length=500, blank=True, default="")
+    chunked_image_linked = models.ForeignKey(MyChunkedUpload, null=True, on_delete=models.CASCADE)
+    preloaded_pk = models.CharField(max_length=10, blank=True, default="")
 
 def add_histogram_image(pk, url):
     gd_data = EMImage.objects.get(pk=pk)
