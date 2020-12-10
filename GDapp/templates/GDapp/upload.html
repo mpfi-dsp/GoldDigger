@@ -25,17 +25,23 @@
       {{form.as_p}}
       <!-- <input name="document" type='file'> -->
 
+      <div class="custom-file">
+        <input id="chunked_upload" type="file" name="the_file" class='form-control-file'>
+        <label id="image-file-label" class="custom-file-label" for="chunked_upload">Select Image File</label>
+      </div>
 
-      <input id="chunked_upload" type="file" name="the_file">
+      <div class="custom-file">
+        <input id="chunked_mask_upload" type="file" name="the_mask" class='form-control-file'>
+        <label id="mask-file-label" class="custom-file-label" for="chunked_mask_upload">Select Mask File</label>
+      </div>
 
-      <p id="progress"></p>
-      <div id="messages"></div>
+
 
       <script type="text/javascript">
         var md5 = "",
           csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
           form_data = [{ "name": "csrfmiddlewaretoken", "value": csrf }]
-          pk = 0;
+        pk = 0;
         function calculate_md5(file, chunk_size) {
           var slice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
             chunks = chunks = Math.ceil(file.size / chunk_size),
@@ -98,6 +104,7 @@
                 $("#messages").append($('<p>').text(data.message));
                 document.getElementById("id_preloaded_pk").value = data.pk
                 document.getElementById("run-btn").classList.remove('not-visible')
+                document.getElementById("image-file-label").innerHTML = data.filename
                 pk = data.pk
                 console.log(pk)
               }
@@ -106,12 +113,11 @@
         });
       </script>
 
-      <input id="chunked_mask_upload" type="file" name="the_mask">
 
       <script type="text/javascript">
         //var md5 = "",
-          //csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
-          //form_data = [{ "name": "csrfmiddlewaretoken", "value": csrf }];
+        //csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
+        //form_data = [{ "name": "csrfmiddlewaretoken", "value": csrf }];
         $("#chunked_mask_upload").fileupload({
           url: "{% url 'api_chunked_mask_upload' %}",
           dataType: "json",
@@ -150,13 +156,16 @@
               success: function (data) {
                 //return_dict = JSON.stringify(data)
                 $("#messages").append($('<p>').text(data.message));
+                document.getElementById("mask-file-label").innerHTML = data.filename
+
               }
             });
           },
         });
       </script>
-
-      <button type="submit" id="run-btn", class="btn btn-primary not-visible">Run</button>
+      <p id="progress"></p>
+      <div id="messages"></div>
+      <button type="submit" id="run-btn" , class="btn btn-primary not-visible">Run</button>
 
     </form>
     <div id="progress-box" class="not-visible">Progress</div>
