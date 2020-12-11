@@ -1,5 +1,5 @@
 # imports
-from GDapp.models import add_analyzed_image, add_gold_particle_coordinates, add_histogram_image, add_coordinatesGroup1
+from GDapp.models import add_analyzed_image, add_gold_particle_coordinates, add_histogram_image#, add_coordinatesGroup1
 import os
 from skimage import io  # library for python to help access pictures
 import numpy as np  # help do math in python
@@ -364,15 +364,16 @@ def save_histogram(coordinates, front_end_updater):
 
 
 # eleanor added for coordinates6nm
-def save_coordinates6nm(coordinates6nm, front_end_updater):
-    coordinates6nm_path = 'media/Output_Final/coordinatesGroup1.csv'
-    if os.path.exists(coordinates6nm_path):
-        os.remove(coordinates6nm_path)
-    coordinates6nm.to_csv(coordinates6nm_path, index=False)
-    add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path)
+def save_coordinates(coordinates, name, front_end_updater):
+    coordinates_path = 'media/Output_Final/' + name + '.csv'
+
+    if os.path.exists(coordinates_path):
+        os.remove(coordinates_path)
+    coordinates.to_csv(coordinates_path, index=False)
+    #add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path)
 
 
-def save_all_results(coordinates, coordinates6nm, front_end_updater):
+def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, front_end_updater):
     sub_path = 'results'
     results_path = os.path.join(settings.MEDIA_ROOT, sub_path)
     if not os.path.isdir(results_path):
@@ -388,19 +389,21 @@ def save_all_results(coordinates, coordinates6nm, front_end_updater):
         front_end_updater.pk, coordinates_path_absolute)
 
     # Eleanor added for 6nm
-    coordinates6nm_path_relative = os.path.join(
-        sub_path, 'coordinates6nm' + timestr + '.csv')
-    coordinates6nm_path_absolute = os.path.join(
-        settings.MEDIA_ROOT, coordinates6nm_path_relative)
-    coordinates6nm.to_csv(coordinates6nm_path_absolute, index=None,
-                          header=True)
-    add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path_absolute)
+    #coordinates6nm_path_relative = os.path.join(
+    #    sub_path, 'coordinates6nm' + timestr + '.csv')
+    #coordinates6nm_path_absolute = os.path.join(
+    #    settings.MEDIA_ROOT, coordinates6nm_path_relative)
+    #coordinates6nm.to_csv(coordinates6nm_path_absolute, index=None,
+    #                      header=True)
+    #add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path_absolute)
 
-    save_coordinates6nm(coordinates6nm, front_end_updater)
-    save_preview_figure(coordinates6nm, front_end_updater)
+    save_coordinates(coordinates1, 'coordinatesGroup1', front_end_updater)
+    save_coordinates(coordinates2, 'coordinatesGroup2', front_end_updater)
+    save_coordinates(coordinates3, 'coordinatesGroup3', front_end_updater)
+    save_preview_figure(coordinates, front_end_updater)
     save_histogram(coordinates, front_end_updater)
 
-def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string='2, 1000', mask=None, front_end_updater=None):
+def run_gold_digger(model, input_image_list, particle_group_count, mask=None, thresholds_list_string='2, 1000', front_end_updater=None):
     print(f'Running with {model}')
     front_end_updater.update(1, "starting")
     artifact = get_artifact_status(model)
@@ -437,7 +440,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     results1, results2, results3 = sort_from_thresholds(coords_in_mask,
                                                         particle_group_count, thresholds_list_string)
 
-    save_all_results(coords_in_mask, results1, front_end_updater)
+    save_all_results(coords_in_mask, results1, results2, results3, front_end_updater)
 
     clear_out_input_dirs()
     print("SUCCESS!!")
