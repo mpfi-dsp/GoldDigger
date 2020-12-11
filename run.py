@@ -290,8 +290,15 @@ def get_contour_centers(cnts, img_mask):
     return all_coordinates, coords_in_mask
 
 def sort_from_thresholds(coords_in_mask, particle_group_count, thresholds_list_string):
+    print(thresholds_list_string)
+    thresholds_list=[]
+    print(thresholds_list_string.split(","))
 
-    thresholds_list = [int(s) for s in thresholds_list_string.split(',')]
+    for x in thresholds_list_string.split(","):
+        thresholds_list.append(int(x))
+
+    print("thresholds_list:")
+    print(thresholds_list)
 
     results1 = pd.DataFrame(columns=['X', 'Y'])
     results2 = pd.DataFrame(columns=['X', 'Y'])
@@ -403,7 +410,7 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, fron
     save_preview_figure(coordinates, front_end_updater)
     save_histogram(coordinates, front_end_updater)
 
-def run_gold_digger(model, input_image_list, particle_group_count, mask=None, thresholds_list_string='2, 1000', front_end_updater=None):
+def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string, mask=None, front_end_updater=None):
     print(f'Running with {model}')
     front_end_updater.update(1, "starting")
     artifact = get_artifact_status(model)
@@ -435,8 +442,9 @@ def run_gold_digger(model, input_image_list, particle_group_count, mask=None, th
     cnts = count_green_dots()
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
     all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
-
-
+    print(thresholds_list_string)
+    print(thresholds_list_string.split(","))
+    #thresholds_list_string = "2, 10, 15, 40"
     results1, results2, results3 = sort_from_thresholds(coords_in_mask,
                                                         particle_group_count, thresholds_list_string)
 

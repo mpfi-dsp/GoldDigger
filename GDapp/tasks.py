@@ -24,6 +24,6 @@ def run_gold_digger_task(self, pk):
     front_end_updater = FrontEndUpdater(pk)
     # try:
     front_end_updater.update(0, "running gold digger")
-    run_gold_digger(obj.trained_model, obj.image.path, obj.particle_groups, mask, front_end_updater = front_end_updater)
+    run_gold_digger(obj.trained_model, obj.image.path, obj.particle_groups, thresholds_list_string = obj.threshold_string, mask = mask, front_end_updater = front_end_updater)
     # except Exception as e:
         # front_end_updater.error_message(str(e))
