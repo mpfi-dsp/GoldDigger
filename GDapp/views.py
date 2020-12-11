@@ -73,6 +73,7 @@ def image_view(request):
             obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
             obj.trained_model = form.cleaned_data['trained_model']
             obj.particle_groups = form.cleaned_data['particle_groups']
+            obj.threshold_string = form.cleaned_data['threshold_string']
             obj.save()
             return run_gd(request, {'pk':obj.id})
     else:
