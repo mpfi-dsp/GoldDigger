@@ -412,6 +412,11 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, fron
 
 def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string, mask=None, front_end_updater=None):
     print(f'Running with {model}')
+    if thresholds_list_string == '':
+        print('NO THRESHOLDS')
+        return
+
+
     front_end_updater.update(1, "starting")
     artifact = get_artifact_status(model)
     clear_out_old_files(model)
