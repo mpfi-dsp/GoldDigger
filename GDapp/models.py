@@ -11,6 +11,7 @@ TRAINED_MODEL_CHOICES = [
 ]
 
 MyChunkedUpload = ChunkedUpload
+MyChunkedMaskUpload = ChunkedUpload
 
 class EMImage(models.Model):
     image = models.FileField(upload_to="Input/", blank=True, default='')
@@ -38,6 +39,7 @@ class EMImage(models.Model):
     chunked_mask_id = models.CharField(max_length=500, blank=True, default="")
     chunked_image_linked = models.ForeignKey(MyChunkedUpload, null=True, on_delete=models.CASCADE)
     preloaded_pk = models.CharField(max_length=10, blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
 
 def add_image(pk, url):
     gd_data = EMImage.objects.get(pk=pk)

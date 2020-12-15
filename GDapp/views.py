@@ -7,16 +7,13 @@ from django.core.files.storage import FileSystemStorage
 from django.views.generic.list import ListView
 import csv
 from django.http import HttpResponse
-from .models import EMImage, MyChunkedUpload, add_image
+from .models import EMImage, MyChunkedUpload, MyChunkedMaskUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
-from django.views.generic.base import TemplateView
+from django.views.generic import ListView
 
 
 import sys
 
-
-# class ChunkedUploadDemo(TemplateView):
-#     template_name = 'upload.html'
 
 class MyChunkedUploadView(ChunkedUploadView):
 
@@ -42,13 +39,10 @@ class MyChunkedUploadCompleteView(ChunkedUploadCompleteView):
         # SomeModel.objects.create(user=request.user, file=uploaded_file)
         instance = EMImage.objects.create(image=uploaded_file)
         self.pk = instance.id
-        # print(request.POST['upload_id'])
-        # print(request.FILES or None)
+        instance.save()
         # * Pass it as an argument to a function:
         # function_that_process_file(uploaded_file)
-        # print(uploaded_file)
-        # pass
-        # print(self.model.id)
+        # print(request.POST)
 
     def get_response_data(self, chunked_upload, request):
         # form = EMImageForm(instance=self.instance)
@@ -60,6 +54,42 @@ class MyChunkedUploadCompleteView(ChunkedUploadCompleteView):
                 'filename': chunked_upload.filename,
                 'pk': self.pk}
 
+class MyChunkedMaskUploadView(ChunkedUploadView):
+
+    model = MyChunkedMaskUpload
+    field_name = 'the_mask'
+
+    def check_permissions(self, request):
+        # Allow non authenticated users to make uploads
+        pass
+
+
+class MyChunkedMaskUploadCompleteView(ChunkedUploadCompleteView):
+
+    model = MyChunkedMaskUpload
+
+    def check_permissions(self, request):
+        # Allow non authenticated users to make uploads
+        pass
+
+    def on_completion(self, uploaded_file, request):
+        obj = EMImage.objects.get(pk=request.POST['pk'])
+        obj.mask = uploaded_file
+        obj.save()
+
+        print(request.POST)
+
+    def get_response_data(self, chunked_upload, request):
+        return {'message': ("You successfully uploaded '%s' (%s bytes)!" %
+                            (chunked_upload.filename, chunked_upload.offset)),
+                'upload_id': chunked_upload.upload_id,
+                'filename': chunked_upload.filename}
+
+class RunListView(ListView):
+    model = EMImage
+    context_object_name = 'run_list'
+    queryset = EMImage.objects.exclude(analyzed_image='').order_by('-id')
+    template_name = 'runs.html'
 
 def home(request):
     return render(request, 'GDapp/home.html')

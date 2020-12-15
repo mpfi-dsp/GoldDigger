@@ -16,7 +16,7 @@ class FrontEndUpdater:
 
     def update(self, counter, message):
         self.post_message(message)
-        self.update_progress(counter/20 * 100, 0)
+        self.update_progress(counter/10 * 100, 0)
 
     def update_progress(self, progress_percentage, progress_bar_index='0'):
         self.__send_progress(progress_percentage, progress_bar_index, self.latest_message)
