@@ -463,7 +463,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     front_end_updater.update(8, "Saving files")
 
     output_file = shutil.make_archive('media/GD_Output', 'zip', 'media/Output_Final')
-    add_output_file(front_end_updater.pk, output_file)
+    add_output_file(front_end_updater.pk, 'media/GD_Output.zip')
 
     print('CREATED ZIP FILE')
     front_end_updater.update(9, "All done")
