@@ -1,5 +1,5 @@
 # imports
-from GDapp.models import add_analyzed_image, add_gold_particle_coordinates, add_histogram_image#, add_coordinatesGroup1
+from GDapp.models import add_analyzed_image, add_gold_particle_coordinates, add_histogram_image, add_output_file
 import os
 from skimage import io  # library for python to help access pictures
 import numpy as np  # help do math in python
@@ -458,7 +458,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     clear_out_input_dirs()
     print("SUCCESS!!")
     front_end_updater.update(8, "Saving files")
-    shutil.make_archive('media/GD_Output', 'zip', 'media/Output_Final')
+    output_file = shutil.make_archive('media/GD_Output', 'zip', 'media/Output_Final')
     print('CREATED ZIP FILE')
     front_end_updater.update(9, "All done")
     front_end_updater.analysis_done()
