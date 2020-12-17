@@ -464,7 +464,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
 
     output_file = shutil.make_archive('media/GD_Output', 'zip', 'media/Output_Final')
 
-    output_path = os.path.join(settings.MEDIA_ROOT, 'GD_Output.zip')
+    #output_path = os.path.join(settings.MEDIA_ROOT, 'GD_Output.zip')
     add_output_file(front_end_updater.pk, 'media/GD_Output.zip')
 
     print('CREATED ZIP FILE')
