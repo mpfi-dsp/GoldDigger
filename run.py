@@ -410,6 +410,9 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, fron
     save_preview_figure(coordinates, front_end_updater)
     save_histogram(coordinates, front_end_updater)
 
+
+
+
 def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string, mask=None, front_end_updater=None):
     print(f'Running with {model}')
     if thresholds_list_string == '':
@@ -458,7 +461,15 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     clear_out_input_dirs()
     print("SUCCESS!!")
     front_end_updater.update(8, "Saving files")
-    output_file = shutil.make_archive('media/GD_Output', 'zip', 'media/Output_Final')
+
+    timestr = time.strftime("%Y%m%d%H%M%S")
+
+    output_file = shutil.make_archive('media/GD_Output_'+'timestr', 'zip', 'media/Output_Final')
+    add_output_file(front_end_updater.pk, output_file)
+
+
+
+
     print('CREATED ZIP FILE')
     front_end_updater.update(9, "All done")
     front_end_updater.analysis_done()
