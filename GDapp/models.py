@@ -31,6 +31,9 @@ class EMImage(models.Model):
     histogram_image = models.ImageField(
         upload_to="analyzed/histograms", null=True)
 
+
+    output_file = models.FileField(
+        upload_to="analyzed/output", null=True)
     #eleanor added coordinates
     #coordinatesGroup1 = models.FileField(
     #        upload_to="analyzed/coordinatesGroup1", null=True)
@@ -66,6 +69,14 @@ def add_gold_particle_coordinates(pk, url):
     gd_data.gold_particle_coordinates.save(f'coordinates_{pk}_.csv', temp_file)
 
 
+def add_output_file(pk, url):
+    gd_data = EMImage.objects.get(pk=pk)
+    temp_file = File(open(url, "rb"))
+    _, ext = os.path.splitext(url)
+    gd_data.output_file.save(f'output_{pk}{ext}', temp_file)
+
+
+
 def get_histogram_image_url(pk):
     gd_data = EMImage.objects.get(pk=pk)
     return gd_data.histogram_image.url
@@ -79,6 +90,11 @@ def get_analyzed_image_url(pk):
 def get_gold_particle_coordinates_url(pk):
     gd_data = EMImage.objects.get(pk=pk)
     return gd_data.gold_particle_coordinates.url
+
+
+def get_output_file_url(pk):
+    gd_data = EMImage.objects.get(pk=pk)
+    return gd_data.output_file.url
 
 #eleanor added
 #def add_coordinatesGroup1(pk, url):
