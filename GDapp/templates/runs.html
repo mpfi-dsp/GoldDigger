@@ -24,7 +24,7 @@
                     {{ run.trained_model}} <br>
                     <a href="{{ run.gold_particle_coordinates.url }}">Download Coordinates</a><br>
                     <!--<a href="{{ run.gold_particle_coordinates6nm.url }}">6nm Coordinates</a>-->
-                    {% if output_file %}
+                    {% if run.output_file %}
                       <a href="{{ run.output_file.url }}">Download Output zip file</a><br>
                     {% endif %}
                 </td>
