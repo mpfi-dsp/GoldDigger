@@ -34,9 +34,6 @@ class EMImage(models.Model):
 
     output_file = models.FileField(
         upload_to="analyzed/output", null=True)
-    #eleanor added coordinates
-    #coordinatesGroup1 = models.FileField(
-    #        upload_to="analyzed/coordinatesGroup1", null=True)
 
     chunked_image_id = models.CharField(max_length=500, blank=True, default="")
     chunked_mask_id = models.CharField(max_length=500, blank=True, default="")
@@ -95,13 +92,3 @@ def get_gold_particle_coordinates_url(pk):
 def get_output_file_url(pk):
     gd_data = EMImage.objects.get(pk=pk)
     return gd_data.output_file.url
-
-#eleanor added
-#def add_coordinatesGroup1(pk, url):
-#    gd_data = EMImage.objects.get(pk=pk)
-#    temp_file = File(open(url, "rb"))
-#    gd_data.coordinatesGroup1.save(f'coordinatesGroup1_{pk}_.csv', temp_file)
-
-#def get_coordinatesGroup1_url(pk):
-#    gd_data = EMImage.objects.get(pk=pk)
-#    return gd_data.coordinatesGroup1.url
