@@ -13,6 +13,41 @@ from django.views.generic import ListView
 
 
 import sys
+import logging
+
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggets': False,
+    'formatters': {
+        'console': {
+            'format': '%(name) -12s %(levelname) -8s %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s %(name) -12s %(levelname) -8s %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '/tmp/debug.log'
+        }
+    },
+    'loggers': {
+        '':{
+            'level': 'DEBUG',
+            'handlers': ['console', 'file']
+        }
+    }
+
+})
+
+logger = logging.getLogger(__name__)
 
 
 class MyChunkedUploadView(ChunkedUploadView):
@@ -92,6 +127,7 @@ class RunListView(ListView):
     template_name = 'runs.html'
 
 def home(request):
+    logger.info("homepage accessed")
     return render(request, 'GDapp/home.html')
 
 
@@ -105,9 +141,11 @@ def image_view(request):
             obj.particle_groups = form.cleaned_data['particle_groups']
             obj.threshold_string = form.cleaned_data['threshold_string']
             obj.save()
+            logger.info("form valid, object saved")
             return run_gd(request, {'pk':obj.id})
     else:
         form = EMImageForm()
+        logger.error("form not valid")
     return render(request, 'GDapp/upload.html', {'form': form})
 
 
@@ -115,6 +153,7 @@ def run_gd(request, inputs):
     pk = inputs['pk']
     gold_digger = GdappConfig.gold_particle_detector
     gold_digger(pk)
+    logger.info("inside run_gd function")
     return render(request, 'GDapp/run_gd.html', {'pk': pk})
 
 
