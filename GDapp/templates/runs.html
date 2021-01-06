@@ -22,7 +22,10 @@
                 <td>
                     {{ run.created_at }}<br>
                     {{ run.trained_model}} <br>
-                    <a href="{{ run.gold_particle_coordinates.url }}">Download Coordinates</a><br>
+                    {% if run.gold_particle_coordinates %}
+                      <a href="{{ run.gold_particle_coordinates.url }}">Download Coordinates</a><br>
+                    {% endif %}
+
                     <!--<a href="{{ run.gold_particle_coordinates6nm.url }}">6nm Coordinates</a>-->
                     {% if run.output_file %}
                       <a href="{{ run.output_file.url }}">Download Output zip file</a><br>
