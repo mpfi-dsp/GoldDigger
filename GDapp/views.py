@@ -15,7 +15,25 @@ from django.views.generic import ListView
 import sys
 import logging
 
-#logging.config.dictConfig()
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+)
 
 logger = logging.getLogger(__name__)
 
