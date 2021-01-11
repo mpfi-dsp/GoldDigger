@@ -18,22 +18,33 @@ import logging
 logging.config.dictConfig({
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(name)-12s %(levelname)-8s %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        }
+    },
     'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'debug.log',
-        },
+            'formatter': 'file',
+            'filename': '/tmp/debug.log'
+        }
     },
     'loggers': {
-        'django': {
-            'handlers': ['file'],
+        '': {
             'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
-)
+            'handlers': ['console', 'file']
+        }
+    }
+})
 
 logger = logging.getLogger(__name__)
 
@@ -133,7 +144,7 @@ def image_view(request):
             return run_gd(request, {'pk':obj.id})
     else:
         form = EMImageForm()
-        logger.error("form not valid")
+        logger.debug("form not valid")
     return render(request, 'GDapp/upload.html', {'form': form})
 
 
