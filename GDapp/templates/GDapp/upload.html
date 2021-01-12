@@ -33,7 +33,7 @@
       <div class="custom-file">
 
         <input id="chunked_mask_upload" type="file" name="the_mask" class='form-control-file not-visible'>
-        <label id="mask-file-label" class="custom-file-label" for="chunked_mask_upload">Select Mask File</label>
+        <label id="mask-file-label" class="custom-file-label not-visible" for="chunked_mask_upload">Select Mask File</label>
       </div>
 
 
@@ -106,6 +106,7 @@
                 document.getElementById("id_preloaded_pk").value = data.pk
                 document.getElementById("run-btn").classList.remove('not-visible')
                 document.getElementById("chunked_mask_upload").classList.remove('not-visible')
+                document.getElementById("mask-file-label").classList.remove('not-visible')
                 document.getElementById("image-file-label").innerHTML = data.filename
                 pk = data.pk
                 console.log(pk)
