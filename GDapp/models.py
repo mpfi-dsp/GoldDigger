@@ -42,8 +42,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 TRAINED_MODEL_CHOICES = [
-    ('43kGoldDigger', '43kGoldDigger'),
-    ('87kGoldDigger', '87kGoldDigger')
+    ('43kGoldDigger', 'GoldDigger for small particles in 43k images'),
+    ('87kGoldDigger', 'General GoldDigger')
 ]
 
 MyChunkedUpload = ChunkedUpload
