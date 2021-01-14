@@ -111,10 +111,17 @@
                 //return_dict = JSON.stringify(data)
                 $("#messages").append($('<p>').text(data.message));
                 document.getElementById("id_preloaded_pk").value = data.pk
-                document.getElementById("run-btn").classList.remove('not-visible')
-                document.getElementById("chunked_mask_upload").classList.remove('not-visible')
-                document.getElementById("mask-file-label").classList.remove('not-visible')
-                document.getElementById("mask-title").classList.remove('not-visible')
+
+                var checkBox = document.getElementById("include-mask");
+                if (checkBox.checked == true){
+                  document.getElementById("chunked_mask_upload").classList.remove('not-visible')
+                  document.getElementById("mask-file-label").classList.remove('not-visible')
+                  // document.getElementById("mask-title").classList.remove('not-visible')
+                } else {
+                  document.getElementById("run-btn").classList.remove('not-visible')
+                }
+
+
                 document.getElementById("image-file-label").innerHTML = data.filename
                 pk = data.pk
                 console.log(pk)
@@ -167,6 +174,8 @@
               success: function (data) {
                 //return_dict = JSON.stringify(data)
                 $("#messages").append($('<p>').text(data.message));
+
+                document.getElementById("run-btn").classList.remove('not-visible')  
                 document.getElementById("mask-file-label").innerHTML = data.filename
 
               }
