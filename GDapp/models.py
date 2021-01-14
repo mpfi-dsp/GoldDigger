@@ -4,10 +4,46 @@ from django import forms
 from django.core.validators import MinValueValidator
 from django.core.files import File
 from chunked_upload.models import ChunkedUpload
+import logging
+
+
+# logging.config.dictConfig({
+#     'version': 1,
+#     'disable_existing_loggets': False,
+#     'formatters': {
+#         'console': {
+#             'format': '%(name) -12s %(levelname) -8s %(message)s'
+#         },
+#         'file': {
+#             'format': '%(asctime)s %(name) -12s %(levelname) -8s %(message)s'
+#         }
+#     },
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'console'
+#         },
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'formatter': 'file',
+#             'filename': '/tmp/debug.log'
+#         }
+#     },
+#     'loggers': {
+#         '':{
+#             'level': 'DEBUG',
+#             'handlers': ['console', 'file']
+#         }
+#     }
+#
+# })
+
+logger = logging.getLogger(__name__)
 
 TRAINED_MODEL_CHOICES = [
-    ('43kGoldDigger', '43kGoldDigger'),
-    ('87kGoldDigger', '87kGoldDigger')
+    ('43kGoldDigger', 'GoldDigger for small particles in 43k images'),
+    ('87kGoldDigger', 'General GoldDigger')
 ]
 
 MyChunkedUpload = ChunkedUpload
@@ -46,24 +82,29 @@ def add_image(pk, url):
     temp_image = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
     gd_data.image.save(f'image{pk}{ext}', temp_image)
+    logger.debug("image saved: "+ f'image{pk}{ext}')
+
 
 def add_histogram_image(pk, url):
     gd_data = EMImage.objects.get(pk=pk)
     temp_image = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
     gd_data.histogram_image.save(f'histogram_{pk}{ext}', temp_image)
+    logger.debug("histogram saved: "+ f'histogram_{pk}{ext}' )
 
 def add_analyzed_image(pk, url):
     gd_data = EMImage.objects.get(pk=pk)
     temp_image = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
     gd_data.analyzed_image.save(f'image_{pk}{ext}', temp_image)
+    logger.debug("analyzed image saved: "+ f'image_{pk}{ext}')
 
 
 def add_gold_particle_coordinates(pk, url):
     gd_data = EMImage.objects.get(pk=pk)
     temp_file = File(open(url, "rb"))
     gd_data.gold_particle_coordinates.save(f'coordinates_{pk}_.csv', temp_file)
+    logger.debug("gold particle coordinates saved: "+ f'coordinates_{pk}_.csv')
 
 
 def add_output_file(pk, url):
@@ -71,6 +112,7 @@ def add_output_file(pk, url):
     temp_file = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
     gd_data.output_file.save(f'output_{pk}{ext}', temp_file)
+    logger.debug("output file saved: "+ f'output_{pk}{ext}')
 
 
 
