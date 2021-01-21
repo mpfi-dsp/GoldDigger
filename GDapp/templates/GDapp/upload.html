@@ -24,9 +24,10 @@
       {{form.as_p}}
 
       <!-- Checkbox for if mask should be included -->
+      <!--
       <label id="include-mask">Check box if there is a mask to upload with the profile: </label>
       <input type="checkbox" id="include-mask" name="include-mask">
-      <p id="checkbox-value"></p>
+      <p id="checkbox-value"></p> -->
 
 
 
@@ -113,19 +114,21 @@
                 $("#messages").append($('<p>').text(data.message));
                 document.getElementById("id_preloaded_pk").value = data.pk
 
-                var checkBox = document.getElementById("include-mask");
+                //var checkBox = document.getElementById("include-mask");
                 // document.write(checkBox.value);
-                document.getElementById("checkbox-value").innerHTML = checkBox.checked
-                if (checkBox.checked == true){
+                //document.getElementById("checkbox-value").innerHTML = checkBox.checked
+                //if (checkBox.checked == true){
 
-                  document.getElementById("chunked_mask_upload").classList.remove('not-visible');
-                  document.getElementById("mask-file-label").classList.remove('not-visible');
+                //  document.getElementById("chunked_mask_upload").classList.remove('not-visible');
+                //  document.getElementById("mask-file-label").classList.remove('not-visible');
                   // document.getElementById("mask-title").classList.remove('not-visible')
-                } else {
-                  document.getElementById("run-btn").classList.remove('not-visible');
-                }
+                //} else {
+                //  document.getElementById("run-btn").classList.remove('not-visible');
+                //}
 
-
+                document.getElementById("chunked_mask_upload").classList.remove('not-visible');
+                document.getElementById("mask-file-label").classList.remove('not-visible');
+                document.getElementById("run-btn").classList.remove('not-visible');
                 document.getElementById("image-file-label").innerHTML = data.filename;
                 pk = data.pk;
                 console.log(pk);
