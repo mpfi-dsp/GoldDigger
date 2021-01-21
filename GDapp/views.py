@@ -50,6 +50,10 @@ logging.config.dictConfig({
             'level': 'DEBUG',
             'handlers': ['console', 'file']
         },
+        'celery': {
+            'handlers': ['celery', 'console'],
+            'level': 'DEBUG',
+        },
         'django.utils.autoreload': {
             'level': 'INFO',
         },
