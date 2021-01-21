@@ -143,20 +143,11 @@ def home(request):
 def image_view(request):
     if request.method == 'POST':
         form = EMImageForm(request.POST, request.FILES)
-        if form.is_valid() :
-            if form.cleaned_data['preloaded_pk'] == '':
+        if form.is_valid():
+            if form.cleaned_data['preloaded_pk'] == '': # local file used
                 obj = form.save()
-                obj.image.save(f'file{obj.id}.tif', File(open(obj.local_file, "rb")))
-                logger.debug(form.cleaned_data['local_file'])
-                add_image(obj.id, form.cleaned_data['local_file'])
-                logger.debug(obj.image.url)
-
-            else:
+            else: # chunked file upload
                 obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
-            logger.debug("\n\n\n\n")
-            logger.debug(obj.id)
-            logger.debug(obj.image.url)
-            logger.debug("\n\n\n\n")
             obj.trained_model = form.cleaned_data['trained_model']
             obj.particle_groups = form.cleaned_data['particle_groups']
             obj.threshold_string = form.cleaned_data['threshold_string']
