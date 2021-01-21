@@ -10,3 +10,7 @@ db.sqlite3
 *.zip
 debug.log
 /media/Mask/*
+/media/analyzed
+/media/chunked_uploads/
+/media/results
+/.vscode/
