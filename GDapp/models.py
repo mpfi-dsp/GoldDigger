@@ -19,7 +19,8 @@ MyChunkedMaskUpload = ChunkedUpload
 class EMImage(models.Model):
     image = models.FileField(upload_to="Input/", blank=True, default='')
     mask = models.FileField(upload_to="Mask/", blank=True)
-    local_file = models.FilePathField(path='/usr/src/local-images')
+    local_image = models.FilePathField(path='/usr/src/local-images', blank=True)
+    local_mask = models.FilePathField(path='/usr/src/local-images', blank=True)
     threshold_string = models.CharField(max_length=200, blank=True, default="1, 300")
 
     particle_groups = models.IntegerField(

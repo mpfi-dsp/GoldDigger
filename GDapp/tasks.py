@@ -32,8 +32,10 @@ def run_gold_digger_task(self, pk):
 
 
 def get_mask(obj):
-    if obj.mask.name == '':
+    if obj.mask.name == "" and obj.local_mask == "" :
         mask = None
+    elif obj.mask.name == "":
+        mask = obj.local_mask
     else:
         mask = obj.mask.path
     return mask
@@ -41,6 +43,6 @@ def get_mask(obj):
 
 def get_image(obj):
     if obj.image.name == "":
-        return obj.local_file
+        return obj.local_image
     else:
         return obj.image.path

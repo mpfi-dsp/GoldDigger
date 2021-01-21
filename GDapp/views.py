@@ -143,7 +143,7 @@ def home(request):
 def image_view(request):
     if request.method == 'POST':
         form = EMImageForm(request.POST, request.FILES)
-        if form.is_valid():
+        if form.is_valid() and not (form.cleaned_data["local_image"] == "" and form.cleaned_data["preloaded_pk"] == ""):
             if form.cleaned_data['preloaded_pk'] == '': # local file used
                 obj = form.save()
             else: # chunked file upload
