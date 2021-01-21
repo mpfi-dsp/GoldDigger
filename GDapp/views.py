@@ -42,7 +42,13 @@ logging.config.dictConfig({
         '': {
             'level': 'DEBUG',
             'handlers': ['console', 'file']
-        }
+        },
+        'django.utils.autoreload': {
+            'level': 'INFO',
+        },
+        'daphne.http_protocol': {
+            'level': 'INFO',
+        },
     }
 })
 
