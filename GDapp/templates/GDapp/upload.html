@@ -26,6 +26,7 @@
       <!-- Checkbox for if mask should be included -->
       <label id="include-mask">Check box if there is a mask to upload with the profile: </label>
       <input type="checkbox" id="include-mask" name="include-mask">
+      <p id="checkbox-value"></p?
 
 
 
@@ -114,7 +115,7 @@
 
                 var checkBox = document.getElementById("include-mask");
                 // document.write(checkBox.value);
-
+                document.getElementById("checkbox-value").innerHTML = checkBox.checked
                 if (checkBox.checked == true){
 
                   document.getElementById("chunked_mask_upload").classList.remove('not-visible');
