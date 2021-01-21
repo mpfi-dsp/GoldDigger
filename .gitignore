@@ -1,5 +1,5 @@
 .idea/
-__pycache__*
+*__pycache__*
 *.pyc
 /env
 /media/Input/
@@ -10,7 +10,17 @@ db.sqlite3
 *.zip
 debug.log
 /media/Mask/*
-/media/analyzed
-/media/chunked_uploads/
-/media/results
+.fuse_hidden*
+*/results/
+*/analyzed/
+/media2
+/media2/*
+/media2/Input/
+/media2/Mask/
+/media2/Input
+/media2/Mask
+/media2/Input/*
+/media2/Mask/*
+*.part
+/media/chunked_uploads
 /.vscode/

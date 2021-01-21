@@ -90,3 +90,8 @@ docker rm gold-digger-web
     - clean it up, make it into a class
 - make blue mask
 - make it so the program doesn't fail when there's a file in the media folder
+- preview image
+- preview blue mask 
+- make sure image and mask are the same size
+- show preview image of result
+- convert run.py into an object oriented file

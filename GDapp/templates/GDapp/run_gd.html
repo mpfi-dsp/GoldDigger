@@ -1,28 +1,88 @@
 {% extends 'GDapp/upload.html' %}
 {% load static %}
 {% block run %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
 <div class="media">
   <img class="mr-3" src="{% static 'zoolander.gif' %}">
   <div class="media-body">
-    <div class='progress-wrapper'>
-      <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+    <a href="" class="btn btn-primary btn-md disabled not-visible" id="results-button">Download Results</a>
+    <p id="progress-text-0">Progress (Primary)</p>
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" 
+        role="progressbar" id="progress-bar-0"
+        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+        Total Progress
+      </div>
     </div>
-    <div id="progress-bar-message">Waiting for progress to start...</div>
-    <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
-    <script>
-      // vanilla JS version
-      document.addEventListener("DOMContentLoaded", function () {
-        var progressUrl = "{% url 'celery_progress:task_status' task_id %}";
-        CeleryProgressBar.initProgressBar(progressUrl);
-      });
-    </script>
-    <a href="../../../media/GD_Output.zip" download>
-      <button type="button"> Download</button>
-    </a>
-    <br><br>
-    <a href="{% url 'image_upload' %}" class="btn btn-primary my-2">Upload another Image to GoldDigger</a>
+    <br>
+    <p id="progress-text-1">Progress (Secondary)</p>
+    <div class="progress">
+      <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar"
+        id="progress-bar-1" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+      </div>
+    </div>
+    <p id="message_display"></p>
+    <br>
+    <br>
+
   </div>
 </div>
+<br><br>
+<hr>
+<h4 id="results-label"></h4>
+<br><br>
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <img id="analyzed-image-preview" src="" style="max-width:512px;">
+    </div>
+    <div class="col-sm">
+      <img id="histogram-image-preview" src="" style="max-width:512px;">
+    </div>
+  </div>
+</div>
+<div id="error-log"></div>
 
 
-{% endblock %}
+<script>
+  var pk = "{{ pk }}";
+  console.log(pk)
+
+  var chatSocket = new WebSocket(
+    'ws://' + window.location.host +
+    '/ws/run_gd/' + pk + '/');
+  chatSocket.onmessage = function (e) {
+    const data = JSON.parse(e.data);
+    if (data['message'] != null) {
+      const message = data['message'];
+      console.log(message);
+      document.querySelector('#message_display').innerHTML = (document.querySelector('#message_display').innerHTML + "<br>" + message);
+    } else if (data['progress'] != null) {
+      const progress = data['progress'];
+      const ind = data['progress_bar_index']
+      const msg = data['progress_message']
+      document.querySelector(`#progress-bar-${ind}`).style.width = (progress + "%");
+      document.querySelector(`#progress-text-${ind}`).innerHTML = (msg);
+
+    } else if (data['finished'] != null) {
+      console.log("Finished")
+      document.querySelector('#progress-bar-0').innerHTML = ("Finished");
+      document.querySelector('#results-label').innerHTML = ("Results");
+      document.querySelector('#results-button').className = "btn btn-primary btn-md";
+      document.querySelector('#results-button').setAttribute("href", data["results_url"]);
+      document.querySelector('#analyzed-image-preview').setAttribute("src", data["analyzed_image_url"])
+      document.querySelector('#histogram-image-preview').setAttribute("src", data["histogram_image_url"])
+    } else if (data['error'] != null) {
+      console.log("Error!")
+      document.querySelector('#results-label').innerHTML = ("Error");
+      document.querySelector('#error-log').innerHTML = (data['error'])
+    }
+  };
+  chatSocket.onclose = function (e) {
+    console.error('Analysis socket closed unexpectedly');
+  };
+</script>
+
+
+{% endblock run %}

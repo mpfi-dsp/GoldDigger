@@ -23,8 +23,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('image_upload/', views.image_view, name='image_upload'),
-    path('run_gd/', views.run_gd),
-    path('celery_progress/', include('celery_progress.urls')),
+    path('run_gd/<int:pk>', views.run_gd, name='run_gd'),
+    path('api/chunked_upload_complete/', views.MyChunkedUploadCompleteView.as_view(), name='api_chunked_upload_complete'),
+    path('api/chunked_mask_upload_complete/', views.MyChunkedMaskUploadCompleteView.as_view(), name='api_chunked_mask_upload_complete'),
+    path('api/chunked_upload/', views.MyChunkedUploadView.as_view(), name='api_chunked_upload'),
+    path('api/chunked_mask_upload/', views.MyChunkedMaskUploadView.as_view(), name='api_chunked_mask_upload'),
+    path('runs/', views.RunListView.as_view(), name='runs')
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
