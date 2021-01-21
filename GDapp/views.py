@@ -49,6 +49,12 @@ logging.config.dictConfig({
         'daphne.http_protocol': {
             'level': 'INFO',
         },
+        'django.db.backends': {
+            'level': 'INFO',
+        },
+        'daphne.ws_protocol': {
+            'level': 'INFO',
+        },
     }
 })
 
