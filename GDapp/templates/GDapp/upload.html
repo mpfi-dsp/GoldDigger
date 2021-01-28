@@ -23,7 +23,7 @@
       {% csrf_token %}
       {{form.as_p}}
       <!-- <input name="document" type='file'> -->
-
+      {{local_files_form.as_p}}
       <div class="custom-file">
         <!--<p>Image file upload: </p>-->
         <input id="chunked_upload" type="file" name="the_file" class='form-control-file'>
