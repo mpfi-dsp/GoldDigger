@@ -44,7 +44,6 @@ class EMImage(models.Model):
         upload_to="analyzed/output", null=True)
 
 
-    imageName = pathlib.Path(image.name()).stem
 
     chunked_image_id = models.CharField(max_length=500, blank=True, default="")
     chunked_mask_id = models.CharField(max_length=500, blank=True, default="")
@@ -86,8 +85,10 @@ def add_output_file(pk, url):
     gd_data = EMImage.objects.get(pk=pk)
     temp_file = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
-    gd_data.output_file.save(f'Output_{gd_data.imageName}{ext}', temp_file)
-    logger.debug("output file saved: "+ f'Output_{gd_data.imageName}{ext}')
+
+    imageName = os.path.basename(gd_data.image.name())
+    gd_data.output_file.save(f'Output_{imageName}{ext}', temp_file)
+    logger.debug("output file saved: "+ f'Output_{imageName}{ext}')
 
 
 
