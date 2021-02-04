@@ -419,13 +419,14 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
         print('NO THRESHOLDS')
         return
 
+    imageName = pathlib.Path(input_image_list).stem
+    print(f'Image name: {imageName}')
 
     front_end_updater.update(1, "starting")
     artifact = get_artifact_status(model)
     clear_out_old_files(model)
     front_end_updater.update(2, "loading and cutting up image")
 
-    print("image name?: ", input_image_list)
 
 
     file_list, width, height, img_mask = load_data_make_jpeg(
@@ -470,7 +471,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     print("SUCCESS!!")
     front_end_updater.update(8, "Saving files")
 
-    output_file = shutil.make_archive('media/GD_Output', 'zip', 'media/Output_Final')
+    output_file = shutil.make_archive(f'media/Output_{imageName}', 'zip', 'media/Output_Final')
 
     #output_path = os.path.join(settings.MEDIA_ROOT, 'GD_Output.zip')
     add_output_file(front_end_updater.pk, 'media/GD_Output.zip')
