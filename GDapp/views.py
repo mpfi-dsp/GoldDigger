@@ -37,13 +37,13 @@ logging.config.dictConfig({
             'formatter': 'file',
             'filename': '/tmp/debug.log'
         },
-        'celery': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'celery.log',
-            'formatter': 'simple',
-            'maxBytes': 1024 * 1024 * 100,  # 100 mb
-        },
+        #'celery': {
+        #    'level': 'DEBUG',
+        #    'class': 'logging.handlers.RotatingFileHandler',
+        #    'filename': 'celery.log',
+        #    'formatter': 'simple',
+        #    'maxBytes': 1024 * 1024 * 100,  # 100 mb
+        #},
     },
     'loggers': {
         '': {
