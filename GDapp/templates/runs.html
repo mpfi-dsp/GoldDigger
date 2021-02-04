@@ -26,14 +26,14 @@
                       <a href="{{ run.gold_particle_coordinates.url }}">Download Coordinates</a><br>
                     {% endif %}
 
-                    
+
                     {% if run.output_file %}
                       <a href="{{ run.output_file.url }}">Download Output zip file</a><br>
                     {% endif %}
                 </td>
                 <td><img src="/media/{{ run.analyzed_image }}" width="150"></td>
                 <td>
-                    {% if run.mask %}<img src="/media/{{ run.mask }}" width="150">{% endif %}</td>
+                    {% if run.mask %}<img src="{{ run.mask.url }}" width="150">{% endif %}</td>
                 <td>{% if run.histogram_image %}<img src="{{ run.histogram_image.url }}" width="200">{% endif %}</td>
             </tr>
         </tbody>

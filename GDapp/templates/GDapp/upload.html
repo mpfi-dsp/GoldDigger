@@ -22,6 +22,15 @@
     <form method='post' enctype="multipart/form-data" action="" id="upload-form">
       {% csrf_token %}
       {{form.as_p}}
+
+      <!-- Checkbox for if mask should be included -->
+      <!--
+      <label id="include-mask">Check box if there is a mask to upload with the profile: </label>
+      <input type="checkbox" id="include-mask" name="include-mask">
+      <p id="checkbox-value"></p> -->
+
+
+
       <!-- <input name="document" type='file'> -->
 
       <div class="custom-file">
@@ -33,7 +42,7 @@
       <div class="custom-file">
         <!-- <p id="mask-title" class="not-visible">Mask file upload: </p> -->
         <input id="chunked_mask_upload" type="file" name="the_mask" class='form-control-file not-visible'>
-        <label id="mask-file-label" class="custom-file-label not-visible" for="chunked_mask_upload">Select Mask File</label>
+        <label id="mask-file-label" class="custom-file-label not-visible" for="chunked_mask_upload">Select Mask File (Optional)</label>
       </div>
 
 
@@ -104,13 +113,25 @@
                 //return_dict = JSON.stringify(data)
                 $("#messages").append($('<p>').text(data.message));
                 document.getElementById("id_preloaded_pk").value = data.pk
-                document.getElementById("run-btn").classList.remove('not-visible')
-                document.getElementById("chunked_mask_upload").classList.remove('not-visible')
-                document.getElementById("mask-file-label").classList.remove('not-visible')
-                document.getElementById("mask-title").classList.remove('not-visible')
-                document.getElementById("image-file-label").innerHTML = data.filename
-                pk = data.pk
-                console.log(pk)
+
+                //var checkBox = document.getElementById("include-mask");
+                // document.write(checkBox.value);
+                //document.getElementById("checkbox-value").innerHTML = checkBox.checked
+                //if (checkBox.checked == true){
+
+                //  document.getElementById("chunked_mask_upload").classList.remove('not-visible');
+                //  document.getElementById("mask-file-label").classList.remove('not-visible');
+                  // document.getElementById("mask-title").classList.remove('not-visible')
+                //} else {
+                //  document.getElementById("run-btn").classList.remove('not-visible');
+                //}
+
+                document.getElementById("chunked_mask_upload").classList.remove('not-visible');
+                document.getElementById("mask-file-label").classList.remove('not-visible');
+                document.getElementById("run-btn").classList.remove('not-visible');
+                document.getElementById("image-file-label").innerHTML = data.filename;
+                pk = data.pk;
+                console.log(pk);
               }
             });
           },
@@ -160,7 +181,9 @@
               success: function (data) {
                 //return_dict = JSON.stringify(data)
                 $("#messages").append($('<p>').text(data.message));
-                document.getElementById("mask-file-label").innerHTML = data.filename
+
+                document.getElementById("run-btn").classList.remove('not-visible');
+                document.getElementById("mask-file-label").innerHTML = data.filename;
 
               }
             });

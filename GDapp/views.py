@@ -36,13 +36,36 @@ logging.config.dictConfig({
             'class': 'logging.FileHandler',
             'formatter': 'file',
             'filename': '/tmp/debug.log'
-        }
+        },
+        #'celery': {
+        #    'level': 'DEBUG',
+        #    'class': 'logging.handlers.RotatingFileHandler',
+        #    'filename': 'celery.log',
+        #    'formatter': 'simple',
+        #    'maxBytes': 1024 * 1024 * 100,  # 100 mb
+        #},
     },
     'loggers': {
         '': {
             'level': 'DEBUG',
             'handlers': ['console', 'file']
-        }
+        },
+        ##'celery': {
+        ##    'handlers': ['celery', 'console'],
+        ##    'level': 'DEBUG',
+        ##},
+        'django.utils.autoreload': {
+            'level': 'INFO',
+        },
+        'daphne.http_protocol': {
+            'level': 'INFO',
+        },
+        'django.db.backends': {
+            'level': 'INFO',
+        },
+        'daphne.ws_protocol': {
+            'level': 'INFO',
+        },
     }
 })
 
