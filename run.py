@@ -459,6 +459,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     #thresholds_list_string = "2, 10, 15, 40"
 
     print("image name?: " + input_image_list)
+    print(pathlib.Path(input_image_list).stem)
 
     results1, results2, results3 = sort_from_thresholds(coords_in_mask,
                                                         particle_group_count, thresholds_list_string)
