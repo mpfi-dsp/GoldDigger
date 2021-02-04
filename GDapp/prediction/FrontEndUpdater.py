@@ -1,4 +1,4 @@
-from GDapp.models import get_analyzed_image_url, get_histogram_image_url
+from GDapp.models import get_analyzed_image_url, get_histogram_image_url, EMImage
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
