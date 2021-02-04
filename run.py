@@ -135,7 +135,7 @@ def combine_white(white, folderA, front_end_updater):
 def save_to_output_folder(file_list, model):
     for entry in file_list:
         split_name = entry.split('/')
-        print(split_name)
+        #print(split_name)
         dirA = 'media/PIX2PIX/results/{0}/test_latest/images/'.format(model)
         pathA = os.path.join(dirA, split_name[-1])
         dirB = 'media/Output_ToStitch/'
@@ -290,9 +290,9 @@ def get_contour_centers(cnts, img_mask):
     return all_coordinates, coords_in_mask
 
 def sort_from_thresholds(coords_in_mask, particle_group_count, thresholds_list_string):
-    print(thresholds_list_string)
+    #print(thresholds_list_string)
     thresholds_list=[]
-    print(thresholds_list_string.split(","))
+    #print(thresholds_list_string.split(","))
 
     for x in thresholds_list_string.split(","):
         thresholds_list.append(int(x))
@@ -424,6 +424,9 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     artifact = get_artifact_status(model)
     clear_out_old_files(model)
     front_end_updater.update(2, "loading and cutting up image")
+
+    print("image name?: "input_image_list)
+
     file_list, width, height, img_mask = load_data_make_jpeg(
         input_image_list, mask, front_end_updater)
     front_end_updater.update(4, "combining with white background")
