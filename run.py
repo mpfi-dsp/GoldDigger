@@ -425,7 +425,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     clear_out_old_files(model)
     front_end_updater.update(2, "loading and cutting up image")
 
-    print("image name?: "input_image_list)
+    print("image name?: ", input_image_list)
 
     file_list, width, height, img_mask = load_data_make_jpeg(
         input_image_list, mask, front_end_updater)
