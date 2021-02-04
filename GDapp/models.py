@@ -86,7 +86,9 @@ def add_output_file(pk, url):
     temp_file = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
 
-    imageName = os.path.basename(gd_data.image.name())
+    imageNameExt = os.path.basename(gd_data.image.url())
+
+
     gd_data.output_file.save(f'Output_{imageName}{ext}', temp_file)
     logger.debug("output file saved: "+ f'Output_{imageName}{ext}')
 
