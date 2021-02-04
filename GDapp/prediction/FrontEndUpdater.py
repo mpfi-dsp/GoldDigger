@@ -67,9 +67,9 @@ class FrontEndUpdater:
         pk_group_name = "analysis_%s" % self.pk
         # TODO: change this to get a personalized result based on pk
         gd_data = EMImage.objects.get(pk=pk)
-        imageName = os.path.basename(gd_data.image.name())
+        imageName = os.path.basename(gd_data.image.path())
 
-        results_url = f'../../../media/Output_{imageName}.zip'
+        results_url = f"../../../media/Output_{imageName}.zip"
         analyzed_image_url = get_analyzed_image_url(self.pk)
         histogram_image_url = get_histogram_image_url(self.pk)
         async_to_sync(channel_layer.group_send)(
