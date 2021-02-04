@@ -427,6 +427,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
 
     print("image name?: ", input_image_list)
 
+
     file_list, width, height, img_mask = load_data_make_jpeg(
         input_image_list, mask, front_end_updater)
     front_end_updater.update(4, "combining with white background")
@@ -453,9 +454,12 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     cnts = count_green_dots()
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
     all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
-    print(thresholds_list_string)
-    print(thresholds_list_string.split(","))
+    #print(thresholds_list_string)
+    #print(thresholds_list_string.split(","))
     #thresholds_list_string = "2, 10, 15, 40"
+
+    print("image name?: " + input_image_list)
+
     results1, results2, results3 = sort_from_thresholds(coords_in_mask,
                                                         particle_group_count, thresholds_list_string)
 
