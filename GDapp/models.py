@@ -6,39 +6,6 @@ from django.core.files import File
 from chunked_upload.models import ChunkedUpload
 import logging
 
-
-# logging.config.dictConfig({
-#     'version': 1,
-#     'disable_existing_loggets': False,
-#     'formatters': {
-#         'console': {
-#             'format': '%(name) -12s %(levelname) -8s %(message)s'
-#         },
-#         'file': {
-#             'format': '%(asctime)s %(name) -12s %(levelname) -8s %(message)s'
-#         }
-#     },
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'console'
-#         },
-#         'file': {
-#             'level': 'DEBUG',
-#             'class': 'logging.FileHandler',
-#             'formatter': 'file',
-#             'filename': '/tmp/debug.log'
-#         }
-#     },
-#     'loggers': {
-#         '':{
-#             'level': 'DEBUG',
-#             'handlers': ['console', 'file']
-#         }
-#     }
-#
-# })
-
 logger = logging.getLogger(__name__)
 
 TRAINED_MODEL_CHOICES = [
@@ -52,8 +19,14 @@ MyChunkedMaskUpload = ChunkedUpload
 class EMImage(models.Model):
     image = models.FileField(upload_to="Input/", blank=True, default='')
     mask = models.FileField(upload_to="Mask/", blank=True)
+<<<<<<< HEAD
     threshold_string = models.CharField(max_length=200, blank=True, default="1, 300",
                                         help_text="Input comma-separated values to serve as the upper and lower boundaries for the area of each particle size.")
+=======
+    local_image = models.FilePathField(path='/usr/src/local-images', blank=True)
+    local_mask = models.FilePathField(path='/usr/src/local-images', blank=True)
+    threshold_string = models.CharField(max_length=200, blank=True, default="1, 300")
+>>>>>>> local-file-selection
 
     particle_groups = models.IntegerField(
         blank=False, default=1, validators=[MinValueValidator(1)])

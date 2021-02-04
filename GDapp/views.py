@@ -2,12 +2,13 @@ from GDapp.tasks import celery_timer_task
 from GDapp.prediction.FrontEndUpdater import FrontEndUpdater
 from GDapp.apps import GdappConfig
 from django.shortcuts import render, redirect
-from .forms import EMImageForm
+from .forms import EMImageForm, LocalFilesForm
 from django.core.files.storage import FileSystemStorage
+from django.core.files import File
 from django.views.generic.list import ListView
 import csv
 from django.http import HttpResponse
-from .models import EMImage, MyChunkedUpload, MyChunkedMaskUpload
+from .models import EMImage, MyChunkedUpload, MyChunkedMaskUpload, add_image
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 from django.views.generic import ListView
 
@@ -111,6 +112,7 @@ class MyChunkedUploadCompleteView(ChunkedUploadCompleteView):
                 'filename': chunked_upload.filename,
                 'pk': self.pk}
 
+
 class MyChunkedMaskUploadView(ChunkedUploadView):
 
     model = MyChunkedMaskUpload
@@ -142,11 +144,13 @@ class MyChunkedMaskUploadCompleteView(ChunkedUploadCompleteView):
                 'upload_id': chunked_upload.upload_id,
                 'filename': chunked_upload.filename}
 
+
 class RunListView(ListView):
     model = EMImage
     context_object_name = 'run_list'
     queryset = EMImage.objects.exclude(analyzed_image='').order_by('-id')
     template_name = 'runs.html'
+
 
 def home(request):
     logger.debug("homepage accessed")
@@ -156,19 +160,25 @@ def home(request):
 def image_view(request):
     if request.method == 'POST':
         form = EMImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            print('forms valid')
-            obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
+        local_files_form = LocalFilesForm(request.POST)
+        if form.is_valid() and local_files_form.is_valid() and not (local_files_form.cleaned_data["local_image"] == "" and form.cleaned_data["preloaded_pk"] == ""):
+            if form.cleaned_data['preloaded_pk'] == '': # local file used
+                obj = form.save()
+                obj.local_image = local_files_form.cleaned_data["local_image"]
+                obj.local_mask = local_files_form.cleaned_data["local_mask"]
+            else: # chunked file upload
+                obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
             obj.trained_model = form.cleaned_data['trained_model']
             obj.particle_groups = form.cleaned_data['particle_groups']
             obj.threshold_string = form.cleaned_data['threshold_string']
             obj.save()
             logger.debug("form valid, object saved")
-            return run_gd(request, {'pk':obj.id})
+            return run_gd(request, {'pk': obj.id})
     else:
         form = EMImageForm()
+        local_files_form = LocalFilesForm()
         logger.debug("form not valid")
-    return render(request, 'GDapp/upload.html', {'form': form})
+    return render(request, 'GDapp/upload.html', {'form': form, 'local_files_form': local_files_form})
 
 
 def run_gd(request, inputs):

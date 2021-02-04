@@ -32,7 +32,7 @@
 
 
       <!-- <input name="document" type='file'> -->
-
+      {{local_files_form.as_p}}
       <div class="custom-file">
         <!--<p>Image file upload: </p>-->
         <input id="chunked_upload" type="file" name="the_file" class='form-control-file'>
@@ -44,7 +44,6 @@
         <input id="chunked_mask_upload" type="file" name="the_mask" class='form-control-file not-visible'>
         <label id="mask-file-label" class="custom-file-label not-visible" for="chunked_mask_upload">Select Mask File (Optional)</label>
       </div>
-
 
 
       <script type="text/javascript">
@@ -192,7 +191,7 @@
       </script>
       <p id="progress"></p>
       <div id="messages"></div>
-      <button type="submit" id="run-btn" , class="btn btn-primary not-visible">Run</button>
+      <button type="submit" id="run-btn" , class="btn btn-primary">Run</button>
 
     </form>
     <div id="progress-box" class="not-visible">Progress</div>
