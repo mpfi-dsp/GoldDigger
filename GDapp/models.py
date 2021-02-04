@@ -5,6 +5,7 @@ from django.core.validators import MinValueValidator
 from django.core.files import File
 from chunked_upload.models import ChunkedUpload
 import logging
+import pathlib
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +42,8 @@ class EMImage(models.Model):
 
     output_file = models.FileField(
         upload_to="analyzed/output", null=True)
+
+    imageName = pathlib.Path(image).stem
 
     chunked_image_id = models.CharField(max_length=500, blank=True, default="")
     chunked_mask_id = models.CharField(max_length=500, blank=True, default="")
@@ -82,8 +85,8 @@ def add_output_file(pk, url):
     gd_data = EMImage.objects.get(pk=pk)
     temp_file = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
-    gd_data.output_file.save(f'output_{pk}{ext}', temp_file)
-    logger.debug("output file saved: "+ f'output_{pk}{ext}')
+    gd_data.output_file.save(f'Output_{gd_data.imageName}{ext}', temp_file)
+    logger.debug("output file saved: "+ f'Output_{gd_data.imageName}{ext}')
 
 
 
