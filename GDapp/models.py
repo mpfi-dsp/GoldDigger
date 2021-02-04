@@ -43,7 +43,8 @@ class EMImage(models.Model):
     output_file = models.FileField(
         upload_to="analyzed/output", null=True)
 
-    imageName = pathlib.Path(image).stem
+    
+    imageName = pathlib.Path(image.path()).stem
 
     chunked_image_id = models.CharField(max_length=500, blank=True, default="")
     chunked_mask_id = models.CharField(max_length=500, blank=True, default="")
