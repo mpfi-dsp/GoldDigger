@@ -66,6 +66,7 @@ class FrontEndUpdater:
         print("does this work even")
         pk_group_name = "analysis_%s" % self.pk
         # TODO: change this to get a personalized result based on pk
+        gd_data = EMImage.objects.get(pk=self.pk)
         image_path = gd_data.image.path
         imageName = pathlib.Path(image_path).stem
 
