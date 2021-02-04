@@ -85,8 +85,9 @@ def add_output_file(pk, url):
     gd_data = EMImage.objects.get(pk=pk)
     temp_file = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
-
-    imageNameExt = os.path.basename(gd_data.image.path())
+    image_path = gd_data.image.path
+    imageName = pathlib.Path(image_path).stem
+    
 
 
     gd_data.output_file.save(f'Output_{imageName}{ext}', temp_file)

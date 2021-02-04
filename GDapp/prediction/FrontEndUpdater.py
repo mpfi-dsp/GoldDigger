@@ -66,8 +66,8 @@ class FrontEndUpdater:
         print("does this work even")
         pk_group_name = "analysis_%s" % self.pk
         # TODO: change this to get a personalized result based on pk
-        gd_data = EMImage.objects.get(pk=pk)
-        imageName = os.path.basename(gd_data.image.path())
+        image_path = gd_data.image.path
+        imageName = pathlib.Path(image_path).stem
 
         results_url = f"../../../media/Output_{imageName}.zip"
         analyzed_image_url = get_analyzed_image_url(self.pk)
