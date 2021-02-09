@@ -186,7 +186,7 @@ def stitch_image(folderstart, widthdiv256, heighttimeswidth, artifact):
     return picture, file_list
 
 
-def count_green_dots():
+def count_green_dots(imageName=''):
     # From Diego:
     # 1. Finds green square and then the center of that (x,y)
     # 2. Then I perform a flood fill on that (x,y) on the original image
@@ -195,7 +195,7 @@ def count_green_dots():
     # 5. I do this so inconsistencies in the green mask dont affect the area of the gold particle
     # Basically it just uses the green masks to find a seed point to start flood filling. This makes sure that the mask is the exact size of the gold particle
     img = cv2.imread('media/Output_Final/OutputStitched.png')
-    img_original = cv2.imread('media/Output_Final/CroppedVersion.png')
+    img_original = cv2.imread(f'media/Output_Final/Cropped_{imageName}.png')
     img_original = np.uint8(img_original)
 
     h, w = img_original.shape[:2]
@@ -452,7 +452,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
         folderstart, widthdiv256, heighttimeswidth, artifact)
     imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
     front_end_updater.update(7, "Identifying green dots")
-    cnts = count_green_dots()
+    cnts = count_green_dots(imageName=imageName)
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
     all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
     #print(thresholds_list_string)
