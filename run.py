@@ -68,7 +68,7 @@ def clear_out_old_files(model):
 # look in INPUT folder, crop photo and save crop to OUTPUT folder
 # Cut up in order, append white images
 
-def load_data_make_jpeg(image, mask, front_end_updater):
+def load_data_make_jpeg(image, mask, front_end_updater, imageName=''):
     file_list = pathlib.Path('media/Input', image)
     print(file_list)
     for entry in [file_list]:
@@ -95,7 +95,7 @@ def load_data_make_jpeg(image, mask, front_end_updater):
         img_new_w = view_as_blocks(img_new, img_size)
         img_new_w = np.uint8(img_new_w)
         imageio.imwrite('media/Output_Final/' +
-                        'CroppedVersion' + '.png', img_new)
+                        f'Cropped_{imageName}' + '.png', img_new)
         r = 0
         total_progress = img_new_w.shape[0] * img_new_w.shape[1]
         current_progress = 0
@@ -404,9 +404,9 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, fron
     #                      header=True)
     #add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path_absolute)
 
-    save_coordinates(coordinates1, f'coordinatesGroup1_{imageName}', front_end_updater)
-    save_coordinates(coordinates2, f'coordinatesGroup2_{imageName}', front_end_updater)
-    save_coordinates(coordinates3, f'coordinatesGroup3_{imageName}', front_end_updater)
+    save_coordinates(coordinates1, f'coordsGroup1_{imageName}', front_end_updater)
+    save_coordinates(coordinates2, f'coordsGroup2_{imageName}', front_end_updater)
+    save_coordinates(coordinates3, f'coordsGroup3_{imageName}', front_end_updater)
     save_preview_figure(coordinates, front_end_updater)
     save_histogram(coordinates, front_end_updater)
 
@@ -430,7 +430,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
 
 
     file_list, width, height, img_mask = load_data_make_jpeg(
-        input_image_list, mask, front_end_updater)
+        input_image_list, mask, front_end_updater, imageName=imageName)
     front_end_updater.update(4, "combining with white background")
     white = io.imread('media/White/white.png')
     combine_white(white, 'media/Output', front_end_updater)
