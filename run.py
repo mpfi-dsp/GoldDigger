@@ -380,7 +380,7 @@ def save_coordinates(coordinates, name, front_end_updater):
     #add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path)
 
 
-def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, front_end_updater):
+def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, front_end_updater, imageName=''):
     sub_path = 'results'
     results_path = os.path.join(settings.MEDIA_ROOT, sub_path)
     if not os.path.isdir(results_path):
@@ -404,9 +404,9 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, fron
     #                      header=True)
     #add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path_absolute)
 
-    save_coordinates(coordinates1, 'coordinatesGroup1', front_end_updater)
-    save_coordinates(coordinates2, 'coordinatesGroup2', front_end_updater)
-    save_coordinates(coordinates3, 'coordinatesGroup3', front_end_updater)
+    save_coordinates(coordinates1, f'coordinatesGroup1_{imageName}', front_end_updater)
+    save_coordinates(coordinates2, f'coordinatesGroup2_{imageName}', front_end_updater)
+    save_coordinates(coordinates3, f'coordinatesGroup3_{imageName}', front_end_updater)
     save_preview_figure(coordinates, front_end_updater)
     save_histogram(coordinates, front_end_updater)
 
@@ -465,7 +465,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     results1, results2, results3 = sort_from_thresholds(coords_in_mask,
                                                         particle_group_count, thresholds_list_string)
 
-    save_all_results(coords_in_mask, results1, results2, results3, front_end_updater)
+    save_all_results(coords_in_mask, results1, results2, results3, front_end_updater, imageName=imageName)
 
     clear_out_input_dirs()
     print("SUCCESS!!")

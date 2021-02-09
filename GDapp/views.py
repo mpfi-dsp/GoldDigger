@@ -67,6 +67,7 @@ logging.config.dictConfig({
         'daphne.ws_protocol': {
             'level': 'INFO',
         },
+                
     }
 })
 
