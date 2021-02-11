@@ -4,7 +4,7 @@ from .models import *
 
 local_file_args = dict(path='/usr/src/local-images',
                        required=False,
-                       help_text='~/Desktop/Network-Drives/ds-prog/EM-DATA/gd-for-analysis')
+                       help_text='~/Documents')
 
 
 class EMImageForm(forms.ModelForm):
