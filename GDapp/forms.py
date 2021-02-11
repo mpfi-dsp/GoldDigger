@@ -4,7 +4,8 @@ from .models import *
 
 local_file_args = dict(path='/usr/src/local-images',
                        required=False,
-                       help_text='~/Documents')
+                       help_text='~/Documents',
+                       allow_folders=True)
 
 
 class EMImageForm(forms.ModelForm):
