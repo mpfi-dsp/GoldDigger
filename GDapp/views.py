@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from .models import EMImage, MyChunkedUpload, MyChunkedMaskUpload, add_image
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 from django.views.generic import ListView
+import os
 
 
 import sys
@@ -67,7 +68,7 @@ logging.config.dictConfig({
         'daphne.ws_protocol': {
             'level': 'INFO',
         },
-                
+
     }
 })
 
@@ -164,9 +165,15 @@ def image_view(request):
         local_files_form = LocalFilesForm(request.POST)
         if form.is_valid() and local_files_form.is_valid() and not (local_files_form.cleaned_data["local_image"] == "" and form.cleaned_data["preloaded_pk"] == ""):
             if form.cleaned_data['preloaded_pk'] == '': # local file used
-                obj = form.save()
-                obj.local_image = local_files_form.cleaned_data["local_image"]
-                obj.local_mask = local_files_form.cleaned_data["local_mask"]
+                if os.path.isfile(local_files_form.cleaned_data["local_image"]):  #if single file (not directory)
+                    logger.debug("SINGLE FILE INPUT")
+                    obj = form.save()
+                    obj.local_image = local_files_form.cleaned_data["local_image"]
+                    obj.local_mask = local_files_form.cleaned_data["local_mask"]
+                elif os.path.isdir(local_files_form.cleaned_data["local_image"]):
+                    logger.debug("DIRECTORY INPUT")
+                else:
+                    logger.debug("INPUT NOT IDENTIFIED AS FILE OR DIRECTORY")
             else: # chunked file upload
                 obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
             obj.trained_model = form.cleaned_data['trained_model']
