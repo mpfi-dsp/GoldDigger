@@ -64,11 +64,14 @@ class FrontEndUpdater:
             })
 
     def __send_finished(self):
-        print("does this work even")
+        print("inside FrontEndUpdater __send_finished")
         pk_group_name = "analysis_%s" % self.pk
         # TODO: change this to get a personalized result based on pk
         gd_data = EMImage.objects.get(pk=self.pk)
-        image_path = gd_data.image.path
+        try:
+            image_path = gd_data.image.path
+        except:
+            image_path = gd_data.local_image
         imageName = pathlib.Path(image_path).stem
 
         results_url = f"../../../media/Output_{imageName}.zip"
@@ -83,3 +86,4 @@ class FrontEndUpdater:
                 'analyzed_image_url': analyzed_image_url,
                 'histogram_image_url': histogram_image_url,
             })
+        print("completed __send_finished function")
