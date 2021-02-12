@@ -85,9 +85,16 @@ def add_output_file(pk, url):
     gd_data = EMImage.objects.get(pk=pk)
     temp_file = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
-    image_path = gd_data.image.path
-    imageName = pathlib.Path(image_path).stem
-    
+    if hasattr(gd_data, 'image'):
+        image_path = gd_data.image.path
+        imageName = pathlib.Path(image_path).stem
+        logger.debug("output imageName from image field")
+    elif hasattr(gd_data, 'local_image'):
+        image_path = gd_data.local_image.path
+        imageName = pathlib.Path(image_path).stem
+        logger.debug("output imageName from local_image field")
+    else:
+        logger.debug("no image field found, unable to create output file") 
 
 
     gd_data.output_file.save(f'Output_{imageName}{ext}', temp_file)
