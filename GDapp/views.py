@@ -195,7 +195,7 @@ def image_view(request):
 
                         logger.debug(f"local_image (path): {file_path}")
 
-                        obj_list.append(EMImageForm(local_image = file_path,
+                        obj_list.append(EMImage(local_image = file_path,
                                                     trained_model = form.cleaned_data['trained_model'],
                                                     particle_groups = form.cleaned_data['particle_groups'],
                                                     threshold_string = form.cleaned_data['threshold_string']))
