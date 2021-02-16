@@ -170,15 +170,39 @@ def image_view(request):
                     obj = form.save()
                     obj.local_image = local_files_form.cleaned_data["local_image"]
                     obj.local_mask = local_files_form.cleaned_data["local_mask"]
+
+                    #moved these 3 statements inside the if statement
+                    obj.trained_model = form.cleaned_data['trained_model']
+                    obj.particle_groups = form.cleaned_data['particle_groups']
+                    obj.threshold_string = form.cleaned_data['threshold_string']
                 elif os.path.isdir(local_files_form.cleaned_data["local_image"]):
                     logger.debug("DIRECTORY INPUT")
-                    obj=form.save()
+                    #obj=form.save()
                     dir_path = local_files_form.cleaned_data["local_image"]
                     logger.debug(f"directory path: {dir_path}")
                     files = os.listdir(dir_path)
+
+                    obj_list = []
+
                     for file in files:
                         file_path = os.path.join(dir_path, file)
                         logger.debug(f"file path: {file_path}")
+                        obj = form.save()
+                        obj.local_image = file_path
+
+                        obj.trained_model = form.cleaned_data['trained_model']
+                        obj.particle_groups = form.cleaned_data['particle_groups']
+                        obj.threshold_string = form.cleaned_data['threshold_string']
+
+                        obj_list.append(obj)
+
+                    #test obj_list
+                    for obj in obj_list:
+                        logger.debug(f"local_image (path): {obj.local_image}")
+                        logger.debug(f"trained_model: {obj.trained_model}")
+                        logger.debug(f"preloaded_pk: {obj.preloaded_pk}")
+
+
 
 
 
@@ -186,9 +210,13 @@ def image_view(request):
                     logger.debug("INPUT NOT IDENTIFIED AS FILE OR DIRECTORY")
             else: # chunked file upload
                 obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
-            obj.trained_model = form.cleaned_data['trained_model']
-            obj.particle_groups = form.cleaned_data['particle_groups']
-            obj.threshold_string = form.cleaned_data['threshold_string']
+                #moved these inside the if statement
+                obj.trained_model = form.cleaned_data['trained_model']
+                obj.particle_groups = form.cleaned_data['particle_groups']
+                obj.threshold_string = form.cleaned_data['threshold_string']
+            #obj.trained_model = form.cleaned_data['trained_model']
+            #obj.particle_groups = form.cleaned_data['particle_groups']
+            #obj.threshold_string = form.cleaned_data['threshold_string']
             obj.save()
             logger.debug("form valid, object saved")
             return run_gd(request, {'pk': obj.id})
