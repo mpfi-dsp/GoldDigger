@@ -177,7 +177,8 @@ def image_view(request):
                     logger.debug(f"directory path: {dir_path}")
                     files = os.listdir(dir_path)
                     for file in files:
-                        logger.debug(f"{file}")
+                        file_path = os.path.join(dir_path, file)
+                        logger.debug(f"file path: {file_path}")
 
 
 
