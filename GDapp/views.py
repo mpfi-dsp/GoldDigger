@@ -175,9 +175,11 @@ def image_view(request):
                     obj.trained_model = form.cleaned_data['trained_model']
                     obj.particle_groups = form.cleaned_data['particle_groups']
                     obj.threshold_string = form.cleaned_data['threshold_string']
+
+
                 elif os.path.isdir(local_files_form.cleaned_data["local_image"]):
                     logger.debug("DIRECTORY INPUT")
-                    #obj=form.save()
+                    obj=form.save()
                     dir_path = local_files_form.cleaned_data["local_image"]
                     logger.debug(f"directory path: {dir_path}")
                     files = os.listdir(dir_path)
@@ -186,21 +188,33 @@ def image_view(request):
 
                     for file in files:
                         file_path = os.path.join(dir_path, file)
-                        logger.debug(f"file path: {file_path}")
-                        obj = form.save()
-                        obj.local_image = file_path
+                        #logger.debug(f"file path: {file_path}")
 
-                        obj.trained_model = form.cleaned_data['trained_model']
-                        obj.particle_groups = form.cleaned_data['particle_groups']
-                        obj.threshold_string = form.cleaned_data['threshold_string']
+                        #obj.local_image = file_path
 
-                        obj_list.append(obj)
+
+                        logger.debug(f"local_image (path): {file_path}")
+
+                        obj_list.append(EMImageForm(local_image = file_path,
+                                                    trained_model = form.cleaned_data['trained_model'],
+                                                    particle_groups = form.cleaned_data['particle_groups'],
+                                                    threshold_string = form.cleaned_data['threshold_string']))
+
+
+                        #obj_list.append(obj)
 
                     #test obj_list
                     for obj in obj_list:
                         logger.debug(f"local_image (path): {obj.local_image}")
                         logger.debug(f"trained_model: {obj.trained_model}")
-                        logger.debug(f"preloaded_pk: {obj.preloaded_pk}")
+                        try:
+                            logger.debug(f"id: {obj.id}")
+                        except:
+                            logger.debug(f"could not print obj.id")
+                        try:
+                            logger.debug(f"preloaded_pk: {obj.preloaded_pk}")
+                        except:
+                            logger.debug(f"could not print obj.preloaded_pk")
 
 
 
