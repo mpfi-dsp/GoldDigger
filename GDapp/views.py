@@ -172,6 +172,14 @@ def image_view(request):
                     obj.local_mask = local_files_form.cleaned_data["local_mask"]
                 elif os.path.isdir(local_files_form.cleaned_data["local_image"]):
                     logger.debug("DIRECTORY INPUT")
+                    dir_path = local_files_form.cleaned_data["local_image"]
+                    logger.debug(f"saved at local_image: {dir_path}")
+                    files = os.listdir(dir_path)
+                    for file in files:
+                        logger.debug("file")
+
+
+
                 else:
                     logger.debug("INPUT NOT IDENTIFIED AS FILE OR DIRECTORY")
             else: # chunked file upload
