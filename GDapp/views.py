@@ -158,6 +158,47 @@ def home(request):
     logger.debug("homepage accessed")
     return render(request, 'GDapp/home.html')
 
+def populate_em_obj(obj, form):
+    obj.trained_model = form.cleaned_data['trained_model']
+    obj.particle_groups = form.cleaned_data['particle_groups']
+    obj.threshold_string = form.cleaned_data['threshold_string']
+    return obj
+
+def create_single_local_image_obj(form, local_files_form, image_path=None):
+    obj = form.save()
+    if image_path:
+        obj.local_image = local_files_form.cleaned_data["local_image"]
+    else:
+        obj.local_image = image_path
+        obj.local_mask = local_files_form.cleaned_data["local_mask"]
+    obj = populate_em_obj(obj, form)
+    obj.save()
+    return obj
+
+    
+def load_all_images_from_dir(form, local_files_form):
+    dir_path = local_files_form.cleaned_data["local_image"]
+    logger.debug(f"directory path: {dir_path}")
+    files = os.listdir(dir_path)
+    logger.debug(files)
+    pk_list = []
+    for f in files:
+        file_path = os.path.join(dir_path, f)
+        logger.debug(f"local_image (path): {file_path}")
+        obj = create_single_local_image_obj(form, local_files_form, image_path=file_path)
+        log_obj(obj)
+        pk_list.append(obj.id)  
+    return pk_list
+
+
+def chunked_file_upload(form):
+        obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
+        #moved these inside the if statement
+        obj.trained_model = form.cleaned_data['trained_model']
+        obj.particle_groups = form.cleaned_data['particle_groups']
+        obj.threshold_string = form.cleaned_data['threshold_string']
+        obj.save()
+        return obj
 
 def image_view(request):
     if request.method == 'POST':
@@ -167,61 +208,13 @@ def image_view(request):
             if form.cleaned_data['preloaded_pk'] == '': # local file used
                 if os.path.isfile(local_files_form.cleaned_data["local_image"]):  #if single file (not directory)
                     logger.debug("SINGLE FILE INPUT")
-                    obj = form.save()
-                    obj.local_image = local_files_form.cleaned_data["local_image"]
-                    obj.local_mask = local_files_form.cleaned_data["local_mask"]
-
-                    #moved these 3 statements inside the if statement
-                    obj.trained_model = form.cleaned_data['trained_model']
-                    obj.particle_groups = form.cleaned_data['particle_groups']
-                    obj.threshold_string = form.cleaned_data['threshold_string']
-
-
+                    obj = create_single_local_image_obj(form, local_files_form)
                 elif os.path.isdir(local_files_form.cleaned_data["local_image"]):
                     logger.debug("DIRECTORY INPUT")
-                    dir_path = local_files_form.cleaned_data["local_image"]
-                    logger.debug(f"directory path: {dir_path}")
-                    files = os.listdir(dir_path)
-
-                    obj_list = []
-
-                    for file in files:
-                        file_path = os.path.join(dir_path, file)
-                        logger.debug(f"local_image (path): {file_path}")
-                        obj_list.append(EMImage(local_image = file_path,
-                                                    trained_model = form.cleaned_data['trained_model'],
-                                                    particle_groups = form.cleaned_data['particle_groups'],
-                                                    threshold_string = form.cleaned_data['threshold_string']))
-                        #Need to give each EMImage object a pk
-
-                    #test obj_list
-                    for obj in obj_list:
-                        logger.debug(f"local_image (path): {obj.local_image}")
-                        logger.debug(f"trained_model: {obj.trained_model}")
-                        logger.debug(f"particle_groups: {obj.particle_groups}")
-                        logger.debug(f"threshold_string: {obj.threshold_string}")
-                        try:
-                            logger.debug(f"id: {obj.id}") #always prints "None" ... why?
-                        except:
-                            logger.debug(f"could not print obj.id")
-
-
-                    #return should call run_gd (or function like run_gd) which should have an option added to handle a list of pk's
-                    return 
-
-
-                else:
-                    logger.debug("INPUT NOT IDENTIFIED AS FILE OR DIRECTORY")
+                    pk_list = load_all_images_from_dir(form, local_files_form)
+                    return run_gd(request, {'pk': pk_list})
             else: # chunked file upload
-                obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
-                #moved these inside the if statement
-                obj.trained_model = form.cleaned_data['trained_model']
-                obj.particle_groups = form.cleaned_data['particle_groups']
-                obj.threshold_string = form.cleaned_data['threshold_string']
-            #obj.trained_model = form.cleaned_data['trained_model']
-            #obj.particle_groups = form.cleaned_data['particle_groups']
-            #obj.threshold_string = form.cleaned_data['threshold_string']
-            obj.save()
+                obj = chunked_file_upload(form)
             logger.debug("form valid, object saved")
             return run_gd(request, {'pk': obj.id})
     else:
@@ -233,13 +226,30 @@ def image_view(request):
 
 def run_gd(request, inputs):
     pk = inputs['pk']
-    gold_digger = GdappConfig.gold_particle_detector
-    gold_digger(pk)
-    logger.debug("inside run_gd function")
-    return render(request, 'GDapp/run_gd.html', {'pk': pk})
+    gold_digger_queue = GdappConfig.gold_particle_detector
+    if type(pk) == list:
+        for pk_single in pk:
+            gold_digger_queue(pk_single)
+            logger.debug(pk_single)
+        return render(request, 'GDapp/run_gd.html', {'pk': pk_single})
+    else:
+        gold_digger_queue(pk)
+        logger.debug("inside run_gd function")
+        return render(request, 'GDapp/run_gd.html', {'pk': pk})
 
 
 # attempt to make a downloadable csv
 def export(request):
     response = HttpResponse(content_type='text/csv')
     writer = csv.writer(response)
+
+def log_obj(obj):
+        logger.debug(f"local_image (path): {obj.local_image}")
+        logger.debug(f"trained_model: {obj.trained_model}")
+        logger.debug(f"particle_groups: {obj.particle_groups}")
+        logger.debug(f"threshold_string: {obj.threshold_string}")
+        try:
+            logger.debug(f"id: {obj.id}") #always prints "None" ... why?
+        except:
+            logger.debug(f"could not print obj.id")
+            
