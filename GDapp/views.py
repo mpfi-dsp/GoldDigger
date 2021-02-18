@@ -166,6 +166,7 @@ def populate_em_obj(obj, form):
 
 def create_single_local_image_obj(form, local_files_form, image_path=None):
     obj = form.save()
+    logger.debug(f"id: {obj.id}")
     if image_path:
         obj.local_image = image_path
         #obj.local_image = local_files_form.cleaned_data["local_image"]
@@ -175,7 +176,7 @@ def create_single_local_image_obj(form, local_files_form, image_path=None):
         obj.local_mask = local_files_form.cleaned_data["local_mask"]
     obj = populate_em_obj(obj, form)
     obj.save()
-    logger.debug(f"id: {obj.id}")
+    #logger.debug(f"id: {obj.id}")
     return obj
 
 
