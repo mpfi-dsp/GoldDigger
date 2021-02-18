@@ -230,11 +230,9 @@ def run_gd(request, inputs):
     pk = inputs['pk']
     gold_digger_queue = GdappConfig.gold_particle_detector
     if type(pk) == list:
-        tasks = []
-        for pk_single in pk:
-            tasks.append(run_gold_digger_task.si(pk_single))
+        tasks = [run_gold_digger_task.si(pk_single) for pk_single in pk]
         chain(*tasks)()
-        return render(request, 'GDapp/run_gd.html', {'pk': pk_single})
+        return render(request, 'GDapp/run_gd.html', {'pk': pk[0]})
     else:
         gold_digger_queue(pk)
         logger.debug("inside run_gd function")
