@@ -167,9 +167,11 @@ def populate_em_obj(obj, form):
 def create_single_local_image_obj(form, local_files_form, image_path=None):
     obj = form.save(commit=False)
     if image_path:
-        obj.local_image = local_files_form.cleaned_data["local_image"]
-    else:
         obj.local_image = image_path
+        #obj.local_image = local_files_form.cleaned_data["local_image"]
+    else:
+        #obj.local_image = image_path
+        obj.local_image = local_files_form.cleaned_data["local_image"]
         obj.local_mask = local_files_form.cleaned_data["local_mask"]
     obj = populate_em_obj(obj, form)
     obj.pk = None
@@ -177,7 +179,7 @@ def create_single_local_image_obj(form, local_files_form, image_path=None):
     obj.save()
     return obj
 
-    
+
 def load_all_images_from_dir(form, local_files_form):
     dir_path = local_files_form.cleaned_data["local_image"]
     logger.debug(f"directory path: {dir_path}")
@@ -254,4 +256,3 @@ def log_obj(obj):
             logger.debug(f"pk: {obj.id}") #always prints "None" ... why?
         except:
             logger.debug(f"could not print obj.id")
-            
