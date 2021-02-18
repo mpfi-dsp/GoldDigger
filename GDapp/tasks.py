@@ -9,7 +9,7 @@ import time
 def celery_timer_task(self, pk):
     print(pk)
     feu = FrontEndUpdater(pk)
-    time.sleep(5)
+    time.sleep(2)
     feu.update(10, "update from celery timer task")
     return ('Done')
 

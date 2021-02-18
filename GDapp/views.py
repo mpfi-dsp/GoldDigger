@@ -1,4 +1,4 @@
-from GDapp.tasks import celery_timer_task
+from GDapp.tasks import celery_timer_task, run_gold_digger_task
 from GDapp.prediction.FrontEndUpdater import FrontEndUpdater
 from GDapp.apps import GdappConfig
 from django.shortcuts import render, redirect
@@ -12,6 +12,7 @@ from .models import EMImage, MyChunkedUpload, MyChunkedMaskUpload, add_image
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 from django.views.generic import ListView
 import os
+from celery import chain
 
 
 import sys
@@ -167,10 +168,10 @@ def populate_em_obj(obj, form):
 def create_single_local_image_obj(form, local_files_form, image_path=None):
     obj = form.save(commit=False)
     if image_path:
-        obj.local_image = local_files_form.cleaned_data["local_image"]
-    else:
         obj.local_image = image_path
-        obj.local_mask = local_files_form.cleaned_data["local_mask"]
+    else:
+        obj.local_image = local_files_form.cleaned_data["local_image"]
+    obj.local_mask = local_files_form.cleaned_data["local_mask"]
     obj = populate_em_obj(obj, form)
     obj.pk = None
     obj.id = None
@@ -186,12 +187,11 @@ def load_all_images_from_dir(form, local_files_form):
     pk_list = []
     for f in files:
         file_path = os.path.join(dir_path, f)
-        logger.debug(f"local_image (path): {file_path}")
+        logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
         obj = create_single_local_image_obj(form, local_files_form, image_path=file_path)
         log_obj(obj)
         pk_list.append(obj.id)
     return pk_list
-
 
 def chunked_file_upload(form):
         obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
@@ -230,13 +230,16 @@ def run_gd(request, inputs):
     pk = inputs['pk']
     gold_digger_queue = GdappConfig.gold_particle_detector
     if type(pk) == list:
+        tasks = []
         for pk_single in pk:
-            gold_digger_queue(pk_single)
+            tasks.append(run_gold_digger_task.si(pk_single))
+        chain(*tasks)()
         return render(request, 'GDapp/run_gd.html', {'pk': pk_single})
     else:
         gold_digger_queue(pk)
         logger.debug("inside run_gd function")
         return render(request, 'GDapp/run_gd.html', {'pk': pk})
+ 
 
 
 # attempt to make a downloadable csv
