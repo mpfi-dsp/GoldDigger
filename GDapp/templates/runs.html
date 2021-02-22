@@ -21,6 +21,14 @@
                 <th scope="row">{{ run.id }}</th>
                 <td>
                     {{ run.created_at }}<br>
+                    {% if run.local_image %}
+                      {{ run.local_image }}
+                    {% endif %}
+
+                    {% if run.image %}
+                      {{ run.image }}
+                    {% endif %}
+
                     {{ run.trained_model}} <br>
                     {% if run.gold_particle_coordinates %}
                       <a href="{{ run.gold_particle_coordinates.url }}">Download Coordinates</a><br>
