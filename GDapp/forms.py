@@ -4,7 +4,7 @@ from .models import *
 
 local_file_args = dict(path='/usr/src/local-images',
                        required=False,
-                       help_text='~/Documents',
+                       help_text='~/Desktop/Drives/ds-prog/EM-DATA/gd-for-analysis',
                        allow_folders=True)
 
 

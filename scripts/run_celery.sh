@@ -9,6 +9,6 @@ docker run  --gpus all \
             --link redis1:redis \
             -p 8001:8001 \
             -v ${PWD}:/usr/src/app \
-            -v ~/Documents:/usr/src/local-images \
+            -v ~/Desktop/Drives/ds-prog/EM-DATA/gd-for-analysis:/usr/src/local-images \
             gold-digger/gold-digger-dev \
             sh -c "celery -A GoldDigger  worker -l INFO"
