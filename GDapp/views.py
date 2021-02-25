@@ -186,11 +186,15 @@ def load_all_images_from_dir(form, local_files_form):
     logger.debug(files)
     pk_list = []
     for f in files:
-        file_path = os.path.join(dir_path, f)
-        logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
-        obj = create_single_local_image_obj(form, local_files_form, image_path=file_path)
-        log_obj(obj)
-        pk_list.append(obj.id)
+        if "mask" not in f.lower():
+            logger.debug(f"substring 'mask' not found in {f}")
+            file_path = os.path.join(dir_path, f)
+            logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
+            obj = create_single_local_image_obj(form, local_files_form, image_path=file_path)
+            log_obj(obj)
+            pk_list.append(obj.id)
+        else:
+            logger.debug(f"file {f} identified as a mask")
     return pk_list
 
 def chunked_file_upload(form):
@@ -237,7 +241,7 @@ def run_gd(request, inputs):
         gold_digger_queue(pk)
         logger.debug("inside run_gd function")
         return render(request, 'GDapp/run_gd.html', {'pk': pk})
- 
+
 
 
 # attempt to make a downloadable csv
