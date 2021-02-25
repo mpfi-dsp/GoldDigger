@@ -178,6 +178,14 @@ def create_single_local_image_obj(form, local_files_form, image_path=None):
     obj.save()
     return obj
 
+#returns only the stem of a mask file path, making it lowercase and removing "mask" from the name
+def clean_mask(m):
+    m_stem = pathlib.Path(m).stem
+    m_lower = m_stem.lower()
+    m_clean = m_lower.replace('mask', '')
+    logger.debug(f"m: {m}, m_clean: {m_clean}")
+    return m_clean
+
 
 def load_all_images_from_dir(form, local_files_form):
     dir_path = local_files_form.cleaned_data["local_image"]
@@ -190,29 +198,39 @@ def load_all_images_from_dir(form, local_files_form):
 
     for file in all_files:
         if "mask" in file.lower():
-            logger.debug(f"file {file} identified as a mask")
+            #logger.debug(f"file {file} identified as a mask")
             masks.append(os.path.join(dir_path, file))
         else:
-            logger.debug(f"substring 'mask' not found in {file}")
+            #logger.debug(f"substring 'mask' not found in {file}")
             images.append(os.path.join(dir_path, file))
     logger.debug(f"images: {images}")
     logger.debug(f"masks: {masks}")
 
-    for m in masks:
-        m_stem = pathlib.Path(m).stem
-        m_lower = m_stem.lower()
-        m_clean = m_lower.replace('mask', '')
-        logger.debug(f"m: {m}, m_clean: {m_clean}")
+    # for m in masks:
+    #     m_stem = pathlib.Path(m).stem
+    #     m_lower = m_stem.lower()
+    #     m_clean = m_lower.replace('mask', '')
+    #     logger.debug(f"m: {m}, m_clean: {m_clean}")
 
     for f in images:
         file_path = os.path.join(dir_path, f)
         logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
+
+        mask_path = ''
+        for m in masks:
+            m_clean = clean_mask(m)
+            if m_clean in f.lower():
+                mask_path = os.path.join(dir_path, m)
+                break
+        if mask_path == '':
+            logger.debug(f"no mask found for {f}")
+        else:
+            logger.debug(f"mask: {mask_path} matched with file: {file_path}")
+
+
         obj = create_single_local_image_obj(form, local_files_form, image_path=file_path)
         log_obj(obj)
         pk_list.append(obj.id)
-
-
-
 
     return pk_list
 
