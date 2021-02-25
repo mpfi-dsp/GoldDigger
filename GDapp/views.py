@@ -226,10 +226,10 @@ def load_all_images_from_dir(form, local_files_form):
             if m_clean in f.lower():
                 mask_path = os.path.join(dir_path, m)
                 break
-        if mask_path == None:
-            logger.debug(f"no mask found for {f}")
-        else:
-            logger.debug(f"mask: {mask_path} matched with file: {file_path}")
+        # if mask_path == None:
+        #     logger.debug(f"no mask found for {f}")
+        # else:
+        #     logger.debug(f"mask: {mask_path} matched with file: {file_path}")
 
 
         obj = create_single_local_image_obj(form, local_files_form, image_path=file_path, mask_path=mask_path)
