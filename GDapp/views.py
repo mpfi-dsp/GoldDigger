@@ -190,10 +190,10 @@ def load_all_images_from_dir(form, local_files_form):
 
     for file in all_files:
         if "mask" in file.lower():
-            logger.debug(f"file {f} identified as a mask")
+            logger.debug(f"file {file} identified as a mask")
             masks.append(os.path.join(dir_path, file))
         else:
-            logger.debug(f"substring 'mask' not found in {f}")
+            logger.debug(f"substring 'mask' not found in {file}")
             images.append(os.path.join(dir_path, file))
     logger.debug(f"images: {images}")
     logger.debug(f"masks: {masks}")
