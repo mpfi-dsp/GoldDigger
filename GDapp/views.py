@@ -13,7 +13,7 @@ from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 from django.views.generic import ListView
 import os
 from celery import chain
-
+import pathlib
 
 import sys
 import logging
@@ -185,6 +185,7 @@ def load_all_images_from_dir(form, local_files_form):
     files = os.listdir(dir_path)
     logger.debug(files)
     pk_list = []
+    masks = []
     for f in files:
         if "mask" not in f.lower():
             logger.debug(f"substring 'mask' not found in {f}")
@@ -195,6 +196,13 @@ def load_all_images_from_dir(form, local_files_form):
             pk_list.append(obj.id)
         else:
             logger.debug(f"file {f} identified as a mask")
+            masks.append(os.path.join(dir_path, f))
+    for m in masks:
+        m_stem = pathlib.Path(m).stem
+        m_lower = m_stem.lower()
+        m_clean = m_lower.removesuffix('mask')
+        logger.debug(f"m: {m}, m_clean: {m_clean}")
+
     return pk_list
 
 def chunked_file_upload(form):
