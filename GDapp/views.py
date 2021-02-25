@@ -183,7 +183,7 @@ def load_all_images_from_dir(form, local_files_form):
     dir_path = local_files_form.cleaned_data["local_image"]
     logger.debug(f"directory path: {dir_path}")
     all_files = os.listdir(dir_path)
-    logger.debug(files)
+    logger.debug(all_files)
     pk_list = []
     masks = []
     images = []
@@ -197,7 +197,7 @@ def load_all_images_from_dir(form, local_files_form):
             images.append(os.path.join(dir_path, file))
     logger.debug(f"images: {images}")
     logger.debug(f"masks: {masks}")
-    
+
     for m in masks:
         m_stem = pathlib.Path(m).stem
         m_lower = m_stem.lower()
