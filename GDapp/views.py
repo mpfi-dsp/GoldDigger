@@ -165,13 +165,17 @@ def populate_em_obj(obj, form):
     obj.threshold_string = form.cleaned_data['threshold_string']
     return obj
 
-def create_single_local_image_obj(form, local_files_form, image_path=None):
+def create_single_local_image_obj(form, local_files_form, image_path=None, mask_path=None):
     obj = form.save(commit=False)
     if image_path:
         obj.local_image = image_path
     else:
         obj.local_image = local_files_form.cleaned_data["local_image"]
-    obj.local_mask = local_files_form.cleaned_data["local_mask"]
+
+    if mask_path:
+        obj.local_mask = mask_path
+    else:
+        obj.local_mask = local_files_form.cleaned_data["local_mask"]
     obj = populate_em_obj(obj, form)
     obj.pk = None
     obj.id = None
@@ -183,7 +187,7 @@ def clean_mask(m):
     m_stem = pathlib.Path(m).stem
     m_lower = m_stem.lower()
     m_clean = m_lower.replace('mask', '')
-    logger.debug(f"m: {m}, m_clean: {m_clean}")
+    #logger.debug(f"m: {m}, m_clean: {m_clean}")
     return m_clean
 
 
@@ -216,19 +220,19 @@ def load_all_images_from_dir(form, local_files_form):
         file_path = os.path.join(dir_path, f)
         logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
 
-        mask_path = ''
+        mask_path = None
         for m in masks:
             m_clean = clean_mask(m)
             if m_clean in f.lower():
                 mask_path = os.path.join(dir_path, m)
                 break
-        if mask_path == '':
+        if mask_path == None:
             logger.debug(f"no mask found for {f}")
         else:
             logger.debug(f"mask: {mask_path} matched with file: {file_path}")
 
 
-        obj = create_single_local_image_obj(form, local_files_form, image_path=file_path)
+        obj = create_single_local_image_obj(form, local_files_form, image_path=file_path, mask_path=mask_path)
         log_obj(obj)
         pk_list.append(obj.id)
 
@@ -288,6 +292,7 @@ def export(request):
 
 def log_obj(obj):
         logger.debug(f"local_image (path): {obj.local_image}")
+        logger.debug(f"local_mask (path): {obj.local_mask}")
         logger.debug(f"trained_model: {obj.trained_model}")
         logger.debug(f"particle_groups: {obj.particle_groups}")
         logger.debug(f"threshold_string: {obj.threshold_string}")
