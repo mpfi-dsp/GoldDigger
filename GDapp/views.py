@@ -182,26 +182,37 @@ def create_single_local_image_obj(form, local_files_form, image_path=None):
 def load_all_images_from_dir(form, local_files_form):
     dir_path = local_files_form.cleaned_data["local_image"]
     logger.debug(f"directory path: {dir_path}")
-    files = os.listdir(dir_path)
+    all_files = os.listdir(dir_path)
     logger.debug(files)
     pk_list = []
     masks = []
-    for f in files:
-        if "mask" not in f.lower():
-            logger.debug(f"substring 'mask' not found in {f}")
-            file_path = os.path.join(dir_path, f)
-            logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
-            obj = create_single_local_image_obj(form, local_files_form, image_path=file_path)
-            log_obj(obj)
-            pk_list.append(obj.id)
-        else:
+    images = []
+
+    for file in all_files:
+        if "mask" in file.lower():
             logger.debug(f"file {f} identified as a mask")
-            masks.append(os.path.join(dir_path, f))
+            masks.append(os.path.join(dir_path, file))
+        else:
+            logger.debug(f"substring 'mask' not found in {f}")
+            images.append(os.path.join(dir_path, file))
+    logger.debug(f"images: {images}")
+    logger.debug(f"masks: {masks}")
+    
     for m in masks:
         m_stem = pathlib.Path(m).stem
         m_lower = m_stem.lower()
         m_clean = m_lower.replace('mask', '')
         logger.debug(f"m: {m}, m_clean: {m_clean}")
+
+    for f in images:
+        file_path = os.path.join(dir_path, f)
+        logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
+        obj = create_single_local_image_obj(form, local_files_form, image_path=file_path)
+        log_obj(obj)
+        pk_list.append(obj.id)
+
+
+
 
     return pk_list
 
