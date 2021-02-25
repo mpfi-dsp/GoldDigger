@@ -200,7 +200,7 @@ def load_all_images_from_dir(form, local_files_form):
     for m in masks:
         m_stem = pathlib.Path(m).stem
         m_lower = m_stem.lower()
-        m_clean = m_lower.removesuffix('mask')
+        m_clean = m_lower.replace('mask', '')
         logger.debug(f"m: {m}, m_clean: {m_clean}")
 
     return pk_list
