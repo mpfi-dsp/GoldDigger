@@ -14,7 +14,18 @@
     <script src={% static 'GDapp/js/spark-md5.js' %}></script>
 
     <h1 class="jumbotron-heading">Upload a File</h1>
-    <p class="lead text-muted">Requirements: Please upload 1 profile to analyze</p>
+    <p class="lead text-muted">
+      For 1 image: Place image file and optional mask file into gd-for-analysis shared folder and select the files from the
+      "Local image file" and "Local mask" dropdowns. OR click the "Browse" button next to the "Select Image File" field to
+      upload an image from your own computer and then click the "Browse" button next to the "Select Mask File" field to
+      select a mask from your own computer. <br><br>
+
+      For multiple images: Create a folder inside gd-for-analysis shared folder and place your images and masks into the folder.
+      Then, select the folder you created from the "Local image file" dropdown. Mask filenames should contain "mask" at the end
+      of the name, and the rest of the name should match the image they correspond to. For example, "S4smallmask.tif" would be
+      matched with "S4smallmontage.tif". <br><br>  
+
+    </p>
 
     <div id="alert-box"></div>
     <div id="image-box"></div>
@@ -23,15 +34,8 @@
       {% csrf_token %}
       {{form.as_p}}
 
-      <!-- Checkbox for if mask should be included -->
-      <!--
-      <label id="include-mask">Check box if there is a mask to upload with the profile: </label>
-      <input type="checkbox" id="include-mask" name="include-mask">
-      <p id="checkbox-value"></p> -->
 
 
-
-      <!-- <input name="document" type='file'> -->
       {{local_files_form.as_p}}
       <div class="custom-file">
         <!--<p>Image file upload: </p>-->
