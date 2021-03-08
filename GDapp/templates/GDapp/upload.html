@@ -35,16 +35,18 @@
     <div id="alert-box"></div>
     <div id="image-box"></div>
     <br>
+
+    <p class = "lead">Parameter selection:</p>
     <form method='post' enctype="multipart/form-data" action="" id="upload-form">
       {% csrf_token %}
       {{form.as_p}}
+<br><br>
 
-
-    <h3>Single or Multiple image upload from shared folder</h3>
+    <p class="lead">Single or Multiple image upload from shared folder:</p>
       {{local_files_form.as_p}}
       <br><br>
 
-    <h3>Single image upload from anywhere on your computer</h3>
+    <p class="lead">Single image upload from anywhere on your computer:</p>
       <div class="custom-file">
         <!--<p>Image file upload: </p>-->
         <input id="chunked_upload" type="file" name="the_file" class='form-control-file'>
