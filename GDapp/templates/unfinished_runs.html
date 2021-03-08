@@ -33,7 +33,7 @@
 
 
                 </td>
-                <td>{% if run.analyzed_image %}<img src="/media/{{ run.analyzed_image }}" width="150">{% if run.analyzed_image %}</td>
+                <td>{% if run.analyzed_image %}<img src="/media/{{ run.analyzed_image }}" width="150">{% endif %}</td>
                 <td>
                     {% if run.mask %}<img src="{{ run.mask.url }}" width="150">{% endif %}</td>
                 <td>{% if run.histogram_image %}<img src="{{ run.histogram_image.url }}" width="200">{% endif %}</td>
