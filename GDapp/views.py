@@ -157,7 +157,7 @@ class RunListView(ListView):
 class UnfinishedRunListView(ListView):
     model = EMImage
     context_object_name = 'to_run_list'
-    queryset = EMImage.objects.include(analyzed_image='').order_by('-id')
+    queryset = EMImage.objects.filter(analyzed_image='').order_by('-id')
     template_name = 'unfinished_runs.html'
 
 
