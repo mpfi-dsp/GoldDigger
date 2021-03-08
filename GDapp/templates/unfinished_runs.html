@@ -10,7 +10,7 @@
                 <th scope="col">#</th>
                 <th scope="col">Date</th>
                 <th scope="col">Preview</th>
-                <th scope="col">Mask</th>
+
 
             </tr>
         </thead>
@@ -29,13 +29,24 @@
                       {{ run.image }}<br>
                     {% endif %}
 
+
+                    {% if run.local_mask %}
+                      {{ run.local_mask }}<br>
+                    {% endif %}
+
+                    {% if run.mask %}
+                      {{ run.mask }}<br>
+                    {% endif %}
+
+
+
                     {{ run.trained_model}} <br>
 
 
                 </td>
                 <td>{% if run.image %}<img src="/media/{{ run.image }}" width="150">
                     {% elif run.local_image %}<img src="/media/{{ run.local_image }}" width="150">{% endif %}</td>
-                <td>{% if run.mask %}<img src="{{ run.mask.url }}" width="150">{% endif %}</td>
+                
 
             </tr>
         </tbody>
