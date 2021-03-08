@@ -15,15 +15,20 @@
 
     <h1 class="jumbotron-heading">Upload a File</h1>
     <p class="lead text-muted">
-      For 1 image: Place image file and optional mask file into gd-for-analysis shared folder and select the files from the
-      "Local image file" and "Local mask" dropdowns. OR click the "Browse" button next to the "Select Image File" field to
-      upload an image from your own computer and then click the "Browse" button next to the "Select Mask File" field to
-      select a mask from your own computer. <br><br>
+      For single image in shared folder (mask file optional): Place image file and mask file into ds-prog/EM-DATA/gd-for-analysis
+      shared folder and select the files from the "Local image file" and "Local mask" dropdowns. <br><br>
 
-      For multiple images: Create a folder inside gd-for-analysis shared folder and place your images and masks into the folder.
+      For single image selected from anywhere on your computer (mask file optional): Click the "Browse" button next to the "Select Image File" field to
+      upload an image from your own computer. After the image is uploaded, a "Select Mask File" field will appear. If you have a
+      mask to upload click the "Browse" button next to the "Select Mask File" field to select a mask from anywhere on your computer. <br><br>
+
+      For multiple images (mask files optional): Create a folder inside ds-prog/EM-DATA/gd-for-analysis shared folder and place your images and masks into the folder.
       Then, select the folder you created from the "Local image file" dropdown. Mask filenames should contain "mask" at the end
       of the name, and the rest of the name should match the image they correspond to. For example, "S4smallmask.tif" would be
-      matched with "S4smallmontage.tif". <br><br>  
+      matched with "S4smallmontage.tif". <br><br>
+
+      After parameter and image selection is complete, click the "Run" button at the bottom of the page to start running the Gold Digger code.
+      Visit the "Previous Runs" tab after a few minutes to download the results. <br><br>
 
     </p>
 
@@ -35,8 +40,11 @@
       {{form.as_p}}
 
 
-
+    <h2>Single or Multiple image upload from shared folder</h2>
       {{local_files_form.as_p}}
+      <br><br>
+      
+    <h2>Single image upload from anywhere on your computer</h2>
       <div class="custom-file">
         <!--<p>Image file upload: </p>-->
         <input id="chunked_upload" type="file" name="the_file" class='form-control-file'>
