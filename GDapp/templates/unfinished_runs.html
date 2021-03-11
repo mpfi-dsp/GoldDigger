@@ -3,6 +3,8 @@
 {% load static %}
 <div class="container">
     <h2>Unfinished Runs</h2>
+    <p class="lead text-muted">Below is a list of all attempted or queued runs.</p>
+
     {% if to_run_list %}
     <table class="table">
         <thead class="thead-dark">
@@ -46,7 +48,7 @@
                 </td>
                 <td>{% if run.image %}<img src="/media/{{ run.image }}" width="150">
                     {% elif run.local_image %}<img src="/media/{{ run.local_image }}" width="150">{% endif %}</td>
-                
+
 
             </tr>
         </tbody>
