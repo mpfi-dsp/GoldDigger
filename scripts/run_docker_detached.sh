@@ -6,13 +6,17 @@ docker rm gold-digger-dev
 
 docker run -d --name redis1 redis
 
+LOCAL_IMAGE_FOLDER="$(python -c 'import config;print(config.LOCAL_IMAGE_FOLDER)')"
+echo "Local Image Folder:"
+echo $LOCAL_IMAGE_FOLDER
+
 docker run  --gpus all \
             -d \
             --name gold-digger-dev \
             --link redis1:redis \
             -p 8000:8000 \
             -v ${PWD}:/usr/src/app \
-            -v ~/Desktop/Drives/ds-prog/EM-DATA/gd-for-analysis:/usr/src/local-images \
+            -v "/$LOCAL_IMAGE_FOLDER:/usr/src/local-images" \
             gold-digger/gold-digger-dev \
             sh -c "celery -A GoldDigger  worker -l INFO"
 

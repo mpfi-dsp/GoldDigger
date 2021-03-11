@@ -80,3 +80,4 @@ docker rm gold-digger-web
 - make it so the program doesn't fail when there's a file in the media folder
 - make sure image and mask are the same size
 - separate program into docker-compose and nvidia-docker
+- add volume mount folder to config file

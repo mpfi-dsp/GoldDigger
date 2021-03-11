@@ -1,10 +1,10 @@
 from django import forms
 from .models import *
-
+import config
 
 local_file_args = dict(path='/usr/src/local-images',
                        required=False,
-                       help_text='~/Desktop/Drives/ds-prog/EM-DATA/gd-for-analysis',
+                       help_text=config.LOCAL_IMAGE_FOLDER,
                        allow_folders=True)
 
 

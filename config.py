@@ -5,3 +5,4 @@ ALLOWED_HOSTS = [
     'localhost',
     ]
 
+LOCAL_IMAGE_FOLDER = "~/Desktop/Drives/ds-prog/EM-DATA/gd-for-analysis"
