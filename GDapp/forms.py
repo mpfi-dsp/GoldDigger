@@ -30,7 +30,7 @@ class LocalFilesForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['local_image'] = forms.FilePathField(label='Local image file (used if no file is uploaded)',
                                                          **local_file_args)
-        self.fields['local_mask'] = forms.FilePathField(label='Local mask (optional, used if no mask file is uploaded)',
+        self.fields['local_mask'] = forms.FilePathField(label='Local mask (optional, used if no mask file is uploaded. Leave empty if you are uploading a folder of images and masks)',
                                                         **local_file_args)
         self.fields['local_image'].widget.attrs['class'] = 'form-control'
         self.fields['local_mask'].widget.attrs['class'] = 'form-control'
