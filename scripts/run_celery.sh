@@ -13,6 +13,6 @@ docker run  --gpus all \
             --link redis1:redis \
             -p 8001:8001 \
             -v ${PWD}:/usr/src/app \
-            -v $LOCAL_IMAGE_FOLDER:/usr/src/local-images \
+            -v "$LOCAL_IMAGE_FOLDER:/usr/src/local-images" \
             gold-digger/gold-digger-dev \
             sh -c "celery -A GoldDigger  worker -l INFO"
