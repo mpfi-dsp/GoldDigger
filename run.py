@@ -329,7 +329,7 @@ def sort_from_thresholds(coords_in_mask, particle_group_count, thresholds_list_s
 
 
 def clear_out_input_dirs():
-    shutil.rmtree('media/Input')
+    shutil.rmtree('media/Input', ignore_errors=True)
     os.mkdir('media/Input')
 
 

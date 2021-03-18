@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load static %}
+<div class="container">
+    <h2>Unfinished Runs</h2>
+    <p class="lead text-muted">Below is a list of all attempted or queued runs. (Temporary Page)</p>
+
+    {% if to_run_list %}
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Date</th>
+                <th scope="col">Preview</th>
+
+
+            </tr>
+        </thead>
+        {% for run in to_run_list %}
+
+        <tbody>
+            <tr>
+                <th scope="row">{{ run.id }}</th>
+                <td>
+                    {{ run.created_at }}<br>
+                    {% if run.local_image %}
+                      {{ run.local_image }}<br>
+                    {% endif %}
+
+                    {% if run.image %}
+                      {{ run.image }}<br>
+                    {% endif %}
+
+
+                    {% if run.local_mask %}
+                      {{ run.local_mask }}<br>
+                    {% endif %}
+
+                    {% if run.mask %}
+                      {{ run.mask }}<br>
+                    {% endif %}
+
+
+
+                    {{ run.trained_model}} <br>
+
+
+                </td>
+                <td>{% if run.image %}<img src="/media/{{ run.image }}" width="150">
+                    {% elif run.local_image %}<img src="/media/{{ run.local_image }}" width="150">{% endif %}</td>
+
+
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>There are no pending runs.</p>
+    {% endif %}
+</div>
+{% endblock %}
