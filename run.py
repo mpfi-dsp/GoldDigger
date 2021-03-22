@@ -68,7 +68,7 @@ def clear_out_old_files(model):
 # look in INPUT folder, crop photo and save crop to OUTPUT folder
 # Cut up in order, append white images
 
-def load_data_make_jpeg(image, mask, front_end_updater, imageName=''):
+def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
     file_list = pathlib.Path('media/Input', image)
     print(file_list)
     for entry in [file_list]:
@@ -95,7 +95,7 @@ def load_data_make_jpeg(image, mask, front_end_updater, imageName=''):
         img_new_w = view_as_blocks(img_new, img_size)
         img_new_w = np.uint8(img_new_w)
         imageio.imwrite('media/Output_Final/' +
-                        f'Cropped_{imageName}' + '.png', img_new)
+                        f'Cropped-{imageName}-with-{model}' + '.png', img_new)
         r = 0
         total_progress = img_new_w.shape[0] * img_new_w.shape[1]
         current_progress = 0
@@ -195,7 +195,7 @@ def count_green_dots(imageName='', thresh_sens=4):
     # 5. I do this so inconsistencies in the green mask dont affect the area of the gold particle
     # Basically it just uses the green masks to find a seed point to start flood filling. This makes sure that the mask is the exact size of the gold particle
     img = cv2.imread('media/Output_Final/OutputStitched.png')
-    img_original = cv2.imread(f'media/Output_Final/Cropped_{imageName}.png')
+    img_original = cv2.imread(f'media/Output_Final/Cropped-{imageName}-with-{model}.png')
     img_original = np.uint8(img_original)
 
     h, w = img_original.shape[:2]
@@ -371,7 +371,7 @@ def save_histogram(coordinates, front_end_updater):
 
 
 # eleanor added for coordinates6nm
-def save_coordinates(coordinates, name, front_end_updater):
+def save_coordinates(coordinates, name, model, front_end_updater):
     coordinates_path = 'media/Output_Final/' + name + '.csv'
 
     if os.path.exists(coordinates_path):
@@ -380,7 +380,7 @@ def save_coordinates(coordinates, name, front_end_updater):
     #add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path)
 
 
-def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, front_end_updater, imageName=''):
+def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, model, front_end_updater, imageName=''):
     sub_path = 'results'
     results_path = os.path.join(settings.MEDIA_ROOT, sub_path)
     if not os.path.isdir(results_path):
@@ -404,9 +404,9 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, fron
     #                      header=True)
     #add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path_absolute)
 
-    save_coordinates(coordinates1, f'coordsGroup1_{imageName}', front_end_updater)
-    save_coordinates(coordinates2, f'coordsGroup2_{imageName}', front_end_updater)
-    save_coordinates(coordinates3, f'coordsGroup3_{imageName}', front_end_updater)
+    save_coordinates(coordinates1, f'coordsGroup1-{imageName}-with-{model}', front_end_updater)
+    save_coordinates(coordinates2, f'coordsGroup2-{imageName}-with-{model}', front_end_updater)
+    save_coordinates(coordinates3, f'coordsGroup3-{imageName}-with-{model}', front_end_updater)
     save_preview_figure(coordinates, front_end_updater)
     save_histogram(coordinates, front_end_updater)
 
@@ -430,7 +430,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
 
 
     file_list, width, height, img_mask = load_data_make_jpeg(
-        input_image_list, mask, front_end_updater, imageName=imageName)
+        input_image_list, mask, model, front_end_updater, imageName=imageName)
     front_end_updater.update(4, "combining with white background")
     white = io.imread('media/White/white.png')
     combine_white(white, 'media/Output', front_end_updater)
@@ -465,16 +465,16 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     results1, results2, results3 = sort_from_thresholds(coords_in_mask,
                                                         particle_group_count, thresholds_list_string)
 
-    save_all_results(coords_in_mask, results1, results2, results3, front_end_updater, imageName=imageName)
+    save_all_results(coords_in_mask, results1, results2, results3, model, front_end_updater, imageName=imageName)
 
     clear_out_input_dirs()
     print("SUCCESS!!")
     front_end_updater.update(8, "Saving files")
 
-    output_file = shutil.make_archive(f'media/Output_{imageName}', 'zip', 'media/Output_Final')
+    output_file = shutil.make_archive(f'media/Output-{imageName}-with-{model}', 'zip', 'media/Output_Final')
 
     #output_path = os.path.join(settings.MEDIA_ROOT, 'GD_Output.zip')
-    add_output_file(front_end_updater.pk, f'media/Output_{imageName}.zip')
+    add_output_file(front_end_updater.pk, f'media/Output-{imageName}-with-{model}.zip')
 
     print('CREATED ZIP FILE')
     front_end_updater.update(9, "All done")

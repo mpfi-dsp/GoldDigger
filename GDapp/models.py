@@ -117,9 +117,9 @@ def add_output_file(pk, url):
     # else:
     #     logger.debug("no image field found, unable to create output file")
 
-
-    gd_data.output_file.save(f'Output_{imageName}{ext}', temp_file)
-    logger.debug("output file saved: "+ f'Output_{imageName}{ext}')
+    model = gd_data.trained_model
+    gd_data.output_file.save(f'Output-{imageName}-with-{model}{ext}', temp_file)
+    logger.debug("output file saved: "+ f'Output-{imageName}-with-{model}{ext}')
 
 
 
