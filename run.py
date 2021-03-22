@@ -371,7 +371,7 @@ def save_histogram(coordinates, front_end_updater):
 
 
 # eleanor added for coordinates6nm
-def save_coordinates(coordinates, name, model, front_end_updater):
+def save_coordinates(coordinates, name, front_end_updater):
     coordinates_path = 'media/Output_Final/' + name + '.csv'
 
     if os.path.exists(coordinates_path):
