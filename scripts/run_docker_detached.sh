@@ -16,7 +16,7 @@ docker stop redis-$REDIS_PORT
 docker stop gold-digger-dev-$DJANGO_DEV_PORT
 docker rm redis-$REDIS_PORT
 docker rm gold-digger-dev-$DJANGO_DEV_PORT
-docker run -d --name redis-$REDIS_PORT redis
+docker run -d -p $REDIS_PORT:$REDIS_PORT --name redis-$REDIS_PORT redis --port $REDIS_PORT
 
 docker run  --gpus all \
             -d \

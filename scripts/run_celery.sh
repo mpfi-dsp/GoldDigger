@@ -12,8 +12,9 @@ LOCAL_IMAGE_FOLDER="$(python -c 'import config;print(config.LOCAL_IMAGE_FOLDER)'
 echo "Local Image Folder:"
 echo $LOCAL_IMAGE_FOLDER
 
-docker stop redis-$REDIS_PORT
 docker stop gold-digger-dev-$DJANGO_DEV_PORT
+docker rm gold-digger-dev-$DJANGO_DEV_PORT
+
 
 docker run  --gpus all \
             -ti \
