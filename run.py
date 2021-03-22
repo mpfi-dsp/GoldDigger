@@ -186,7 +186,7 @@ def stitch_image(folderstart, widthdiv256, heighttimeswidth, artifact):
     return picture, file_list
 
 
-def count_green_dots(imageName='', thresh_sens=4):
+def count_green_dots(model, imageName='', thresh_sens=4):
     # From Diego:
     # 1. Finds green square and then the center of that (x,y)
     # 2. Then I perform a flood fill on that (x,y) on the original image
@@ -452,7 +452,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
         folderstart, widthdiv256, heighttimeswidth, artifact)
     imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
     front_end_updater.update(7, "Identifying green dots")
-    cnts = count_green_dots(imageName=imageName, thresh_sens=thresh_sens)
+    cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
     all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
     #print(thresholds_list_string)
