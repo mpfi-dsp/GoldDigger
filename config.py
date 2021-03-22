@@ -2,9 +2,14 @@ ALLOWED_HOSTS = [
     '0.0.0.0',
     '127.0.0.1',
     '10.202.1.192', # host machine's local ip address
+    '10.202.1.193',
     'localhost',
     ]
 
 LOCAL_IMAGE_FOLDER = "/home/MPFI.ORG/stuarte/Desktop/Drives/ds-prog/EM-DATA/gd-for-analysis"
 
-VERSION_NUMBER = "1.03.09"
+VERSION_NUMBER = "1.04.0"
+
+DJANGO_DEV_PORT = "8000"
+
+REDIS_PORT = "6379"

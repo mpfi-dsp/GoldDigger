@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
-docker stop redis1
-docker rm redis1
-docker run -d --name redis1 redis
+REDIS_PORT="$(python -c 'import config;print(config.REDIS_PORT)')"
+echo "Redis Port:"
+echo $REDIS_PORT
+
+docker stop redis-$REDIS_PORT
+docker rm redis-$REDIS_PORT
+docker run -d --name redis-$REDIS_PORT redis

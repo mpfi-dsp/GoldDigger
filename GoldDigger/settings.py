@@ -84,7 +84,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": ["redis://redis:6379"],
+            "hosts": [f"redis://redis:{config.REDIS_PORT}"],
         },
     },
 }
@@ -163,7 +163,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
 
-CELERY_BROKER_URL = "redis://redis:6379"
+
+
+CELERY_BROKER_URL = f"redis://redis:{config.REDIS_PORT}"
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
