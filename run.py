@@ -284,7 +284,7 @@ def get_contour_centers(cnts, img_mask):
             if check_if_coordinate_is_in_mask(cY, cX, img_mask):
 
                 # add condition to get rid of some of the crazy outliers in histogram later on
-                if cv2.contourArea(c) < 1500:
+                if cv2.contourArea(c) < 500:
                     coords_in_mask = coords_in_mask.append({'X': cX, 'Y': cY,'Area':cv2.contourArea(c)},
                                                        ignore_index=True)
     return all_coordinates, coords_in_mask
