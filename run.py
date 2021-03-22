@@ -186,7 +186,7 @@ def stitch_image(folderstart, widthdiv256, heighttimeswidth, artifact):
     return picture, file_list
 
 
-def count_green_dots(imageName=''):
+def count_green_dots(imageName='', thresh_sens=4):
     # From Diego:
     # 1. Finds green square and then the center of that (x,y)
     # 2. Then I perform a flood fill on that (x,y) on the original image
@@ -233,7 +233,7 @@ def count_green_dots(imageName=''):
     floodflags |= cv2.FLOODFILL_MASK_ONLY
     floodflags |= (255 << 8)
     for i in range(listlen):
-        num, im, mask, rect = cv2.floodFill(img_original, flood_mask, (seedlistx[i], seedlisty[i]), 1, (4,) * 3, (4,) * 3,
+        num, im, mask, rect = cv2.floodFill(img_original, flood_mask, (seedlistx[i], seedlisty[i]), 1, (thresh_sens,) * 3, (thresh_sens,) * 3,
                                             floodflags)
 
     print(np.mean(img_original))
@@ -413,7 +413,7 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, fron
 
 
 
-def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string, mask=None, front_end_updater=None):
+def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string, thresh_sens=4, mask=None, front_end_updater=None):
     print(f'Running with {model}')
     if thresholds_list_string == '':
         print('NO THRESHOLDS')
@@ -452,7 +452,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
         folderstart, widthdiv256, heighttimeswidth, artifact)
     imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
     front_end_updater.update(7, "Identifying green dots")
-    cnts = count_green_dots(imageName=imageName)
+    cnts = count_green_dots(imageName=imageName, thresh_sens=thresh_sens)
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
     all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
     #print(thresholds_list_string)

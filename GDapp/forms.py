@@ -13,9 +13,9 @@ class EMImageForm(forms.ModelForm):
     class Meta:
         model = EMImage
         widgets = {'preloaded_pk': forms.HiddenInput()}
-        fields = ['trained_model', 'particle_groups', 'threshold_string',
+        fields = ['trained_model', 'particle_groups', 'threshold_string', 'thresh_sens'
                   'preloaded_pk']
-        labels = {'trained_model': 'Trained model', 'threshold_string': 'Cutoff string',
+        labels = {'trained_model': 'Trained model', 'threshold_string': 'Cutoff string', 'thresh_sens': 'Threshold sensitivity'
                   }
 
         #fields = ['image', 'mask', 'trained_model', 'particle_groups', 'threshold_string']
