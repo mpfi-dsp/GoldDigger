@@ -14,6 +14,7 @@ from django.views.generic import ListView
 import os
 from celery import chain
 import pathlib
+from config import VERSION_NUMBER
 
 import sys
 import logging
@@ -157,7 +158,7 @@ class RunListView(ListView):
 
 def home(request):
     logger.debug("homepage accessed")
-    return render(request, 'GDapp/home.html')
+    return render(request, 'GDapp/home.html', {'version': VERSION_NUMBER})
 
 def populate_em_obj(obj, form):
     obj.trained_model = form.cleaned_data['trained_model']

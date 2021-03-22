@@ -6,3 +6,5 @@ ALLOWED_HOSTS = [
     ]
 
 LOCAL_IMAGE_FOLDER = "/home/mpfi.org/ds-lab-adm/Desktop/Drives/ds-prog/EM-DATA/gd-for-analysis"
+
+VERSION_NUMBER = "1.01.01"
