@@ -11,7 +11,7 @@ This repository contains the code to have a working local server for GoldDigger.
 
 3. In terminal, navigate to the main golddigger directory and download the models using this command.
 ```
-sh download_models.sh
+sh scripts/download_models.sh
 ```
 
 If that doesn't work, download them manually and put them in their respective folders folders:
@@ -26,37 +26,30 @@ If that doesn't work, download them manually and put them in their respective fo
     
 4. Build the docker image with the following command:
 ```
-sh build.sh
+sh scripts/build.sh
 ```
 5. Manually edit config.py to set the relevant information
 
 6. Run the docker container:  
-    - quick (if you don't need to see all the terminal outputs):
+    - detached (if you don't need to see all the terminal outputs):
     ```
-    sh run_docker.sh
+    sh scripts/run_docker_detached.sh
+
     ```
     - full Terminals:
         1. run redis server  
         ```
-        docker run -d --name redis1 redis
+        sh scripts/run_redis.sh
         ```
         2. run gold digger docker container and start celery (async task manager)
         ```
-        docker run -ti --gpus all --name gold-digger-web --link redis1:redis -p 8000:8000 -v ${PWD}:/usr/src/app gold-digger/gold-digger-dev
+        sh scripts/run_celery.sh
         
         celery -A GoldDigger worker -l info
         ```
         3. open a new terminal window and run django server
         ```
-        docker exec -ti gold-digger-web /bin/bash
-
-        python3 manage.py runserver 0.0.0.0:8000 
-        ```
-        Note: before starting the server, make sure you do the migrations (doesn't have to be every time)
-        ```
-        python3 manage.py makemigrations
-        
-        python3 manage.py migrate
+        scripts/run_django.sh
         ```
 
 
@@ -84,14 +77,7 @@ docker rm gold-digger-web
 ```
 
 ## TO DO:
-- make it clear when files are uploaded
-- update user on status of analysis
-    - unwrap run.py into separate functions
-    - clean it up, make it into a class
-- make blue mask
 - make it so the program doesn't fail when there's a file in the media folder
-- preview image
-- preview blue mask 
 - make sure image and mask are the same size
-- show preview image of result
-- convert run.py into an object oriented file
+- separate program into docker-compose and nvidia-docker
+- add volume mount folder to config file
