@@ -73,8 +73,8 @@ class FrontEndUpdater:
         except:
             image_path = gd_data.local_image
         imageName = pathlib.Path(image_path).stem
-
-        results_url = f"../../../media/Output_{imageName}.zip"
+        model = gd_data.trained_model
+        results_url = f"../../../media/Output_{imageName}-with-{model}.zip"
         analyzed_image_url = get_analyzed_image_url(self.pk)
         histogram_image_url = get_histogram_image_url(self.pk)
         async_to_sync(channel_layer.group_send)(
