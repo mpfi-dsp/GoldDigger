@@ -114,7 +114,7 @@ def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
         front_end_updater.update_progress(90, 1)
         for i in range(img_new_w.shape[0]):
             for j in range(img_new_w.shape[1]):
-                current_progress, r = create_small_image(current_progress, total_progress, front_end_updater, img_size, img_new_w, i, j, r):
+                current_progress, r = create_small_image(current_progress, total_progress, front_end_updater, img_size, img_new_w, i, j, r)
 
 
     return file_list, width, height, img_mask

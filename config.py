@@ -8,7 +8,7 @@ ALLOWED_HOSTS = [
 
 LOCAL_IMAGE_FOLDER = "/home/MPFI.ORG/stuarte/Desktop/Drives/ds-prog/EM-DATA/gd-for-analysis"
 
-VERSION_NUMBER = "1.04.16"
+VERSION_NUMBER = "1.04.17"
 
 DJANGO_DEV_PORT = "8001"
 
