@@ -177,7 +177,8 @@ def create_single_local_image_obj(form, local_files_form, image_path=None, mask_
 def clean_mask(m):
     m_stem = pathlib.Path(m).stem
     m_lower = m_stem.lower()
-    m_clean = m_lower.replace('mask', '')
+    m_nospace = m_lower.replace(" ", "")
+    m_clean = m_nospace.replace('mask', '')
     #logger.debug(f"m: {m}, m_clean: {m_clean}")
     return m_clean
 
@@ -197,9 +198,11 @@ def sort_masks_and_images(all_files, dir_path):
 # for loop iterates over masks in list and sees if they match with the image (based on name)
 def find_matching_mask(image, masks, dir_path):
     mask_path = None
+    image_lower = image.lower()
+    image_clean = image.replace(" ", "")
     for m in masks:
         m_clean = clean_mask(m)
-        if m_clean in image.lower():
+        if m_clean in image_clean:
             mask_path = os.path.join(dir_path, m)
             return mask_path
     return mask_path
