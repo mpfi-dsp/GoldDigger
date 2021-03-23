@@ -8,7 +8,7 @@ from django.core.files import File
 from django.views.generic.list import ListView
 import csv
 from django.http import HttpResponse
-from .models import EMImage, MyChunkedUpload, MyChunkedMaskUpload, add_image
+from .models import EMImage, MyChunkedUpload, MyChunkedMaskUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 from django.views.generic import ListView
 import os
