@@ -79,7 +79,6 @@ def create_small_image(current_progress, total_progress, front_end_updater, img_
             current_progress/total_progress * 100, 1)
         A = np.zeros((img_size[0], img_size[1], 3))
         A[:, :, :] = img_new_w[i, j, :, :]
-        # A = np.uint8(A)
         imageio.imwrite('media/Output/' + str(r) + '.png', A)
         r += 1
         return
@@ -115,15 +114,8 @@ def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
         front_end_updater.update_progress(90, 1)
         for i in range(img_new_w.shape[0]):
             for j in range(img_new_w.shape[1]):
-                #create_small_image(current_progress, total_progress, front_end_updater, img_size, img_new_w, i, j, r)
-                current_progress += 1
-                front_end_updater.update_progress(
-                    current_progress/total_progress * 100, 1)
-                A = np.zeros((img_size[0], img_size[1], 3))
-                A[:, :, :] = img_new_w[i, j, :, :]
-                # A = np.uint8(A)
-                imageio.imwrite('media/Output/' + str(r) + '.png', A)
-                r += 1
+                create_small_image(current_progress, total_progress, front_end_updater, img_size, img_new_w, i, j, r)
+
     return file_list, width, height, img_mask
 
 
