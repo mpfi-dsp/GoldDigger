@@ -1,7 +1,7 @@
 import os
 from django.db import models
 from django import forms
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.files import File
 from chunked_upload.models import ChunkedUpload
 import logging
