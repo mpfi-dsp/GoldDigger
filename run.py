@@ -192,7 +192,7 @@ def stitch_image(folderstart, widthdiv256, heighttimeswidth, artifact):
     return picture, file_list
 
 # find centers of green squares
-def find_centers(cnts):
+def find_centers(cnts, img_original):
     seedlistx = []
     seedlisty = []
 
@@ -239,7 +239,7 @@ def count_green_dots(model, imageName='', thresh_sens=4):
     cnts = cv2.findContours(d, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
 
-    seedlistx, seedlisty = find_centers(cnts) # (1) calculating the centers
+    seedlistx, seedlisty = find_centers(cnts, img_original) # (1) calculating the centers
 
     # (2) floodfill
     listlen = len(seedlistx)
