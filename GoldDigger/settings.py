@@ -142,8 +142,8 @@ LOGGING = {
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-#changed TIME_ZONE from UTC
-TIME_ZONE = 'America/Atikokan'
+
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
