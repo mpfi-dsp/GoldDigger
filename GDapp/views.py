@@ -194,6 +194,16 @@ def sort_masks_and_images(all_files, dir_path):
     logger.debug(f"masks: {masks}")
     return masks, images
 
+# for loop iterates over masks in list and sees if they match with the image (based on name)
+def find_matching_mask(image, masks, dir_path):
+    mask_path = None
+    for m in masks:
+        m_clean = clean_mask(m)
+        if m_clean in image.lower():
+            mask_path = os.path.join(dir_path, m)
+            return mask_path
+    return mask_path
+
 
 def load_all_images_from_dir(form, local_files_form):
     dir_path = local_files_form.cleaned_data["local_image"]
@@ -203,20 +213,11 @@ def load_all_images_from_dir(form, local_files_form):
     pk_list = []
     masks, images = sort_masks_and_images(all_files, dir_path)
 
-
     # for loop creates EMImage object for each image in directory
     for f in images:
         file_path = os.path.join(dir_path, f)
         logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
-        mask_path = None
-
-        # for loop iterates over masks in list and sees if they match with the image (based on name)
-        for m in masks:
-            m_clean = clean_mask(m)
-            if m_clean in f.lower():
-                mask_path = os.path.join(dir_path, m)
-                break
-
+        mask_path = find_matching_mask(f, masks, dir_path)
         obj = create_single_local_image_obj(form, local_files_form, image_path=file_path, mask_path=mask_path)
         log_obj(obj)
         pk_list.append(obj.id)
