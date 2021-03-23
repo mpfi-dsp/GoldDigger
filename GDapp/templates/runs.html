@@ -3,10 +3,12 @@
 {% load static %}
 <div class="container">
     <h2>Finished Runs</h2>
+    <!-- run_list passed via RunListView class in views.py -->
     {% if run_list %}
     <table class="table">
         <thead class="thead-dark">
             <tr>
+                <!--define column names for the list-->
                 <th scope="col">#</th>
                 <th scope="col">Date</th>
                 <th scope="col">Preview</th>
@@ -21,6 +23,8 @@
                 <th scope="row">{{ run.id }}</th>
                 <td>
                     {{ run.created_at }}<br>
+
+                    <!-- run.local_image or run.image prints image name and filepath depending on upload method-->
                     {% if run.local_image %}
                       {{ run.local_image }}<br>
                     {% endif %}
@@ -30,24 +34,28 @@
                     {% endif %}
 
                     {{ run.trained_model}} <br>
+
                     {% if run.gold_particle_coordinates %}
                       <a href="{{ run.gold_particle_coordinates.url }}">Download Coordinates</a><br>
                     {% endif %}
 
 
                     {% if run.output_file %}
+
                       <a href="{{ run.output_file.url }}">Download Output zip file</a><br>
                     {% endif %}
                 </td>
+
                 <td><img src="/media/{{ run.analyzed_image }}" width="150"></td>
-                <td>
-                    {% if run.mask %}<img src="{{ run.mask.url }}" width="150">{% endif %}</td>
+                <!--This is broken because the mask preview never appears, need to change how mask is saved probably-->
+                <td>{% if run.mask %}<img src="{{ run.mask.url }}" width="150">{% endif %}</td>
                 <td>{% if run.histogram_image %}<img src="{{ run.histogram_image.url }}" width="200">{% endif %}</td>
             </tr>
         </tbody>
         {% endfor %}
     </table>
     {% else %}
+    <!--Prints if no run_list is passed-->
     <p>There are no completed runs.</p>
     {% endif %}
 </div>

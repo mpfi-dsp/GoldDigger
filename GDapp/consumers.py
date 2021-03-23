@@ -2,6 +2,8 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer, AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
 
+
+# Backend for channels, accepts commands from FrontEndUpdater
 class AnalysisConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         self.pk = self.scope['url_route']['kwargs']['pk']

@@ -3,11 +3,9 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 import pathlib
 
-# from spineyolo.models import get_coordinates_url, get_analyzed_image_url
-
 channel_layer = get_channel_layer()
 
-
+# FrontEndUpdater class contains functions for updating the front end
 class FrontEndUpdater:
 
     def __init__(self, pk):
@@ -63,6 +61,7 @@ class FrontEndUpdater:
                 'progress_message': progress_message
             })
 
+    # Displays results when run finishes
     def __send_finished(self):
         print("inside FrontEndUpdater __send_finished")
         pk_group_name = "analysis_%s" % self.pk
@@ -74,6 +73,7 @@ class FrontEndUpdater:
             image_path = gd_data.local_image
         imageName = pathlib.Path(image_path).stem
         model = gd_data.trained_model
+        #results_url has to be changed if you want to change the name of the output zip file
         results_url = f"../../../media/Output_{imageName}-with-{model}.zip"
         analyzed_image_url = get_analyzed_image_url(self.pk)
         histogram_image_url = get_histogram_image_url(self.pk)

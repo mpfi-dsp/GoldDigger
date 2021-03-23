@@ -19,6 +19,7 @@ from config import VERSION_NUMBER
 import sys
 import logging
 
+# logger settings
 logging.config.dictConfig({
     'version': 1,
     'disable_existing_loggers': False,
@@ -41,23 +42,12 @@ logging.config.dictConfig({
             'formatter': 'file',
             'filename': '/tmp/debug.log'
         },
-        #'celery': {
-        #    'level': 'DEBUG',
-        #    'class': 'logging.handlers.RotatingFileHandler',
-        #    'filename': 'celery.log',
-        #    'formatter': 'simple',
-        #    'maxBytes': 1024 * 1024 * 100,  # 100 mb
-        #},
     },
     'loggers': {
         '': {
             'level': 'DEBUG',
             'handlers': ['console', 'file']
         },
-        ##'celery': {
-        ##    'handlers': ['celery', 'console'],
-        ##    'level': 'DEBUG',
-        ##},
         'django.utils.autoreload': {
             'level': 'INFO',
         },
@@ -70,7 +60,6 @@ logging.config.dictConfig({
         'daphne.ws_protocol': {
             'level': 'INFO',
         },
-
     }
 })
 
@@ -78,19 +67,15 @@ logger = logging.getLogger(__name__)
 
 
 class MyChunkedUploadView(ChunkedUploadView):
-
     model = MyChunkedUpload
     field_name = 'the_file'
-
     def check_permissions(self, request):
         # Allow non authenticated users to make uploads
         pass
 
 
 class MyChunkedUploadCompleteView(ChunkedUploadCompleteView):
-
     model = MyChunkedUpload
-
     def check_permissions(self, request):
         # Allow non authenticated users to make uploads
         pass
@@ -118,23 +103,18 @@ class MyChunkedUploadCompleteView(ChunkedUploadCompleteView):
 
 
 class MyChunkedMaskUploadView(ChunkedUploadView):
-
     model = MyChunkedMaskUpload
     field_name = 'the_mask'
-
     def check_permissions(self, request):
         # Allow non authenticated users to make uploads
         pass
 
 
 class MyChunkedMaskUploadCompleteView(ChunkedUploadCompleteView):
-
     model = MyChunkedMaskUpload
-
     def check_permissions(self, request):
         # Allow non authenticated users to make uploads
         pass
-
     def on_completion(self, uploaded_file, request):
         obj = EMImage.objects.get(pk=request.POST['pk'])
         obj.mask = uploaded_file
@@ -148,30 +128,34 @@ class MyChunkedMaskUploadCompleteView(ChunkedUploadCompleteView):
                 'upload_id': chunked_upload.upload_id,
                 'filename': chunked_upload.filename}
 
-
+# creates previous runs page
 class RunListView(ListView):
     model = EMImage
     context_object_name = 'run_list'
     queryset = EMImage.objects.exclude(analyzed_image='').order_by('-id')
     template_name = 'runs.html'
 
+# creates unfinished runs page
 class UnfinishedRunListView(ListView):
     model = EMImage
     context_object_name = 'to_run_list'
     queryset = EMImage.objects.filter(analyzed_image='').order_by('-id')
     template_name = 'unfinished_runs.html'
 
-
+# homepage view
 def home(request):
     logger.debug("homepage accessed")
     return render(request, 'GDapp/home.html', {'version': VERSION_NUMBER})
 
+# cleaned data for params in EMImage object
 def populate_em_obj(obj, form):
     obj.trained_model = form.cleaned_data['trained_model']
     obj.particle_groups = form.cleaned_data['particle_groups']
     obj.threshold_string = form.cleaned_data['threshold_string']
+    obj.thresh_sens = form.cleaned_data['thresh_sens']
     return obj
 
+# creates an EMImage object for 1 image, mask, and set of params
 def create_single_local_image_obj(form, local_files_form, image_path=None, mask_path=None):
     obj = form.save(commit=False)
     if image_path:
@@ -207,37 +191,27 @@ def load_all_images_from_dir(form, local_files_form):
     masks = []
     images = []
 
+    # for loop adds files to either mask or image list depending on filename
     for file in all_files:
         if "mask" in file.lower():
-            #logger.debug(f"file {file} identified as a mask")
             masks.append(os.path.join(dir_path, file))
         else:
-            #logger.debug(f"substring 'mask' not found in {file}")
             images.append(os.path.join(dir_path, file))
     logger.debug(f"images: {images}")
     logger.debug(f"masks: {masks}")
 
-    # for m in masks:
-    #     m_stem = pathlib.Path(m).stem
-    #     m_lower = m_stem.lower()
-    #     m_clean = m_lower.replace('mask', '')
-    #     logger.debug(f"m: {m}, m_clean: {m_clean}")
-
+    # for loop creates EMImage object for each image in directory
     for f in images:
         file_path = os.path.join(dir_path, f)
         logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
-
         mask_path = None
+
+        # for loop iterates over masks in list and sees if they match with the image (based on name)
         for m in masks:
             m_clean = clean_mask(m)
             if m_clean in f.lower():
                 mask_path = os.path.join(dir_path, m)
                 break
-        # if mask_path == None:
-        #     logger.debug(f"no mask found for {f}")
-        # else:
-        #     logger.debug(f"mask: {mask_path} matched with file: {file_path}")
-
 
         obj = create_single_local_image_obj(form, local_files_form, image_path=file_path, mask_path=mask_path)
         log_obj(obj)
@@ -254,6 +228,7 @@ def chunked_file_upload(form):
         obj.save()
         return obj
 
+# makes image upload page
 def image_view(request):
     if request.method == 'POST':
         form = EMImageForm(request.POST, request.FILES)
@@ -277,7 +252,7 @@ def image_view(request):
         logger.debug("form not valid")
     return render(request, 'GDapp/upload.html', {'form': form, 'local_files_form': local_files_form})
 
-
+# calls run_gold_digger_task for items in list
 def run_gd(request, inputs):
     pk = inputs['pk']
     gold_digger_queue = GdappConfig.gold_particle_detector
@@ -291,18 +266,14 @@ def run_gd(request, inputs):
         return render(request, 'GDapp/run_gd.html', {'pk': pk})
 
 
-
-# attempt to make a downloadable csv
-def export(request):
-    response = HttpResponse(content_type='text/csv')
-    writer = csv.writer(response)
-
+# prints object to log file
 def log_obj(obj):
         logger.debug(f"local_image (path): {obj.local_image}")
         logger.debug(f"local_mask (path): {obj.local_mask}")
         logger.debug(f"trained_model: {obj.trained_model}")
         logger.debug(f"particle_groups: {obj.particle_groups}")
         logger.debug(f"threshold_string: {obj.threshold_string}")
+        logger.debug(f"thres_sens: {obj.thresh_sens}")
         try:
             logger.debug(f"id: {obj.id}") #always prints "None" ... why?
             logger.debug(f"pk: {obj.id}") #always prints "None" ... why?
