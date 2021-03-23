@@ -182,7 +182,7 @@ def clean_mask(m):
     return m_clean
 
 # for loop adds files to either mask or image list depending on filename
-def sort_masks_and_images(all_files):
+def sort_masks_and_images(all_files, dir_path):
     masks = []
     images = []
     for file in all_files:
@@ -201,7 +201,7 @@ def load_all_images_from_dir(form, local_files_form):
     all_files = os.listdir(dir_path)
     logger.debug(all_files)
     pk_list = []
-    masks, images = sort_masks_and_images(all_files)
+    masks, images = sort_masks_and_images(all_files, dir_path)
 
 
     # for loop creates EMImage object for each image in directory
