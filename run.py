@@ -191,15 +191,36 @@ def stitch_image(folderstart, widthdiv256, heighttimeswidth, artifact):
         picture = np.concatenate((picture, next_row), axis=0)
     return picture, file_list
 
+# find centers of green squares
+def find_centers(cnts):
+    seedlistx = []
+    seedlisty = []
 
+    for c in cnts:
+        M = cv2.moments(c)
+        if M["m00"] != 0:
+            cX = int(M["m10"] / M["m00"])
+            cY = int(M["m01"] / M["m00"])
+        else:
+            M["m00"] = 1
+            cX = int(M["m10"] / M["m00"])
+            cY = int(M["m01"] / M["m00"])
+
+        if (cX != 0 or cY != 0):
+            if img_original[cY, cX, 0] < 120:
+                seedlistx.append(cX)
+                seedlisty.append(cY)
+
+    return seedlistx, seedlisty
+
+# From Diego:
+# 1. Finds green square and then the center of that (x,y)
+# 2. Then I perform a flood fill on that (x,y) on the original image
+# 3. So it fills out the entire dark particle
+# 4. Then I find the contour of that mask and the xy of that new circle
+# 5. I do this so inconsistencies in the green mask dont affect the area of the gold particle
+# Basically it just uses the green masks to find a seed point to start flood filling. This makes sure that the mask is the exact size of the gold particle
 def count_green_dots(model, imageName='', thresh_sens=4):
-    # From Diego:
-    # 1. Finds green square and then the center of that (x,y)
-    # 2. Then I perform a flood fill on that (x,y) on the original image
-    # 3. So it fills out the entire dark particle
-    # 4. Then I find the contour of that mask and the xy of that new circle
-    # 5. I do this so inconsistencies in the green mask dont affect the area of the gold particle
-    # Basically it just uses the green masks to find a seed point to start flood filling. This makes sure that the mask is the exact size of the gold particle
     img = cv2.imread('media/Output_Final/OutputStitched.png')
     img_original = cv2.imread(f'media/Output_Final/Cropped-{imageName}-with-{model}.png')
     img_original = np.uint8(img_original)
@@ -217,23 +238,10 @@ def count_green_dots(model, imageName='', thresh_sens=4):
 
     cnts = cv2.findContours(d, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
-    seedlistx = []
-    seedlisty = []
-    for c in cnts:
-        M = cv2.moments(c)
-        if M["m00"] != 0:
-            cX = int(M["m10"] / M["m00"])
-            cY = int(M["m01"] / M["m00"])
-        else:
-            M["m00"] = 1
-            cX = int(M["m10"] / M["m00"])
-            cY = int(M["m01"] / M["m00"])
 
-        if (cX != 0 or cY != 0):
-            if img_original[cY, cX, 0] < 120:
-                seedlistx.append(cX)
-                seedlisty.append(cY)
+    seedlistx, seedlisty = find_centers(cnts) # (1) calculating the centers
 
+    # (2) floodfill
     listlen = len(seedlistx)
     floodflags = 4
     floodflags |= cv2.FLOODFILL_MASK_ONLY
@@ -241,10 +249,7 @@ def count_green_dots(model, imageName='', thresh_sens=4):
     for i in range(listlen):
         num, im, mask, rect = cv2.floodFill(img_original, flood_mask, (seedlistx[i], seedlisty[i]), 1, (thresh_sens,) * 3, (thresh_sens,) * 3,
                                             floodflags)
-
     print(np.mean(img_original))
-    # cv2.imshow("Image", flood_mask)
-    # cv2.waitKey(0)
 
     flood_mask = flood_mask[:h, :w]
     cnts = cv2.findContours(
@@ -330,7 +335,6 @@ def sort_from_thresholds(coords_in_mask, particle_group_count, thresholds_list_s
             elif row['Area'] > thresholds_list[4] and row['Area'] < thresholds_list[5]:
                 results3 = results3.append({'X': row['X'], 'Y': row['Y']}, ignore_index=True)
 
-
     return results1, results2, results3
 
 
@@ -376,14 +380,12 @@ def save_histogram(coordinates, front_end_updater):
     add_histogram_image(front_end_updater.pk, hist_path)
 
 
-# eleanor added for coordinates6nm
 def save_coordinates(coordinates, name, front_end_updater):
     coordinates_path = 'media/Output_Final/' + name + '.csv'
 
     if os.path.exists(coordinates_path):
         os.remove(coordinates_path)
     coordinates.to_csv(coordinates_path, index=False)
-    #add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path)
 
 
 def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, model, front_end_updater, imageName=''):
@@ -401,15 +403,6 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, mode
     add_gold_particle_coordinates(
         front_end_updater.pk, coordinates_path_absolute)
 
-    # Eleanor added for 6nm
-    #coordinates6nm_path_relative = os.path.join(
-    #    sub_path, 'coordinates6nm' + timestr + '.csv')
-    #coordinates6nm_path_absolute = os.path.join(
-    #    settings.MEDIA_ROOT, coordinates6nm_path_relative)
-    #coordinates6nm.to_csv(coordinates6nm_path_absolute, index=None,
-    #                      header=True)
-    #add_coordinatesGroup1(front_end_updater.pk, coordinates6nm_path_absolute)
-
     save_coordinates(coordinates1, f'coordsGroup1-{imageName}-with-{model}', front_end_updater)
     save_coordinates(coordinates2, f'coordsGroup2-{imageName}-with-{model}', front_end_updater)
     save_coordinates(coordinates3, f'coordsGroup3-{imageName}-with-{model}', front_end_updater)
@@ -417,13 +410,8 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, mode
     save_histogram(coordinates, front_end_updater)
 
 
-
-
 def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string, thresh_sens=4, mask=None, front_end_updater=None):
     print(f'Running with {model}')
-    if thresholds_list_string == '':
-        print('NO THRESHOLDS')
-        return
 
     imageName = pathlib.Path(input_image_list).stem
     print(f'Image name: {imageName}')
@@ -432,8 +420,6 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     artifact = get_artifact_status(model)
     clear_out_old_files(model)
     front_end_updater.update(2, "loading and cutting up image")
-
-
 
     file_list, width, height, img_mask = load_data_make_jpeg(
         input_image_list, mask, model, front_end_updater, imageName=imageName)
@@ -446,7 +432,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
             model))
     print("RAN PIX2PIX")
     front_end_updater.update(6, "Finished. stitching files together...")
-    # Take only the Fake_B photos and stich together
+
     file_list = glob.glob(
         'media/PIX2PIX/results/{0}/test_latest/images/*_fake_B.png'.format(model))
     print("---BEFORE STITCH---")
@@ -461,11 +447,9 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
     print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
     all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
-    #print(thresholds_list_string)
-    #print(thresholds_list_string.split(","))
-    #thresholds_list_string = "2, 10, 15, 40"
 
-    print("image name?: " + input_image_list)
+
+    print("image name: " + input_image_list)
     print(pathlib.Path(input_image_list).stem)
 
     results1, results2, results3 = sort_from_thresholds(coords_in_mask,
@@ -479,7 +463,6 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
 
     output_file = shutil.make_archive(f'media/Output-{imageName}-with-{model}', 'zip', 'media/Output_Final')
 
-    #output_path = os.path.join(settings.MEDIA_ROOT, 'GD_Output.zip')
     add_output_file(front_end_updater.pk, f'media/Output-{imageName}-with-{model}.zip')
 
     print('CREATED ZIP FILE')

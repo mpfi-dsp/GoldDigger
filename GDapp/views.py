@@ -201,13 +201,10 @@ def find_matching_mask(image, masks, dir_path):
     image_stem = pathlib.Path(image).stem
     image_lower = image_stem.lower()
     image_clean = image_lower.replace(" ", "")
-    
+
     for m in masks:
         m_clean = clean_mask(m)
-        logger.debug(f"current m_clean: {m_clean}")
-        logger.debug(f"current image_clean: {image_clean}")
         if m_clean in image_clean:
-            logger.debug(f"mask found for image")
             mask_path = os.path.join(dir_path, m)
             return mask_path
     return mask_path
