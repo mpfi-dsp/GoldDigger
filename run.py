@@ -63,6 +63,29 @@ def crop_mask(mask, height256, width256):
     print("completed crop_mask function")
     return(img_mask)
 
+#  gives height and width to give an image dimensions that are divisible by 256
+def get_dimensions(img_new):
+    shape = img_new.shape
+    height = shape[0] // 256
+    height256 = height * 256
+    width = shape[1] // 256
+    width256 = width * 256
+
+    return height256, width256, height, width
+
+# make 1 256x256 crop
+def create_small_image(current_progress, total_progress, front_end_updater, img_size, img_new_w, i, j, r):
+        current_progress += 1
+        front_end_updater.update_progress(
+            current_progress/total_progress * 100, 1)
+        A = np.zeros((img_size[0], img_size[1], 3))
+        A[:, :, :] = img_new_w[i, j, :, :]
+        # A = np.uint8(A)
+        imageio.imwrite('media/Output/' + str(r) + '.png', A)
+        r += 1
+        return
+
+
 # look in INPUT folder, crop photo and save crop to OUTPUT folder
 # Cut up in order, append white images
 def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
@@ -73,12 +96,8 @@ def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
         front_end_updater.update_progress(10, 1)
         img_size = (256, 256, 3)
         img_new = io.imread(entry)
-        # img_new = (img_new/256).astype('uint8')
-        shape = img_new.shape
-        height = shape[0] // 256
-        height256 = height * 256
-        width = shape[1] // 256
-        width256 = width * 256
+
+        height256, width256, height, width = get_dimensions(img_new)
 
         img_new = img_new[:height256, :width256, :3]
         img_mask = None
@@ -97,14 +116,7 @@ def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
         front_end_updater.update_progress(90, 1)
         for i in range(img_new_w.shape[0]):
             for j in range(img_new_w.shape[1]):
-                current_progress += 1
-                front_end_updater.update_progress(
-                    current_progress/total_progress * 100, 1)
-                A = np.zeros((img_size[0], img_size[1], 3))
-                A[:, :, :] = img_new_w[i, j, :, :]
-                # A = np.uint8(A)
-                imageio.imwrite('media/Output/' + str(r) + '.png', A)
-                r += 1
+                create_small_image(current_progress, total_progress, front_end_updater, img_size, img_new_w, i, j, r)
     return file_list, width, height, img_mask
 
 
