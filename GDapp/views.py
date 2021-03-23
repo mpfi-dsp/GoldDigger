@@ -202,7 +202,10 @@ def find_matching_mask(image, masks, dir_path):
     image_clean = image.replace(" ", "")
     for m in masks:
         m_clean = clean_mask(m)
+        logger.debug(f"current m_clean: {m_clean}")
+        logger.debug(f"current image_clean: {image_clean}")
         if m_clean in image_clean:
+            logger.debug(f"mask found for image")
             mask_path = os.path.join(dir_path, m)
             return mask_path
     return mask_path
@@ -221,6 +224,7 @@ def load_all_images_from_dir(form, local_files_form):
         file_path = os.path.join(dir_path, f)
         logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
         mask_path = find_matching_mask(f, masks, dir_path)
+        logger.debut(f"in load all images from dir, mask_path: {mask_path}")
         obj = create_single_local_image_obj(form, local_files_form, image_path=file_path, mask_path=mask_path)
         log_obj(obj)
         pk_list.append(obj.id)
