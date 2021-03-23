@@ -233,6 +233,7 @@ def chunked_file_upload(form):
         obj.save()
         return obj
 
+
 # makes image upload page
 def image_view(request):
     if request.method == 'POST':
@@ -241,10 +242,8 @@ def image_view(request):
         if form.is_valid() and local_files_form.is_valid() and not (local_files_form.cleaned_data["local_image"] == "" and form.cleaned_data["preloaded_pk"] == ""):
             if form.cleaned_data['preloaded_pk'] == '': # local file used
                 if os.path.isfile(local_files_form.cleaned_data["local_image"]):  #if single file (not directory)
-                    logger.debug("SINGLE FILE INPUT")
                     obj = create_single_local_image_obj(form, local_files_form)
                 elif os.path.isdir(local_files_form.cleaned_data["local_image"]):
-                    logger.debug("DIRECTORY INPUT")
                     pk_list = load_all_images_from_dir(form, local_files_form)
                     return run_gd(request, {'pk': pk_list})
             else: # chunked file upload

@@ -38,36 +38,33 @@ def get_artifact_status(model):
         artifact = False
     return artifact
 
-
+# clears directories that need to be empty for a new run
 def clear_out_old_files(model):
     shutil.rmtree('media/Output', ignore_errors=True)
     os.makedirs('media/Output')
-
     shutil.rmtree('media/Output_Appended', ignore_errors=True)
     os.makedirs('media/Output_Appended')
-
     shutil.rmtree('media/Output_Appended/test', ignore_errors=True)
     os.makedirs('media/Output_Appended/test')
-
-    shutil.rmtree(
-        'media/PIX2PIX/results/{0}/test_latest/images'.format(model), ignore_errors=True)
+    shutil.rmtree('media/PIX2PIX/results/{0}/test_latest/images'.format(model), ignore_errors=True)
     os.makedirs('media/PIX2PIX/results/{0}/test_latest/images'.format(model))
-
     shutil.rmtree('media/Output_ToStitch', ignore_errors=True)
     os.makedirs('media/Output_ToStitch')
-
     shutil.rmtree('media/Output_Final', ignore_errors=True)
     os.makedirs('media/Output_Final')
 
-    try:
-        os.remove('media/GD_Output.zip')
-    except:
-        pass
-
+# crop mask file to the same size as the cropped image file
+def crop_mask(mask, height256, width256):
+    mask_path = pathlib.Path('media/Mask', mask)
+    img_mask = io.imread(mask_path)
+    img_mask = img_mask[:height256, :width256, :3]
+    imageio.imwrite('media/Output_Final/' +
+                    'CroppedMask'+'.png', img_mask)
+    print("completed crop_mask function")
+    return(img_mask)
 
 # look in INPUT folder, crop photo and save crop to OUTPUT folder
 # Cut up in order, append white images
-
 def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
     file_list = pathlib.Path('media/Input', image)
     print(file_list)
@@ -86,11 +83,7 @@ def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
         img_new = img_new[:height256, :width256, :3]
         img_mask = None
         if mask is not None:
-            mask_path = pathlib.Path('media/Mask', mask)
-            img_mask = io.imread(mask_path)
-            img_mask = img_mask[:height256, :width256, :3]
-            imageio.imwrite('media/Output_Final/' +
-                            'CroppedMask'+'.png', img_mask)
+            img_mask = crop_mask(mask, height256, width256)
         front_end_updater.update_progress(50, 1)
         img_new_w = view_as_blocks(img_new, img_size)
         img_new_w = np.uint8(img_new_w)
