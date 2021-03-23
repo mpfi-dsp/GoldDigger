@@ -55,14 +55,6 @@ class EMImage(models.Model):
     preloaded_pk = models.CharField(max_length=10, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
-# this function is never called ... call or delete
-def add_image(pk, url):
-    gd_data = EMImage.objects.get(pk=pk)
-    temp_image = File(open(url, "rb"))
-    _, ext = os.path.splitext(url)
-    gd_data.image.save(f'image{pk}{ext}', temp_image)
-    logger.debug("image saved: "+ f'image{pk}{ext}')
-
 # saves histogram of gold particle sizes to media/analyzed/histograms
 def add_histogram_image(pk, url):
     gd_data = EMImage.objects.get(pk=pk)
@@ -93,14 +85,6 @@ def add_output_file(pk, url):
     _, ext = os.path.splitext(url)
     print(f'image attribute: {gd_data.image}')
     print(f'local image attribute: {gd_data.local_image}')
-    try:
-        print(f'image attribute path: {gd_data.image.path}')
-    except:
-        print('COULD NOT PRINT IMAGE PATH')
-    try:
-        print(f'local image attribute path: {gd_data.local_image.path}')
-    except:
-        print('COULD NOT PRINT LOCAL IMAGE PATH')
 
     try:
         image_path = gd_data.image.path
