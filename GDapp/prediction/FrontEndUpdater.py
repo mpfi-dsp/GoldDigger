@@ -74,7 +74,7 @@ class FrontEndUpdater:
         imageName = pathlib.Path(image_path).stem
         model = gd_data.trained_model
         #results_url has to be changed if you want to change the name of the output zip file
-        results_url = f"../../../media/Output_{imageName}-with-{model}.zip"
+        results_url = f"../../../media/Output-{imageName}-with-{model}.zip"
         analyzed_image_url = get_analyzed_image_url(self.pk)
         histogram_image_url = get_histogram_image_url(self.pk)
         async_to_sync(channel_layer.group_send)(

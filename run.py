@@ -100,6 +100,7 @@ def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
         total_progress = img_new_w.shape[0] * img_new_w.shape[1]
         current_progress = 0
         front_end_updater.post_message('cutting up image')
+        # the cutting up image step is what gives all the "Lossy conversion" warnings in celery terminal
         front_end_updater.update_progress(90, 1)
         for i in range(img_new_w.shape[0]):
             for j in range(img_new_w.shape[1]):
