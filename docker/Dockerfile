@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:1.4-cuda10.1-cudnn7-runtime
+FROM pytorch/pytorch:1.8-cuda10.1-cudnn7-runtime
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
