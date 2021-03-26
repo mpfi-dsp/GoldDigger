@@ -6,8 +6,9 @@ local_file_args = dict(path='/usr/src/local-images',
                        required=False,
                        help_text=config.LOCAL_IMAGE_FOLDER)
 
-# fills out params in EMImage object
+
 class EMImageForm(forms.ModelForm):
+    '''Fills out params in EMImage object.'''
 
     class Meta:
         model = EMImage
@@ -17,8 +18,9 @@ class EMImageForm(forms.ModelForm):
         labels = {'trained_model': 'Trained model', 'threshold_string': 'Cutoff string', 'thresh_sens': 'Threshold sensitivity'
                   }
 
-# Files for local upload
+
 class LocalFilesForm(forms.Form):
+    '''Files for local upload.'''
     # necessary to have this separate so it reloads correctly
     local_image = forms.FilePathField(**local_file_args)
     local_mask = forms.FilePathField(**local_file_args)

@@ -21,9 +21,36 @@ TRAINED_MODEL_CHOICES = [
 MyChunkedUpload = ChunkedUpload
 MyChunkedMaskUpload = ChunkedUpload
 
-# This class stores parameters for one image
+
 class EMImage(models.Model):
-    # these image and mask fields are only used for chunked upload (accomodates 1 file at a time)
+    '''This class stores parameters for one image.
+
+        Attributes:
+            image (FileField): The image chosen for chunked upload (accomodates 1 file at a time)
+            mask (FileField): The mask chosen for chunked upload (optional)
+            threshold_string (CharField): Upper and lower boundaries for each particle size. Input 2, 4, or 6 comma separated values for 1, 2, or 3 particle groups.
+            thresh_sens (FloatField): Accepts integer or float values for threshold sensitivity. Default value is 4. Affects how sensitive the floodfill for particle area is to changes in color.
+            local_image (FilePathField): Contains the path to an image in the Docker container in /usr/src/local-images. Used for local file upload. This field will only exist if there is nothing in the "image" field.
+            local_mask (FilePathField): Contains the path to an mask in the Docker container in /usr/src/local-images. Used for local file upload. Optional. This field will only exist if there is nothing in the "mask" field.
+            particle_groups (IntegerField): Accepts integers 1, 2 or 3. Determines how many categories the gold particles will be sorted into based on the area boundaries provided by threshold_string.
+            trained_model (CharField): Allows trained model choices from the TRAINED_MODEL_CHOICES list. Determines which network will be used to analyze the image.
+            gold_particle_coordinates (FileField): CSV file of all x,y gold particle coordinates found along with their areas. This file is presented as a download link on the "Previous Runs" tab.
+            analyzed_image (ImageField):
+            histogram_image (ImageField):
+            output_file (FileField):
+            chunked_image_id (CharField):
+            chunked_masl_id (CharField):
+            chunked_image_linked (ForeignKey):
+            preloaded_pk (CharField):
+            created_at (DateTimeField):
+
+
+
+
+
+    '''
+
+
     image = models.FileField(upload_to="Input/", blank=True, default='')
     mask = models.FileField(upload_to="Mask/", blank=True)
     threshold_string = models.CharField(max_length=200, blank=True, default="1, 60",
