@@ -23,7 +23,8 @@ MyChunkedMaskUpload = ChunkedUpload
 
 
 class EMImage(models.Model):
-    '''This class stores parameters for one image.
+    '''
+        This class stores parameters and output for one image.
 
         Attributes:
             image (FileField): The image chosen for chunked upload (accomodates 1 file at a time)
@@ -35,18 +36,14 @@ class EMImage(models.Model):
             particle_groups (IntegerField): Accepts integers 1, 2 or 3. Determines how many categories the gold particles will be sorted into based on the area boundaries provided by threshold_string.
             trained_model (CharField): Allows trained model choices from the TRAINED_MODEL_CHOICES list. Determines which network will be used to analyze the image.
             gold_particle_coordinates (FileField): CSV file of all x,y gold particle coordinates found along with their areas. This file is presented as a download link on the "Previous Runs" tab.
-            analyzed_image (ImageField):
-            histogram_image (ImageField):
-            output_file (FileField):
-            chunked_image_id (CharField):
-            chunked_masl_id (CharField):
-            chunked_image_linked (ForeignKey):
-            preloaded_pk (CharField):
-            created_at (DateTimeField):
-
-
-
-
+            analyzed_image (ImageField): Output image created by Gold Digger network (OutputStitched.png with particle coordinates plotted)
+            histogram_image (ImageField): Histogram of gold particle areas.
+            output_file (FileField): .zip file containing output from GoldDigger (coordinates file, Cropped image, histogram, etc).
+            chunked_image_id (CharField): NEVER USED???
+            chunked_mask_id (CharField): NEVER USED???
+            chunked_image_linked (ForeignKey): NEVER USED???
+            preloaded_pk (CharField): Unique ID for the object (automatically generated and assigned).
+            created_at (DateTimeField): Date and time the object was created (in UTC).
 
     '''
 
@@ -83,31 +80,59 @@ class EMImage(models.Model):
     preloaded_pk = models.CharField(max_length=10, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
-# saves histogram of gold particle sizes to media/analyzed/histograms
 def add_histogram_image(pk, url):
+    '''
+        This function saves a histogram of gold particle sizes to media/analyzed/histograms.
+        Parameters:
+        pk: preloaded_pk for EMImage object/front_end_updater.
+        url: File path to where the histogram generated during run.py is saved.
+
+    '''
+
     gd_data = EMImage.objects.get(pk=pk)
     temp_image = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
     gd_data.histogram_image.save(f'histogram_{pk}{ext}', temp_image)
     logger.debug("histogram saved: "+ f'histogram_{pk}{ext}' )
 
-# saves analyzed image (Gold Digger network output) to media/analyzed/images
 def add_analyzed_image(pk, url):
+    '''
+        This function saves analyzed image (Gold Digger network output) to media/analyzed/images.
+        Parameters:
+        pk: preloaded_pk for EMImage object/front_end_updater.
+        url: File path to where the analyzed image generated during run.py is saved.
+
+    '''
+
     gd_data = EMImage.objects.get(pk=pk)
     temp_image = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
     gd_data.analyzed_image.save(f'image_{pk}{ext}', temp_image)
     logger.debug("analyzed image saved: "+ f'image_{pk}{ext}')
 
-# saves csv of gold particle coordinates with their areas to media/analyzed/images
 def add_gold_particle_coordinates(pk, url):
+    '''
+        This function saves the csv of gold particle coordinates with their areas to media/analyzed/coordinates.
+        Parameters:
+        pk: preloaded_pk for EMImage object/front_end_updater.
+        url: File path to where the coordinates file (all sizes) generated during run.py is saved.
+
+    '''
+
     gd_data = EMImage.objects.get(pk=pk)
     temp_file = File(open(url, "rb"))
     gd_data.gold_particle_coordinates.save(f'coordinates_{pk}_.csv', temp_file)
     logger.debug("gold particle coordinates saved: "+ f'coordinates_{pk}_.csv')
 
-# saves output zip to media (in the future, make it save to a folder inside media)
 def add_output_file(pk, url):
+    '''
+        This function saves the output zip file to media.
+        Parameters:
+        pk: preloaded_pk for EMImage object/front_end_updater.
+        url: File path to where zip file generated during run.py is saved.
+
+    '''
+
     gd_data = EMImage.objects.get(pk=pk)
     temp_file = File(open(url, "rb"))
     _, ext = os.path.splitext(url)
@@ -127,19 +152,28 @@ def add_output_file(pk, url):
     gd_data.output_file.save(f'Output-{imageName}-with-{model}{ext}', temp_file)
     logger.debug("output file saved: "+ f'Output-{imageName}-with-{model}{ext}')
 
-
 def get_histogram_image_url(pk):
+    '''
+        This function is used to help display the results of a single run.
+        Parameters:
+        pk: preloaded_pk for EMImage object/front_end_updater.
+        Returns:
+        gd_data.histogram_image.url: Location where histogram_image is saved for the EMImage object with a specified pk.
+
+    '''
+
     gd_data = EMImage.objects.get(pk=pk)
     return gd_data.histogram_image.url
 
 def get_analyzed_image_url(pk):
+    '''
+        This function is used to help display the results of a single run.
+        Parameters:
+        pk: preloaded_pk for EMImage object/front_end_updater.
+        Returns:
+        gd_data.analyzed_image.url: Location where analyzed_image is saved for the EMImage object with a specified pk.
+
+    '''
+
     gd_data = EMImage.objects.get(pk=pk)
     return gd_data.analyzed_image.url
-
-def get_gold_particle_coordinates_url(pk):
-    gd_data = EMImage.objects.get(pk=pk)
-    return gd_data.gold_particle_coordinates.url
-
-def get_output_file_url(pk):
-    gd_data = EMImage.objects.get(pk=pk)
-    return gd_data.output_file.url
