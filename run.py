@@ -27,19 +27,37 @@ import os
 import stat
 import shutil
 from django.conf import settings
-# from sklearn.cluster import Kmeans
 
 
 def get_artifact_status(model):
-    # gets rid of the constant artifact in the up left corner
+    '''
+    This function checks whether part of the image needs to be blocked out due
+    to a constant artifact produced in the upper left corner by the
+    87kGoldDigger model.
+
+    Parameters:
+    model (string): Name of trained model.
+
+    Returns:
+    artifact: True if model=='87kGoldDigger', else False.
+
+    '''
+
     if model == '87kGoldDigger':
         artifact = True
     else:
         artifact = False
     return artifact
 
-# clears directories that need to be empty for a new run
 def clear_out_old_files(model):
+    '''
+    This function clears directories that need to be empty for a new run.
+
+    Parameters:
+    model: Name of trained model.
+
+    '''
+
     shutil.rmtree('media/Output', ignore_errors=True)
     os.makedirs('media/Output')
     shutil.rmtree('media/Output_Appended', ignore_errors=True)
@@ -53,8 +71,22 @@ def clear_out_old_files(model):
     shutil.rmtree('media/Output_Final', ignore_errors=True)
     os.makedirs('media/Output_Final')
 
-# crop mask file to the same size as the cropped image file
 def crop_mask(mask, height256, width256):
+    '''
+    This function crops the mask file to the same size as the cropped image file.
+
+    Parameters:
+    mask:
+    height256: Height of cropped image (=height of original image rounded down
+        to the nearest multiple of 256).
+    width256: Width of cropped image (=width of original image rounded down
+        to the nearest multiple of 256).
+
+    returns:
+    img_mask: Mask image cropped to height256 x width256 (dimensions that are
+        multiples of 256 pixels and are the same size as the cropped image).
+    '''
+
     mask_path = pathlib.Path('media/Mask', mask)
     img_mask = io.imread(mask_path)
     img_mask = img_mask[:height256, :width256, :3]
@@ -63,8 +95,20 @@ def crop_mask(mask, height256, width256):
     print("completed crop_mask function")
     return(img_mask)
 
-#  gives height and width to give an image dimensions that are divisible by 256
 def get_dimensions(img_new):
+    '''
+    This function calculates height and width to give an image dimensions that are divisible by 256.
+
+    Parameters:
+    img_new:
+
+    Returns:
+    height256:
+    height:
+    width256:
+    width:
+
+    '''
     shape = img_new.shape
     height = shape[0] // 256
     height256 = height * 256
@@ -72,8 +116,26 @@ def get_dimensions(img_new):
     width256 = width * 256
     return height256, width256, height, width
 
-# make 1 256x256 crop
 def create_small_image(current_progress, total_progress, front_end_updater, img_size, img_new_w, i, j, r):
+        '''
+        This function makes and saves 1 256x256 crop of an image.
+
+        Parameters:
+        current_progress:
+        total_progress:
+        front_end_updater:
+        img_size:
+        img_new_w:
+        i:
+        j:
+        r:
+
+        Returns:
+        current_progress:
+        r:
+
+        '''
+
         current_progress += 1
         front_end_updater.update_progress(
             current_progress/total_progress * 100, 1)
@@ -85,8 +147,27 @@ def create_small_image(current_progress, total_progress, front_end_updater, img_
 
 
 # look in INPUT folder, crop photo and save crop to OUTPUT folder
-# Cut up in order, append white images
+
 def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
+    '''
+        Crops image to size that is a multiple of 256 x 256 pixels and breaks
+        image into 256 x 256 pixel squares.
+
+        Parameters:
+        image:
+        mask:
+        model:
+        front_end_updater:
+        imageName:
+
+        Returns:
+        file_list:
+        width:
+        height:
+        img_mask:
+
+    '''
+
     file_list = pathlib.Path('media/Input', image)
     print(file_list)
     for entry in [file_list]:
@@ -119,8 +200,19 @@ def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
 
     return file_list, width, height, img_mask
 
-
+# Cut  append white image to every cropped 256x256 image
 def combine_white(white, folderA, front_end_updater):
+    '''
+        This function appends a white image to every cropped 256x256 image for
+        the PIX2PIX network to write over.
+
+        Parameters:
+        white:
+        folderA:
+        front_end_updater:
+
+    '''
+
     print(os.getcwd())
     os.chdir(folderA)
     total_progress = len(os.listdir('.'))
@@ -137,8 +229,17 @@ def combine_white(white, folderA, front_end_updater):
     print(os.getcwd())
 
 
-# Save to OUTPUT folder
 def save_to_output_folder(file_list, model):
+    '''
+        This function moves all 256 x 256 PIX2PIX output images into
+        media/Output_ToStitch.
+
+        Parameters:
+        file_list:
+        model:
+
+    '''
+
     for entry in file_list:
         split_name = entry.split('/')
         #print(split_name)
@@ -152,6 +253,22 @@ def save_to_output_folder(file_list, model):
 
 
 def stitch_row(n, master, folderstart, artifact, widthdiv256):
+    '''
+        This function takes the images in folderstart (256 x 256 output
+        images in Output_ToStitch) and stitches them back together into one
+        row that has the width of the original cropped image.
+
+        Parameters:
+        n:
+        master:
+        folderstart:
+        artifact:
+        widthdiv256:
+
+        Returns:
+        full_row:
+    '''
+
     image1 = imageio.imread(folderstart + master[n])
     if (artifact):
         image1[0:35, 220:256, :] = 0
@@ -173,6 +290,24 @@ def stitch_row(n, master, folderstart, artifact, widthdiv256):
 
 
 def stitch_image(folderstart, widthdiv256, heighttimeswidth, artifact):
+    '''
+        This function takes all images in folderstart (hardcoded as
+        'media/Output_ToStitch' which contains 256x256 images that are the
+        output from PIX2PIX) and reassembles them into a full analyzed version
+        of the original cropped image.
+
+        Parameters:
+        folderstart:
+        widthdiv256:
+        heighttimeswidth:
+        artifact:
+
+        Returns:
+        picture:
+        file_list:
+
+    '''
+
     files = os.listdir(folderstart)
     file_list = []
     for file in files:
@@ -193,6 +328,21 @@ def stitch_image(folderstart, widthdiv256, heighttimeswidth, artifact):
 
 # find centers of green squares
 def find_centers(cnts, img_original):
+    '''
+        This function calculates the centers of the green squares created by the
+         network to mark particle locations.
+
+        Parameters:
+        cnts:
+        img_original:
+
+        Returns:
+        seedlistx:
+        seedlisty:
+
+    '''
+
+
     seedlistx = []
     seedlisty = []
 
@@ -221,6 +371,12 @@ def find_centers(cnts, img_original):
 # 5. I do this so inconsistencies in the green mask dont affect the area of the gold particle
 # Basically it just uses the green masks to find a seed point to start flood filling. This makes sure that the mask is the exact size of the gold particle
 def count_green_dots(model, imageName='', thresh_sens=4):
+    '''
+        This function
+
+    '''
+
+
     img = cv2.imread('media/Output_Final/OutputStitched.png')
     img_original = cv2.imread(f'media/Output_Final/Cropped-{imageName}-with-{model}.png')
     img_original = np.uint8(img_original)
