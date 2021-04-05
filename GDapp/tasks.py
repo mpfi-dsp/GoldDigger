@@ -66,6 +66,7 @@ def check_for_items_in_queue():
         return True
     else: 
         return False
+<<<<<<< HEAD
 
 def check_if_celery_worker_active():
     for key, val in celery_app.control.inspect().active().items():
@@ -77,6 +78,8 @@ def check_if_celery_worker_active():
     else:
         print("Celery Active")
         return True
+=======
+>>>>>>> 5464d40a3f5f5eb8e7e3eb608807f71d3b573bac
 
 def save_to_queue(pk):
     if os.path.isfile('media/queue.pkl'):    
