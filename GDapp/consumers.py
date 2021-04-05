@@ -3,8 +3,9 @@ from channels.generic.websocket import WebsocketConsumer, AsyncJsonWebsocketCons
 from channels.db import database_sync_to_async
 
 
-# Backend for channels, accepts commands from FrontEndUpdater
 class AnalysisConsumer(AsyncJsonWebsocketConsumer):
+    """Backend for channels, accepts commands from FrontEndUpdater"""
+    
     async def connect(self):
         self.pk = self.scope['url_route']['kwargs']['pk']
         self.pk_group_name = "analysis_%s" % self.pk

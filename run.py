@@ -212,9 +212,12 @@ def combine_white(white, folderA, front_end_updater):
         front_end_updater:
 
     '''
-
+    img_white = io.imread(white)
     print(os.getcwd())
     os.chdir(folderA)
+
+
+
     total_progress = len(os.listdir('.'))
     current_progress = 0
     for file in os.listdir('.'):
@@ -222,7 +225,7 @@ def combine_white(white, folderA, front_end_updater):
             current_progress/total_progress * 100, 1)
         current_progress += 1
         imA = io.imread(file)
-        newimage = np.concatenate((imA, white), axis=1)
+        newimage = np.concatenate((imA, img_white), axis=1)
         imageio.imwrite('../Output_Appended/test/' + file, newimage)
 
     os.chdir('../../')

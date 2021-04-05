@@ -5,8 +5,9 @@ import pathlib
 
 channel_layer = get_channel_layer()
 
-# FrontEndUpdater class contains functions for updating the front end
+
 class FrontEndUpdater:
+    """FrontEndUpdater class contains functions for updating the front end"""
 
     def __init__(self, pk):
         self.pk = pk
@@ -61,8 +62,9 @@ class FrontEndUpdater:
                 'progress_message': progress_message
             })
 
-    # Displays results when run finishes
+
     def __send_finished(self):
+        """Displays results when run finishes"""
         print("inside FrontEndUpdater __send_finished")
         pk_group_name = "analysis_%s" % self.pk
         # TODO: change this to get a personalized result based on pk
