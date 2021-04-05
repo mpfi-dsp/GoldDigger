@@ -51,6 +51,10 @@ sh scripts/build.sh
         ```
         scripts/run_django.sh
         ```
+        4. open a new terminal window and run flower (to monitor celery processes)
+        ```
+        sh scritps/run_flower.sh
+        ```
 
 
 7. In your browser, go to   

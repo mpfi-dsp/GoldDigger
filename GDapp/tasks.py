@@ -29,19 +29,16 @@ def run_gold_digger_task(self, pk):
     front_end_updater.update(0, "running gold digger")
     run_gold_digger(obj.trained_model, image_path, obj.particle_groups,
                     obj.threshold_string, thresh_sens=obj.thresh_sens, mask=mask_path, front_end_updater=front_end_updater)
+    return ('Done')
 
 @shared_task(bind=True)
 def after_task(self):
-    pk = pop_pk_from_queue()
-    if pk is not None:
-        gd_task = celery_timer_task.si(pk)
-        gd_task.link(after_task.si())
-        gd_task.delay()
+    start_tasks()
 
 def start_tasks():
     pk = pop_pk_from_queue()
     if pk is not None:
-        gd_task = celery_timer_task.si(pk)
+        gd_task = run_gold_digger_task.si(pk)
         gd_task.link(after_task.si())
         gd_task.delay()
     
@@ -62,6 +59,24 @@ def get_image(obj):
     else:
         return obj.image.path
 
+def check_for_items_in_queue():
+    with open('media/queue.pkl', 'rb') as queue_save_file:
+        pk_queue = pickle.load(queue_save_file)
+    if pk_queue:
+        return True
+    else: 
+        return False
+
+def check_if_celery_worker_active():
+    for key, val in celery_app.control.inspect().active().items():
+        dict_is_empty = len(val)==0
+        print(f"value is zero? {len(val)==0}")
+    if dict_is_empty:
+        print("Celery Inactive")
+        return False
+    else:
+        print("Celery Active")
+        return True
 
 def save_to_queue(pk):
     if os.path.isfile('media/queue.pkl'):    

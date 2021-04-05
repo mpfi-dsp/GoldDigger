@@ -24,3 +24,4 @@ debug.log
 *.part
 /media/chunked_uploads
 /.vscode/
+queue.pkl
