@@ -1,0 +1,1 @@
+celery -A GoldDigger flower --port=5555

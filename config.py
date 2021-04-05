@@ -6,7 +6,7 @@ ALLOWED_HOSTS = [
     'localhost',
     ]
 
-LOCAL_IMAGE_FOLDER = "/home/MPFI.ORG/stuarte/Desktop/Drives/ds-prog/EM-DATA/gd-for-analysis"
+LOCAL_IMAGE_FOLDER = "home/MPFI.ORG/smirnovm/Documents/local-test-folder"
 
 VERSION_NUMBER = "1.05.05"
 

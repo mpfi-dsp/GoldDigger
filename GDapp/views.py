@@ -1,4 +1,4 @@
-from GDapp.tasks import celery_timer_task, run_gold_digger_task
+from GDapp.tasks import celery_timer_task, run_gold_digger_task, save_to_queue, start_tasks
 from GDapp.prediction.FrontEndUpdater import FrontEndUpdater
 from GDapp.apps import GdappConfig
 from django.shortcuts import render, redirect
@@ -12,12 +12,14 @@ from .models import EMImage, MyChunkedUpload, MyChunkedMaskUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 from django.views.generic import ListView
 import os
-from celery import chain
+from celery import chain, task, worker, current_app
 import pathlib
 from config import VERSION_NUMBER
 
 import sys
 import logging
+
+TIMERS_CELERY_ONLY = True # this is only for testing celery, keep it false.
 
 # logger settings
 logging.config.dictConfig({
@@ -264,17 +266,26 @@ def image_view(request):
 
 # calls run_gold_digger_task for items in list
 def run_gd(request, inputs):
-    pk = inputs['pk']
-    gold_digger_queue = GdappConfig.gold_particle_detector
-    if type(pk) == list:
-        tasks = [run_gold_digger_task.si(pk_single) for pk_single in pk]
-        chain(*tasks)()
-        return render(request, 'GDapp/run_gd.html', {'pk': pk[0]})
+    if TIMERS_CELERY_ONLY:
+        return test_with_timers(request, inputs)
     else:
-        gold_digger_queue(pk)
-        logger.debug("inside run_gd function")
-        return render(request, 'GDapp/run_gd.html', {'pk': pk})
-
+        pk = inputs['pk']
+        logger.debug(f"Chain: {run_gold_digger_task.request.chain}")
+        logger.debug(f"id: {run_gold_digger_task.request.id}")
+        logger.debug(f"group: {run_gold_digger_task.request.group}")
+        logger.debug(f"worker: {worker}")
+        logger.debug(f"registered_tasks: {task.control.inspect().registered_tasks()}")
+        logger.debug(f"tasks: {current_app.tasks}")
+        gold_digger_queue = GdappConfig.gold_particle_detector
+        if type(pk) == list:
+            tasks = [run_gold_digger_task.si(pk_single) for pk_single in pk]
+            chain(*tasks)()
+            return render(request, 'GDapp/run_gd.html', {'pk': pk[0]})
+        else:
+            gold_digger_queue(pk)
+            logger.debug("inside run_gd function")
+            return render(request, 'GDapp/run_gd.html', {'pk': pk})
+   
 
 # prints object to log file
 def log_obj(obj):
@@ -289,3 +300,25 @@ def log_obj(obj):
             logger.debug(f"pk: {obj.id}") #always prints "None" ... why?
         except:
             logger.debug(f"could not print obj.id")
+
+def test_with_timers(request, inputs):
+    pk = inputs['pk']
+    if type(pk) == list:
+        # tasks = [celery_timer_task.si(pk_single) for pk_single in pk]
+        # chain(*tasks)()
+        # s = celery_timer_task.si(1)
+        # s2 = celery_timer_task.si(2)
+        # s3 = celery_timer_task.si(3)
+        # s.link(s2)
+        # s2.link(s3)
+        # s.delay()
+        # s4 = celery_timer_task.si(4)
+        # add_to_chain(s4)
+        for pk_single in pk:
+            save_to_queue(pk_single)
+        start_tasks()
+        return render(request, 'GDapp/run_gd.html', {'pk': pk[0]})
+    else:
+        celery_timer_task(pk)
+        logger.debug("inside run_gd function")
+        return render(request, 'GDapp/run_gd.html', {'pk': pk})
