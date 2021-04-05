@@ -1,4 +1,4 @@
-from GDapp.tasks import celery_timer_task, run_gold_digger_task, save_to_queue, start_tasks
+from GDapp.tasks import celery_timer_task, run_gold_digger_task, save_to_queue, check_for_items_in_queue, start_tasks
 from GDapp.prediction.FrontEndUpdater import FrontEndUpdater
 from GDapp.apps import GdappConfig
 from django.shortcuts import render, redirect
@@ -314,9 +314,11 @@ def test_with_timers(request, inputs):
         # s.delay()
         # s4 = celery_timer_task.si(4)
         # add_to_chain(s4)
+        fresh_start = check_for_items_in_queue()
         for pk_single in pk:
             save_to_queue(pk_single)
-        start_tasks()
+        if fresh_start:
+            start_tasks()
         return render(request, 'GDapp/run_gd.html', {'pk': pk[0]})
     else:
         celery_timer_task(pk)
