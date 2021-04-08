@@ -196,8 +196,8 @@ def sort_masks_and_images(all_files, dir_path):
             masks.append(os.path.join(dir_path, file))
         else:
             images.append(os.path.join(dir_path, file))
-    logger.debug(f"images: {images}")
-    logger.debug(f"masks: {masks}")
+    #logger.debug(f"images: {images}")
+    #logger.debug(f"masks: {masks}")
     return masks, images
 
 # for loop iterates over masks in list and sees if they match with the image (based on name)
@@ -219,7 +219,7 @@ def load_all_images_from_dir(form, local_files_form):
     dir_path = local_files_form.cleaned_data["local_image"]
     logger.debug(f"directory path: {dir_path}")
     all_files = os.listdir(dir_path)
-    logger.debug(all_files)
+    #logger.debug(all_files)
     pk_list = []
     masks, images = sort_masks_and_images(all_files, dir_path)
 
@@ -264,7 +264,7 @@ def image_view(request):
     else:
         form = EMImageForm()
         local_files_form = LocalFilesForm()
-        logger.debug("form not valid")
+        #logger.debug("form not valid")
     return render(request, 'GDapp/upload.html', {'form': form, 'local_files_form': local_files_form})
 
 # calls run_gold_digger_task for items in list

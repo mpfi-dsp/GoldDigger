@@ -67,9 +67,11 @@ def check_for_items_in_queue():
         with open(queue_path, 'rb') as queue_save_file:
             pk_queue = pickle.load(queue_save_file)
         if pk_queue:
+            logger.debug("LOGGER: items in queue TRUE")
             print("items in queue TRUE")
             return True
     else:
+        logger.debug("LOGGER: items in queue FALSE")
         print("items in queue FALSE")
         return False
 
