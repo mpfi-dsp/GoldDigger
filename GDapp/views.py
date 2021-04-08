@@ -59,6 +59,12 @@ logging.config.dictConfig({
         'daphne.ws_protocol': {
             'level': 'INFO',
         },
+        'django.channels.server': {
+            'level': 'WARNING',
+        },
+        'aioredis': {
+            'level': 'INFO',
+        },
     }
 })
 
@@ -272,7 +278,7 @@ def run_gd(request, inputs):
     if fresh_start:
         start_tasks()
     return render(request, 'GDapp/run_gd.html', {'pk': pk[0]})
-   
+
 
 # prints object to log file
 def log_obj(obj):
