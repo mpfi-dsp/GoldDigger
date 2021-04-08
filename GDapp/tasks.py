@@ -62,7 +62,7 @@ def get_image(obj):
         return obj.image.path
 
 def check_for_items_in_queue():
-    queue_path = 'media/queue.pkl'
+    queue_path = '../media/queue.pkl'
     if os.path.exists(queue_path):
         with open(queue_path, 'rb') as queue_save_file:
             pk_queue = pickle.load(queue_save_file)
