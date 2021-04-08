@@ -41,7 +41,7 @@ def start_tasks():
         gd_task = run_gold_digger_task.si(pk)
         gd_task.link(after_task.si())
         gd_task.delay()
-    
+
 
 def get_mask(obj):
     if obj.mask.name == "" and obj.local_mask == "" :
@@ -60,11 +60,13 @@ def get_image(obj):
         return obj.image.path
 
 def check_for_items_in_queue():
-    with open('media/queue.pkl', 'rb') as queue_save_file:
-        pk_queue = pickle.load(queue_save_file)
-    if pk_queue:
-        return True
-    else: 
+    queue_path = 'media/queue.pkl'
+    if os.path.exists(queue_path):
+        with open(queue_path, 'rb') as queue_save_file:
+            pk_queue = pickle.load(queue_save_file)
+        if pk_queue:
+            return True
+    else:
         return False
 
 def check_if_celery_worker_active():
@@ -79,7 +81,7 @@ def check_if_celery_worker_active():
         return True
 
 def save_to_queue(pk):
-    if os.path.isfile('media/queue.pkl'):    
+    if os.path.isfile('media/queue.pkl'):
         with open('media/queue.pkl', 'rb') as queue_save_file:
             pk_queue = pickle.load(queue_save_file)
             pk_queue.append(pk)
