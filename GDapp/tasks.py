@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 @shared_task(bind=True)
 def celery_timer_task(self, pk):
+    ''' '''
     print(pk)
     feu = FrontEndUpdater(pk)
     time.sleep(5)
@@ -21,6 +22,7 @@ def celery_timer_task(self, pk):
 
 @shared_task(bind=True)
 def run_gold_digger_task(self, pk):
+    ''' '''
     print(pk)
     obj = EMImage.objects.get(pk=pk)
     mask_path = get_mask(obj)
@@ -35,9 +37,11 @@ def run_gold_digger_task(self, pk):
 
 @shared_task(bind=True)
 def after_task(self):
+    ''' '''
     start_tasks()
 
 def start_tasks():
+    ''' '''
     pk = pop_pk_from_queue()
     if pk is not None:
         gd_task = run_gold_digger_task.si(pk)
@@ -46,6 +50,7 @@ def start_tasks():
 
 
 def get_mask(obj):
+    ''' '''
     if obj.mask.name == "" and obj.local_mask == "" :
         mask = None
     elif obj.mask.name == "":
@@ -56,12 +61,14 @@ def get_mask(obj):
 
 
 def get_image(obj):
+    ''' '''
     if obj.image.name == "":
         return obj.local_image
     else:
         return obj.image.path
 
 def check_for_items_in_queue():
+    ''' '''
     queue_path = 'media/queue.pkl'
     if os.path.exists(queue_path):
         with open(queue_path, 'rb') as queue_save_file:
@@ -76,6 +83,7 @@ def check_for_items_in_queue():
         return False
 
 def check_if_celery_worker_active():
+    ''' '''
     for key, val in celery_app.control.inspect().active().items():
         dict_is_empty = len(val)==0
         print(f"value is zero? {len(val)==0}")
@@ -87,6 +95,7 @@ def check_if_celery_worker_active():
         return True
 
 def save_to_queue(pk):
+    ''' '''
     if os.path.isfile('media/queue.pkl'):
         with open('media/queue.pkl', 'rb') as queue_save_file:
             pk_queue = pickle.load(queue_save_file)
@@ -99,6 +108,7 @@ def save_to_queue(pk):
 
 
 def pop_pk_from_queue():
+    ''' '''
     if os.path.isfile('media/queue.pkl'):
         with open('media/queue.pkl', 'rb') as queue_save_file:
             pk_queue = pickle.load(queue_save_file)

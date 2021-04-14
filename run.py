@@ -123,7 +123,7 @@ def create_small_image(current_progress, total_progress, front_end_updater, img_
         Parameters:
         current_progress:
         total_progress:
-        front_end_updater:
+        front_end_updater: FrontEndUpdater class object for updating the front end.
         img_size:
         img_new_w:
         i:
@@ -207,12 +207,12 @@ def combine_white(white, folderA, front_end_updater):
         the PIX2PIX network to write over.
 
         Parameters:
-        white:
-        folderA:
-        front_end_updater:
+        white: Blank 256x256 image.
+        folderA: Folder containing the 256x256 crops of the original image.
+        front_end_updater: FrontEndUpdater class object for updating the front end.
 
     '''
-    #img_white = io.imread(white)
+
     print(os.getcwd())
     os.chdir(folderA)
 
@@ -238,8 +238,8 @@ def save_to_output_folder(file_list, model):
         media/Output_ToStitch.
 
         Parameters:
-        file_list:
-        model:
+        file_list: List of 256x256 output images.
+        model: Name of trained model.
 
     '''
 
@@ -377,6 +377,15 @@ def count_green_dots(model, imageName='', thresh_sens=4):
     '''
         This function
 
+        Parameters:
+        model:
+        imageName:
+        thresh_sens:
+
+        Returns:
+        cnts:
+
+
     '''
 
 
@@ -418,6 +427,17 @@ def count_green_dots(model, imageName='', thresh_sens=4):
 
 
 def check_if_coordinate_is_in_mask(x, y, mask):
+    '''
+        This function
+
+        Parameters:
+        x:
+        y:
+        mask:
+
+        Returns:
+
+    '''
     if mask is None:
         return True
     # if coordinate is in white region on the mask image, return false (do not count it)
@@ -428,6 +448,20 @@ def check_if_coordinate_is_in_mask(x, y, mask):
 
 
 def get_contour_centers(cnts, img_mask):
+    '''
+        This function
+
+        Parameters:
+        cnts:
+        img_mask:
+
+        Returns:
+        all_coordinates:
+        coords_in_mask:
+
+
+    '''
+
     # group using k means
     # report size distributions
     # show relative size histograms and cutoffs
@@ -460,6 +494,20 @@ def get_contour_centers(cnts, img_mask):
     return all_coordinates, coords_in_mask
 
 def sort_from_thresholds(coords_in_mask, particle_group_count, thresholds_list_string):
+    '''
+        This function
+
+        Parameters:
+        coords_in_mask:
+        particle_group_count:
+        thresholds_list_string:
+
+        Returns:
+        results1:
+        results2:
+        results3:
+
+    '''
     #print(thresholds_list_string)
     thresholds_list=[]
     #print(thresholds_list_string.split(","))
@@ -498,16 +546,37 @@ def sort_from_thresholds(coords_in_mask, particle_group_count, thresholds_list_s
 
 
 def clear_out_input_dirs():
+    '''
+        This function clears out the necessary Input directory for the next run.
+    '''
     shutil.rmtree('media/Input', ignore_errors=True)
     os.mkdir('media/Input')
 
 
 def update_progress(progress_recorder, step, total_steps, message):
+    '''
+        This function
+
+        Parameters:
+        progress_recorder:
+        step:
+        total_steps:
+        message:
+
+    '''
     if progress_recorder is not None:
         progress_recorder.set_progress(step, total_steps, message)
 
 
 def save_preview_figure(coordinates, front_end_updater):
+    '''
+        This function
+
+        Parameters:
+        coordinates:
+        front_end_updater:
+
+    '''
     img = cv2.imread('media/Output_Final/OutputStitched.png')
     img2 = img[:, :, ::-1]
     plt.figure(1)
@@ -527,6 +596,14 @@ def save_preview_figure(coordinates, front_end_updater):
 
 
 def save_histogram(coordinates, front_end_updater):
+    '''
+        This function
+
+        Parameters:
+        coordinates:
+        front_end_updater:
+    '''
+
     plt.figure(2)
     plt.hist(coordinates.Area.values, bins=100)
     plt.title('Particle Area Histogram')
@@ -548,6 +625,18 @@ def save_coordinates(coordinates, name, front_end_updater):
 
 
 def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, model, front_end_updater, imageName=''):
+    '''
+        This function
+
+        Parameters:
+        coordinates:
+        coordinates1:
+        coordinates2:
+        coordinates3:
+        model:
+        front_end_updater:
+        imageName:
+    '''
     sub_path = 'results'
     results_path = os.path.join(settings.MEDIA_ROOT, sub_path)
     if not os.path.isdir(results_path):
@@ -570,6 +659,19 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, mode
 
 
 def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string, thresh_sens=4, mask=None, front_end_updater=None):
+    '''
+        This function calls all the functions required to run a profile through a trained model and produce output.
+
+        Parameters:
+        model: 
+        input_image_list:
+        particle_group_count:
+        thresholds_list_string:
+        thresh_sens:
+        mask:
+        front_end_updater:
+
+    '''
     print(f'Running with {model}')
 
     imageName = pathlib.Path(input_image_list).stem
