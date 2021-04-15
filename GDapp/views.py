@@ -269,10 +269,13 @@ def image_view(request):
 
 # calls run_gold_digger_task for items in list
 def run_gd(request, inputs):
+
     pk = inputs['pk']
+    logger.debug(f"INSIDE run_gd FUNCTION FOR pk: {pk}")
     if not isinstance(pk, list):
         pk = [pk]
     fresh_start = not check_for_items_in_queue() or not check_if_celery_worker_active()
+    logger.debug(f"fresh_start: {fresh_start}")
     for pk_single in pk:
         save_to_queue(pk_single)
     if fresh_start:
