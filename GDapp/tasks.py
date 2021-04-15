@@ -74,8 +74,8 @@ def check_for_items_in_queue():
         with open(queue_path, 'rb') as queue_save_file:
             pk_queue = pickle.load(queue_save_file)
         if pk_queue:
-            logger.debug("LOGGER: items in queue TRUE")
-            print("items in queue TRUE")
+            #logger.debug("LOGGER: items in queue TRUE")
+            #print("items in queue TRUE")
             return True
     else:
         logger.debug("LOGGER: items in queue FALSE")
@@ -86,12 +86,12 @@ def check_if_celery_worker_active():
     ''' '''
     for key, val in celery_app.control.inspect().active().items():
         dict_is_empty = len(val)==0
-        print(f"value is zero? {len(val)==0}")
+        #print(f"value is zero? {len(val)==0}")
     if dict_is_empty:
-        print("Celery Inactive")
+        #print("Celery Inactive")
         return False
     else:
-        print("Celery Active")
+        #print("Celery Active")
         return True
 
 def save_to_queue(pk):
