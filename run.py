@@ -40,7 +40,6 @@ def get_artifact_status(model):
 
     Returns:
     artifact: True if model=='87kGoldDigger', else False.
-
     '''
 
     if model == '87kGoldDigger':
@@ -55,7 +54,6 @@ def clear_out_old_files(model):
 
     Parameters:
     model: Name of trained model.
-
     '''
 
     shutil.rmtree('media/Output', ignore_errors=True)
@@ -76,7 +74,7 @@ def crop_mask(mask, height256, width256):
     This function crops the mask file to the same size as the cropped image file.
 
     Parameters:
-    mask:
+    mask: Path to mask image file.
     height256: Height of cropped image (=height of original image rounded down
         to the nearest multiple of 256).
     width256: Width of cropped image (=width of original image rounded down
@@ -100,14 +98,13 @@ def get_dimensions(img_new):
     This function calculates height and width to give an image dimensions that are divisible by 256.
 
     Parameters:
-    img_new:
+    img_new: Image to run through GD network.
 
     Returns:
-    height256:
-    height:
-    width256:
-    width:
-
+    height256: Height of img_new rounded down to a multiple of 256 (pixels).
+    height: Height of img_new (pixels).
+    width256: Width of img_new rounded down to a multiple of 256 (pixels).
+    width: Width of img_new (pixels).
     '''
     shape = img_new.shape
     height = shape[0] // 256
@@ -507,22 +504,39 @@ def update_progress(progress_recorder, step, total_steps, message):
         progress_recorder.set_progress(step, total_steps, message)
 
 
-def save_preview_figure(coordinates, front_end_updater):
-    img = cv2.imread('media/Output_Final/OutputStitched.png')
-    img2 = img[:, :, ::-1]
-    plt.figure(1)
-    plt.imshow(img2)
-    plt.scatter(coordinates.X.values, coordinates.Y.values,
-                facecolors='none', edgecolors='r')
-    plt.gca().set_axis_off()
-    plt.margins(0, 0)
-    plt.gca().xaxis.set_major_locator(plt.NullLocator())
-    plt.gca().yaxis.set_major_locator(plt.NullLocator())
+def save_preview_figure(all_coordinates, imageName, model, front_end_updater):
+    #CHANGED TO BE IMAGE WITH AREA LABELS
+
+    # img = cv2.imread('media/Output_Final/OutputStitched.png')
+    # img2 = img[:, :, ::-1]
+    # plt.figure(1)
+    # plt.imshow(img2)
+    # plt.scatter(coordinates.X.values, coordinates.Y.values,
+    #             facecolors='none', edgecolors='r')
+    # plt.gca().set_axis_off()
+    # plt.margins(0, 0)
+    # plt.gca().xaxis.set_major_locator(plt.NullLocator())
+    # plt.gca().yaxis.set_major_locator(plt.NullLocator())
+    # preview_file_path = 'media/Output_Final/preview.png'
+    # if os.path.exists(preview_file_path):
+    #     os.remove(preview_file_path)
+    # plt.savefig(preview_file_path, bbox_inches='tight',
+    #             pad_inches=0)
+
+
+    img_original = cv2.imread(f'media/Output_Final/Cropped-{imageName}-with-{model}.png')
+
+    for i, coord in all_coordinates.iterrows():
+        cv2.putText(img_original, str(coord['Area']), (int(coord['X']), int(coord['Y'])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+
     preview_file_path = 'media/Output_Final/preview.png'
-    if os.path.exists(preview_file_path):
-        os.remove(preview_file_path)
-    plt.savefig(preview_file_path, bbox_inches='tight',
-                pad_inches=0)
+    imageio.imwrite('media/Output_Final/preview.png', img_original)
+
+
+
+
+
+
     add_analyzed_image(front_end_updater.pk, preview_file_path)
 
 
@@ -565,7 +579,7 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, mode
     save_coordinates(coordinates1, f'coordsGroup1-{imageName}-with-{model}', front_end_updater)
     save_coordinates(coordinates2, f'coordsGroup2-{imageName}-with-{model}', front_end_updater)
     save_coordinates(coordinates3, f'coordsGroup3-{imageName}-with-{model}', front_end_updater)
-    save_preview_figure(coordinates, front_end_updater)
+    save_preview_figure(coordinates, imageName, model, front_end_updater)
     save_histogram(coordinates, front_end_updater)
 
 
