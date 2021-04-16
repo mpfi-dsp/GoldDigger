@@ -15,7 +15,9 @@ logger = logging.getLogger(__name__)
 TRAINED_MODEL_CHOICES = [
     ('43kGoldDigger', 'GoldDigger for small particles in 43k images'),
     ('87kGoldDigger', 'General GoldDigger (87k)'),
-    ('032521Experimental', '03/25/2021 Experimental GoldDigger')
+    #('032521Experimental', '03/25/2021 Experimental GoldDigger'),
+    ('greenonly_041421', 'Green Only GoldDigger (04/14/2021)'),
+    ('balanced_041421', 'Balanced GoldDigger (04/14/2021)')
 ]
 
 MyChunkedUpload = ChunkedUpload
