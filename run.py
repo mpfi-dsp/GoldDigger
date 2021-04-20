@@ -384,8 +384,8 @@ def count_green_dots(model, imageName='', thresh_sens=4):
     h, w = img_original.shape[:2]
     flood_mask = np.zeros((h + 2, w + 2), dtype=np.uint8)
 
-    lower_green = np.array([0, 245, 0])
-    upper_green = np.array([40, 255, 40])
+    lower_green = np.array([0, 200, 0])
+    upper_green = np.array([55, 255, 55])
 
     mask = cv2.inRange(img, lower_green, upper_green)
     kernel = np.ones((5, 5), np.uint8)
