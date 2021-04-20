@@ -53,8 +53,8 @@ class EMImage(models.Model):
     image = models.FileField(upload_to="Input/", blank=True, default='')
     mask = models.FileField(upload_to="Mask/", blank=True)
     threshold_string = models.CharField(max_length=200, blank=True, default="1, 60",
-                                        help_text="Input comma-separated values to serve as the upper and lower boundaries for the area of each particle size.")
-    thresh_sens = models.FloatField(default = 4., help_text="Use arrows or type in decimal values if desired.")
+                                        help_text="Input comma-separated values to serve as the lower and upper boundaries for the area of each particle size.")
+    thresh_sens = models.FloatField(default = 4.)
 
     # path for local_mask and local_images references location in the docker container, these are for local upload
     local_image = models.FilePathField(path='/usr/src/local-images', blank=True)
