@@ -274,7 +274,9 @@ def run_gd(request, inputs):
     logger.debug(f"INSIDE run_gd FUNCTION FOR pk: {pk}")
     if not isinstance(pk, list):
         pk = [pk]
-    fresh_start = not check_for_items_in_queue() or not check_if_celery_worker_active()
+
+    # change or not to and
+    fresh_start = not check_for_items_in_queue() and not check_if_celery_worker_active()
     logger.debug(f"fresh_start: {fresh_start}")
     for pk_single in pk:
         save_to_queue(pk_single)
