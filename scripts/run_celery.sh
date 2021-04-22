@@ -21,6 +21,7 @@ docker run  --gpus all \
             --name gold-digger-dev-$DJANGO_DEV_PORT \
             --link redis-$REDIS_PORT:redis \
             -p $DJANGO_DEV_PORT:8000 \
+            -p 5555:5555 \
             -v ${PWD}:/usr/src/app \
             -v "/$LOCAL_IMAGE_FOLDER:/usr/src/local-images" \
             gold-digger/gold-digger-dev \

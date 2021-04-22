@@ -1,4 +1,4 @@
-from GDapp.tasks import celery_timer_task, run_gold_digger_task
+from GDapp.tasks import check_if_celery_worker_active, save_to_queue, check_for_items_in_queue, start_tasks
 from GDapp.prediction.FrontEndUpdater import FrontEndUpdater
 from GDapp.apps import GdappConfig
 from django.shortcuts import render, redirect
@@ -12,7 +12,6 @@ from .models import EMImage, MyChunkedUpload, MyChunkedMaskUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 from django.views.generic import ListView
 import os
-from celery import chain
 import pathlib
 from config import VERSION_NUMBER
 
@@ -58,6 +57,12 @@ logging.config.dictConfig({
             'level': 'INFO',
         },
         'daphne.ws_protocol': {
+            'level': 'INFO',
+        },
+        'django.channels.server': {
+            'level': 'WARNING',
+        },
+        'aioredis': {
             'level': 'INFO',
         },
     }
@@ -191,8 +196,8 @@ def sort_masks_and_images(all_files, dir_path):
             masks.append(os.path.join(dir_path, file))
         else:
             images.append(os.path.join(dir_path, file))
-    logger.debug(f"images: {images}")
-    logger.debug(f"masks: {masks}")
+    #logger.debug(f"images: {images}")
+    #logger.debug(f"masks: {masks}")
     return masks, images
 
 # for loop iterates over masks in list and sees if they match with the image (based on name)
@@ -214,16 +219,16 @@ def load_all_images_from_dir(form, local_files_form):
     dir_path = local_files_form.cleaned_data["local_image"]
     logger.debug(f"directory path: {dir_path}")
     all_files = os.listdir(dir_path)
-    logger.debug(all_files)
+    #logger.debug(all_files)
     pk_list = []
     masks, images = sort_masks_and_images(all_files, dir_path)
 
     # for loop creates EMImage object for each image in directory
     for f in images:
         file_path = os.path.join(dir_path, f)
-        logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
+        #logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
         mask_path = find_matching_mask(f, masks, dir_path)
-        logger.debug(f"in load all images from dir, mask_path: {mask_path}")
+        #logger.debug(f"in load all images from dir, mask_path: {mask_path}")
         obj = create_single_local_image_obj(form, local_files_form, image_path=file_path, mask_path=mask_path)
         log_obj(obj)
         pk_list.append(obj.id)
@@ -259,21 +264,25 @@ def image_view(request):
     else:
         form = EMImageForm()
         local_files_form = LocalFilesForm()
-        logger.debug("form not valid")
+        #logger.debug("form not valid")
     return render(request, 'GDapp/upload.html', {'form': form, 'local_files_form': local_files_form})
 
 # calls run_gold_digger_task for items in list
 def run_gd(request, inputs):
+
     pk = inputs['pk']
-    gold_digger_queue = GdappConfig.gold_particle_detector
-    if type(pk) == list:
-        tasks = [run_gold_digger_task.si(pk_single) for pk_single in pk]
-        chain(*tasks)()
-        return render(request, 'GDapp/run_gd.html', {'pk': pk[0]})
-    else:
-        gold_digger_queue(pk)
-        logger.debug("inside run_gd function")
-        return render(request, 'GDapp/run_gd.html', {'pk': pk})
+    logger.debug(f"INSIDE run_gd FUNCTION FOR pk: {pk}")
+    if not isinstance(pk, list):
+        pk = [pk]
+
+    # change or not to and
+    fresh_start = not check_for_items_in_queue() and not check_if_celery_worker_active()
+    logger.debug(f"fresh_start: {fresh_start}")
+    for pk_single in pk:
+        save_to_queue(pk_single)
+    if fresh_start:
+        start_tasks()
+    return render(request, 'GDapp/run_gd.html', {'pk': pk[0]})
 
 
 # prints object to log file

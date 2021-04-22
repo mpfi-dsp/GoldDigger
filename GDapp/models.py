@@ -49,7 +49,6 @@ class EMImage(models.Model):
 
     '''
 
-
     image = models.FileField(upload_to="Input/", blank=True, default='')
     mask = models.FileField(upload_to="Mask/", blank=True)
     threshold_string = models.CharField(max_length=200, blank=True, default="1, 60",
