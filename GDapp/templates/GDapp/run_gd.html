@@ -34,7 +34,7 @@
   </div>
 </div>
 
-<a href="" class="btn btn-secondary btn-md disabled not-visible" id="previous-results-button">Download Results for other Images</a>
+<a href="" class="btn btn-primary btn-md disabled not-visible" id="previous-results-button">Download Results for other Images</a>
 
 
 <br><br>
@@ -81,11 +81,11 @@
       document.querySelector('#results-button').className = "btn btn-primary btn-md";
       document.querySelector('#results-button').setAttribute("href", data["results_url"]);
 
-      document.querySelector('#previous-results-button').className = "btn btn-secondary btn-md";
-      document.querySelector('#previous-results-button').setAttribute("href", data["results_url"]);
+      document.querySelector('#previous-results-button').className = "btn btn-primary btn-md";
+      document.querySelector('#previous-results-button').setAttribute("href", "{% url 'image_upload' %}");
 
-      document.querySelector('#analyzed-image-preview').setAttribute("src", data["analyzed_image_url"])
-      document.querySelector('#histogram-image-preview').setAttribute("src", data["histogram_image_url"])
+      document.querySelector('#analyzed-image-preview').setAttribute("src", data["analyzed_image_url"]);
+      document.querySelector('#histogram-image-preview').setAttribute("src", data["histogram_image_url"]);
     } else if (data['error'] != null) {
       console.log("Error!")
       document.querySelector('#results-label').innerHTML = ("Error");
