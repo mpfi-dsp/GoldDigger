@@ -173,6 +173,8 @@ def create_single_local_image_obj(form, local_files_form, image_path=None, mask_
     else:
         try:
             obj.local_mask = local_files_form.cleaned_data["local_mask"]
+        except:
+            obj.local_mask = None
     obj = populate_em_obj(obj, form)
     obj.pk = None
     obj.id = None
