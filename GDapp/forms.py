@@ -34,4 +34,4 @@ class LocalFilesForm(forms.Form):
         #                                                **local_file_args, allow_folders=False)
         self.fields['local_mask'] = None
         self.fields['local_image'].widget.attrs['class'] = 'form-control'
-        self.fields['local_mask'].widget.attrs['class'] = 'form-control'
+        #self.fields['local_mask'].widget.attrs['class'] = 'form-control'
