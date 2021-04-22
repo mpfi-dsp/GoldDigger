@@ -7,6 +7,8 @@
   <!--<img class="mr-3" src="{% static 'zoolander.gif' %}">-->
   <div class="media-body">
     <a href="" class="btn btn-primary btn-md disabled not-visible" id="results-button">Download Results</a>
+    <a href="" class="btn btn-primary btn-md disabled not-visible" id="previous-results-button">Download Results for other Images</a>
+
     <p id="progress-text-0">Progress (Primary)</p>
     <div class="progress">
       <div class="progress-bar progress-bar-striped progress-bar-animated"
@@ -71,6 +73,10 @@
       document.querySelector('#results-label').innerHTML = ("Results");
       document.querySelector('#results-button').className = "btn btn-primary btn-md";
       document.querySelector('#results-button').setAttribute("href", data["results_url"]);
+
+      document.querySelector('#previous-results-button').className = "btn btn-primary btn-md";
+      document.querySelector('#previous-results-button').setAttribute("href", data["results_url"]);
+
       document.querySelector('#analyzed-image-preview').setAttribute("src", data["analyzed_image_url"])
       document.querySelector('#histogram-image-preview').setAttribute("src", data["histogram_image_url"])
     } else if (data['error'] != null) {

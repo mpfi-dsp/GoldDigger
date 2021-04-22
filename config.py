@@ -9,7 +9,7 @@ ALLOWED_HOSTS = [
 
 LOCAL_IMAGE_FOLDER = "home/MPFI.ORG/smirnovm/Documents/local-test-folder"
 
-VERSION_NUMBER = "1.07.01"
+VERSION_NUMBER = "1.07.02"
 
 DJANGO_DEV_PORT = "8001"
 
