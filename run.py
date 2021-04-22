@@ -733,5 +733,5 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     add_output_file(front_end_updater.pk, f'media/Output-{imageName}-with-{model}.zip')
 
     print('CREATED ZIP FILE')
-    front_end_updater.update(9, "All done")
-    front_end_updater.analysis_done()
+    front_end_updater.update(9, f"All done with {imageName}")
+    front_end_updater.analysis_done(imageName = imageName)

@@ -25,9 +25,9 @@ class FrontEndUpdater:
         self.latest_message = message
         self.__send_a_message(message)
 
-    def analysis_done(self):
+    def analysis_done(self, imageName = ''):
         self.update_progress(100)
-        self.__send_a_message("Analysis Done")
+        self.__send_a_message(f"Analysis Done on {imageName}")
         self.__send_finished()
 
     def error_message(self, message):
