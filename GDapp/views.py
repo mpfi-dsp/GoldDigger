@@ -168,10 +168,11 @@ def create_single_local_image_obj(form, local_files_form, image_path=None, mask_
     else:
         obj.local_image = local_files_form.cleaned_data["local_image"]
 
-    if mask_path:
+    if mask_path is not None:
         obj.local_mask = mask_path
     else:
-        obj.local_mask = local_files_form.cleaned_data["local_mask"]
+        try:
+            obj.local_mask = local_files_form.cleaned_data["local_mask"]
     obj = populate_em_obj(obj, form)
     obj.pk = None
     obj.id = None
