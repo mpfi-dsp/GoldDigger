@@ -70,15 +70,18 @@ def get_image(obj):
 def check_for_items_in_queue():
     ''' '''
     queue_path = 'media/queue.pkl'
-    #if os.path.exists(queue_path):
-    with open(queue_path, 'rb') as queue_save_file:
-        pk_queue = pickle.load(queue_save_file)
-    if pk_queue:
-        #logger.debug("LOGGER: items in queue TRUE")
-        #print("items in queue TRUE")
-        return True
+    if os.path.exists(queue_path):
+        with open(queue_path, 'rb') as queue_save_file:
+            pk_queue = pickle.load(queue_save_file)
+        if pk_queue:
+            #logger.debug("LOGGER: items in queue TRUE")
+            #print("items in queue TRUE")
+            return True
+        else:
+            logger.debug("items in queue FALSE")
+            return False
     else:
-        logger.debug("items in queue FALSE")
+        logger.debug(f"{queue_path} does not exist")
         return False
 
 def check_if_celery_worker_active():
