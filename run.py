@@ -46,7 +46,7 @@ def get_artifact_status(model):
 
     if model == '87kGoldDigger':
         art_idx = 35
-    elif model == 'greenonly_0422'
+    elif model == 'greenonly_0422':
         art_idx = 18
     else:
         art_idx = None
