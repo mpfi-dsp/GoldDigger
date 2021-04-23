@@ -31,6 +31,8 @@ from django.conf import settings
 
 def get_artifact_status(model):
     '''
+    THIS DOCSTRING IS DEPRECATED
+
     This function checks whether part of the image needs to be blocked out due
     to a constant artifact produced in the upper left corner by the
     87kGoldDigger model.
@@ -43,10 +45,12 @@ def get_artifact_status(model):
     '''
 
     if model == '87kGoldDigger':
-        artifact = True
+        art_idx = 35
+    elif model == 'greenonly_0422'
+        art_idx = 18
     else:
-        artifact = False
-    return artifact
+        art_idx = None
+    return art_idx
 
 def clear_out_old_files(model):
     '''
@@ -252,7 +256,7 @@ def save_to_output_folder(file_list, model):
 # STICH TOGETHER
 
 
-def stitch_row(n, master, folderstart, artifact, widthdiv256):
+def stitch_row(n, master, folderstart, art_idx, widthdiv256):
     '''
         This function takes the images in folderstart (256 x 256 output
         images in Output_ToStitch) and stitches them back together into one
@@ -262,38 +266,39 @@ def stitch_row(n, master, folderstart, artifact, widthdiv256):
         n:
         master:
         folderstart:
-        artifact:
+        art_idx:
         widthdiv256:
 
         Returns:
         full_row:
     '''
-    artifact_indices = [0:35, 220:256, :]
+
 
     image1 = imageio.imread(folderstart + master[n])
-    if (artifact):
+    if art_idx is not None:
 
-
-        image1[artifact_indices] = 0
+        image1[0:art_idx, 220:256, :] = 0
     file1 = np.array(image1)
 
     image2 = imageio.imread(folderstart + master[n + 1])
-    if (artifact):
-        image2[0:35, 220:256, :] = 0
+    if art_idx is not None:
+        image2[0:art_idx, 220:256, :] = 0
     file2 = np.array(image2)
 
     full_row = np.concatenate((file1, file2), axis=1)
     for i in range(n + 2, n + widthdiv256):
         image3 = imageio.imread(folderstart + master[i])
-        if (artifact):
-            image3[0:35, 220:256, :] = 0
+        if art_idx is not None:
+            image3[0:art_idx, 220:256, :] = 0
         file_next = np.array(image3)
         full_row = np.concatenate((full_row, file_next), axis=1)
     return full_row
 
 
-def stitch_image(folderstart, widthdiv256, heighttimeswidth, artifact):
+def stitch_image(folderstart, widthdiv256, heighttimeswidth, art_idx):
     '''
+
+
         This function takes all images in folderstart (hardcoded as
         'media/Output_ToStitch' which contains 256x256 images that are the
         output from PIX2PIX) and reassembles them into a full analyzed version
@@ -303,7 +308,7 @@ def stitch_image(folderstart, widthdiv256, heighttimeswidth, artifact):
         folderstart:
         widthdiv256:
         heighttimeswidth:
-        artifact:
+        art_idx:
 
         Returns:
         picture:
@@ -323,9 +328,9 @@ def stitch_image(folderstart, widthdiv256, heighttimeswidth, artifact):
         name = file + '_fake_B.png'
         master.append(name)
 
-    picture = stitch_row(0, master, folderstart, artifact, widthdiv256)
+    picture = stitch_row(0, master, folderstart, art_idx, widthdiv256)
     for n in range(widthdiv256, heighttimeswidth, widthdiv256):
-        next_row = stitch_row(n, master, folderstart, artifact, widthdiv256)
+        next_row = stitch_row(n, master, folderstart, art_idx, widthdiv256)
         picture = np.concatenate((picture, next_row), axis=0)
     return picture, file_list
 
@@ -687,7 +692,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     print(f'Image name: {imageName}')
 
     front_end_updater.update(1, "starting")
-    artifact = get_artifact_status(model)
+    art_idx = get_artifact_status(model)
     clear_out_old_files(model)
     front_end_updater.update(2, "loading and cutting up image")
 
@@ -711,7 +716,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     folderstart = 'media/Output_ToStitch/'
     save_to_output_folder(file_list, model)
     picture, file_list = stitch_image(
-        folderstart, widthdiv256, heighttimeswidth, artifact)
+        folderstart, widthdiv256, heighttimeswidth, art_idx)
     imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
     front_end_updater.update(7, "Identifying green dots")
     cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
