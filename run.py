@@ -268,7 +268,7 @@ def stitch_row(n, master, folderstart, artifact, widthdiv256):
         Returns:
         full_row:
     '''
-    artifact_indices = 0:35, 220:256, :
+    artifact_indices = [0:35, 220:256, :]
 
     image1 = imageio.imread(folderstart + master[n])
     if (artifact):
