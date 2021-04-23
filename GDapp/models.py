@@ -19,7 +19,7 @@ TRAINED_MODEL_CHOICES = [
     ('greenonly_041421', 'Green Only GoldDigger (04/14/2021)'),
     ('balanced_041421', 'Balanced GoldDigger (04/14/2021)'),
     ('greenonly_0422','Corrected Images: Green Only GoldDigger (04/22/2021)'),
-    ('balanced_0422', 'Corrected Images: Green Only GoldDigger (04/22/2021)')
+    ('balanced_0422', 'Corrected Images: Balanced GoldDigger (04/22/2021)')
 ]
 
 MyChunkedUpload = ChunkedUpload
