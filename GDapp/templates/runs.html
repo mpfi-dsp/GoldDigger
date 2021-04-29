@@ -12,7 +12,7 @@
                 <th scope="col">#</th>
                 <th scope="col">Date</th>
                 <th scope="col">Preview</th>
-                <th scope="col">Mask</th>
+                <!--<th scope="col">Mask</th>-->
                 <th scope="col">Histogram</th>
             </tr>
         </thead>
@@ -48,7 +48,7 @@
 
                 <td><img src="/media/{{ run.analyzed_image }}" width="150"></td>
                 <!--This is broken because the mask preview never appears, need to change how mask is saved probably-->
-                <td>{% if run.mask %}<img src="{{ run.mask.url }}" width="150">{% endif %}</td>
+                <!--<td>{% if run.mask %}<img src="{{ run.mask.url }}" width="150">{% endif %}</td>-->
                 <td>{% if run.histogram_image %}<img src="{{ run.histogram_image.url }}" width="200">{% endif %}</td>
             </tr>
         </tbody>
