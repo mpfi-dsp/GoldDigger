@@ -76,9 +76,9 @@ class EMImage(models.Model):
     output_file = models.FileField(
         upload_to="analyzed/output", null=True)
 
-    chunked_image_id = models.CharField(max_length=500, blank=True, default="")
-    chunked_mask_id = models.CharField(max_length=500, blank=True, default="")
-    chunked_image_linked = models.ForeignKey(MyChunkedUpload, null=True, on_delete=models.CASCADE)
+    #chunked_image_id = models.CharField(max_length=500, blank=True, default="")
+    #chunked_mask_id = models.CharField(max_length=500, blank=True, default="")
+    #chunked_image_linked = models.ForeignKey(MyChunkedUpload, null=True, on_delete=models.CASCADE)
 
     preloaded_pk = models.CharField(max_length=10, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
