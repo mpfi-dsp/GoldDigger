@@ -279,7 +279,9 @@ def run_gd(request, inputs):
         pk = [pk]
 
     # change or not to and
-    fresh_start = not check_for_items_in_queue() and not check_if_celery_worker_active()
+    #fresh_start = not check_for_items_in_queue() and not check_if_celery_worker_active()
+    fresh_start = not check_if_celery_worker_active()
+
     logger.debug(f"fresh_start: {fresh_start}")
     for pk_single in pk:
         save_to_queue(pk_single)
