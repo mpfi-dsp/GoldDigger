@@ -194,14 +194,18 @@ def clean_mask(m):
 def sort_masks_and_images(all_files, dir_path):
     masks = []
     images = []
-    logger.debug(f"all files in dir: {all_files}")
+    #logger.debug(f"all files in dir: {all_files}")
     for file in all_files:
-        if "mask" in file.lower():
-            masks.append(os.path.join(dir_path, file))
+        if file.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif', '.tif')):
+            if "mask" in file.lower():
+                masks.append(os.path.join(dir_path, file))
+            else:
+                images.append(os.path.join(dir_path, file))
         else:
-            images.append(os.path.join(dir_path, file))
-    #logger.debug(f"images: {images}")
-    #logger.debug(f"masks: {masks}")
+            logger.debug(f"not an image: {file}")
+
+    logger.debug(f"images: {images}")
+    logger.debug(f"masks: {masks}")
     return masks, images
 
 # for loop iterates over masks in list and sees if they match with the image (based on name)
