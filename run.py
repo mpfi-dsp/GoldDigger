@@ -181,7 +181,7 @@ def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
 
         img_new = img_new[:height256, :width256, :3]
         img_mask = None
-        if mask is not None:
+        if mask is not None and mask!='':
             img_mask = crop_mask(mask, height256, width256)
         front_end_updater.update_progress(50, 1)
         img_new_w = view_as_blocks(img_new, img_size)
@@ -443,7 +443,7 @@ def check_if_coordinate_is_in_mask(x, y, mask):
         Returns:
 
     '''
-    if mask is None:
+    if mask is None or mask=='':
         return True
     # if coordinate is in white region on the mask image, return false (do not count it)
     elif np.array_equal(mask[x, y], np.array((255, 255, 255))):

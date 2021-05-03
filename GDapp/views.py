@@ -205,7 +205,7 @@ def sort_masks_and_images(all_files, dir_path):
 
 # for loop iterates over masks in list and sees if they match with the image (based on name)
 def find_matching_mask(image, masks, dir_path):
-    mask_path = None
+    mask_path = ''
     image_stem = pathlib.Path(image).stem
     image_lower = image_stem.lower()
     image_clean = image_lower.replace(" ", "")
