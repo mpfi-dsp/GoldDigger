@@ -194,6 +194,7 @@ def clean_mask(m):
 def sort_masks_and_images(all_files, dir_path):
     masks = []
     images = []
+    logger.debug(f"all files in dir: {all_files}")
     for file in all_files:
         if "mask" in file.lower():
             masks.append(os.path.join(dir_path, file))
