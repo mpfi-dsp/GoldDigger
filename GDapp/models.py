@@ -43,16 +43,13 @@ class EMImage(models.Model):
             analyzed_image (ImageField): Output image created by Gold Digger network (OutputStitched.png with particle coordinates plotted)
             histogram_image (ImageField): Histogram of gold particle areas.
             output_file (FileField): .zip file containing output from GoldDigger (coordinates file, Cropped image, histogram, etc).
-            chunked_image_id (CharField): NEVER USED???
-            chunked_mask_id (CharField): NEVER USED???
-            chunked_image_linked (ForeignKey): NEVER USED???
             preloaded_pk (CharField): Unique ID for the object (automatically generated and assigned).
             created_at (DateTimeField): Date and time the object was created (in UTC).
 
     '''
 
     image = models.FileField(upload_to="Input/", blank=True, default='')
-    mask = models.FileField(upload_to="Mask/", blank=True)
+    mask = models.FileField(upload_to="Mask/", blank=True, default = '')
     threshold_string = models.CharField(max_length=200, blank=True, default="1, 60",
                                         help_text="Input comma-separated values to serve as the lower and upper boundaries for the area of each particle size.")
     thresh_sens = models.FloatField(default = 4.)
@@ -75,10 +72,6 @@ class EMImage(models.Model):
         upload_to="analyzed/histograms", null=True)
     output_file = models.FileField(
         upload_to="analyzed/output", null=True)
-
-    #chunked_image_id = models.CharField(max_length=500, blank=True, default="")
-    #chunked_mask_id = models.CharField(max_length=500, blank=True, default="")
-    #chunked_image_linked = models.ForeignKey(MyChunkedUpload, null=True, on_delete=models.CASCADE)
 
     preloaded_pk = models.CharField(max_length=10, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
