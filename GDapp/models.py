@@ -56,7 +56,7 @@ class EMImage(models.Model):
 
     # path for local_mask and local_images references location in the docker container, these are for local upload
     local_image = models.FilePathField(path='/usr/src/local-images', blank=True)
-    local_mask = models.FilePathField(path='/usr/src/local-images', blank=True, default = None)
+    local_mask = models.FilePathField(path='/usr/src/local-images', blank=True, default = '')
 
     particle_groups = models.IntegerField(
         blank=False, default=1, validators=[MinValueValidator(1), MaxValueValidator(3)])
