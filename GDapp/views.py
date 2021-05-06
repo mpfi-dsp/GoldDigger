@@ -326,8 +326,9 @@ def image_view(request):
 
     Parameters:
         request: 'POST' or 'GET'
-
-
+    Returns:
+        if request.method=='POST': Calls run_gd on list of pks for newly created EMImage objects
+        if request.method=='GET': Displays image_upload webpage
 
     '''
     if request.method == 'POST':
@@ -336,12 +337,8 @@ def image_view(request):
 
         if form.is_valid() and local_files_form.is_valid() and not (local_files_form.cleaned_data["local_image"] == "" and form.cleaned_data["preloaded_pk"] == ""):
             if form.cleaned_data['preloaded_pk'] == '': # local file used
-                if os.path.isfile(local_files_form.cleaned_data["local_image"]):  #if single file (not directory)
-                    obj = create_single_local_image_obj(form, local_files_form)
-
-                elif os.path.isdir(local_files_form.cleaned_data["local_image"]):
-                    pk_list = load_all_images_from_dir(form, local_files_form)
-                    return run_gd(request, {'pk': pk_list})
+                pk_list = load_all_images_from_dir(form, local_files_form)
+                return run_gd(request, {'pk': pk_list})
 
             else: # chunked file upload
                 obj = chunked_file_upload(form)
@@ -350,7 +347,7 @@ def image_view(request):
     else:
         form = EMImageForm()
         local_files_form = LocalFilesForm()
-        #logger.debug("form not valid")
+
     return render(request, 'GDapp/upload.html', {'form': form, 'local_files_form': local_files_form})
 
 # calls run_gold_digger_task for items in list
@@ -382,7 +379,6 @@ def log_obj(obj):
         logger.debug(f"threshold_string: {obj.threshold_string}")
         logger.debug(f"thres_sens: {obj.thresh_sens}")
         try:
-            logger.debug(f"id: {obj.id}") #always prints "None" ... why?
             logger.debug(f"pk: {obj.id}") #always prints "None" ... why?
         except:
             logger.debug(f"could not print obj.id")
