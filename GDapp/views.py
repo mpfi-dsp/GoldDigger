@@ -154,7 +154,7 @@ def home(request):
     logger.debug("homepage accessed")
     return render(request, 'GDapp/home.html', {'version': VERSION_NUMBER})
 
-# cleaned data for params in EMImage object
+
 def populate_em_obj(obj, form):
     '''
     This function returns cleaned data for parameters in an EMImage object
@@ -220,7 +220,7 @@ def clean_mask(m):
     m_clean = m_nospace.replace('mask', '')
     return m_clean
 
-# for loop adds files to either mask or image list depending on filename
+
 def sort_masks_and_images(all_files, dir_path):
     '''
         This function adds image files to either a mask or image list depending on
@@ -318,7 +318,6 @@ def chunked_file_upload(form):
     return obj
 
 
-# makes image upload page
 def image_view(request):
     '''
     This function generates the image upload page and creates EMImage objects
@@ -350,16 +349,24 @@ def image_view(request):
 
     return render(request, 'GDapp/upload.html', {'form': form, 'local_files_form': local_files_form})
 
-# calls run_gold_digger_task for items in list
+
 def run_gd(request, inputs):
+    '''
+    This function calls run_gold_digger_task for each item in a list
+
+    Parameters:
+        request: request object used to generate render response (for run_gd.html page)
+        inputs: pk list or single pk for EMImage object(s)
+
+    Returns:
+        render of run_gd.html page (progress bar page) for the first object in the list.
+    '''
 
     pk = inputs['pk']
     logger.debug(f"INSIDE run_gd FUNCTION FOR pk: {pk}")
     if not isinstance(pk, list):
         pk = [pk]
 
-    # change or not to and
-    #fresh_start = not check_for_items_in_queue() and not check_if_celery_worker_active()
     fresh_start = not check_if_celery_worker_active()
 
     logger.debug(f"fresh_start: {fresh_start}")
@@ -370,8 +377,13 @@ def run_gd(request, inputs):
     return render(request, 'GDapp/run_gd.html', {'pk': pk[0]})
 
 
-# prints object to log file
 def log_obj(obj):
+    '''
+    This function prints the (locally selected) EMImage object to the log file
+
+    Parameters:
+        obj: EMImage object
+    '''
         logger.debug(f"local_image (path): {obj.local_image}")
         logger.debug(f"local_mask (path): {obj.local_mask}")
         logger.debug(f"trained_model: {obj.trained_model}")

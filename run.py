@@ -552,14 +552,6 @@ def sort_from_thresholds(coords_in_mask, particle_group_count, thresholds_list_s
     return results1, results2, results3
 
 
-def clear_out_input_dirs():
-    '''
-        This function clears out the necessary Input directory for the next run.
-    '''
-    shutil.rmtree('media/Input', ignore_errors=True)
-    os.mkdir('media/Input')
-
-
 def update_progress(progress_recorder, step, total_steps, message):
     '''
         This function
@@ -576,25 +568,6 @@ def update_progress(progress_recorder, step, total_steps, message):
 
 
 def save_preview_figure(all_coordinates, imageName, model, front_end_updater):
-    #CHANGED TO BE IMAGE WITH AREA LABELS
-
-    # img = cv2.imread('media/Output_Final/OutputStitched.png')
-    # img2 = img[:, :, ::-1]
-    # plt.figure(1)
-    # plt.imshow(img2)
-    # plt.scatter(coordinates.X.values, coordinates.Y.values,
-    #             facecolors='none', edgecolors='r')
-    # plt.gca().set_axis_off()
-    # plt.margins(0, 0)
-    # plt.gca().xaxis.set_major_locator(plt.NullLocator())
-    # plt.gca().yaxis.set_major_locator(plt.NullLocator())
-    # preview_file_path = 'media/Output_Final/preview.png'
-    # if os.path.exists(preview_file_path):
-    #     os.remove(preview_file_path)
-    # plt.savefig(preview_file_path, bbox_inches='tight',
-    #             pad_inches=0)
-
-
     img_original = cv2.imread(f'media/Output_Final/Cropped-{imageName}-with-{model}.png')
 
     for i, coord in all_coordinates.iterrows():
@@ -602,11 +575,6 @@ def save_preview_figure(all_coordinates, imageName, model, front_end_updater):
 
     preview_file_path = 'media/Output_Final/preview.png'
     imageio.imwrite('media/Output_Final/preview.png', img_original)
-
-
-
-
-
 
     add_analyzed_image(front_end_updater.pk, preview_file_path)
 
@@ -722,7 +690,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
     front_end_updater.update(7, "Identifying green dots")
     cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
-    print("THIS IS WHERE IT WOULD SHOW THE IMAGE")
+    
     all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
 
 
@@ -734,7 +702,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
 
     save_all_results(coords_in_mask, results1, results2, results3, model, front_end_updater, imageName=imageName)
 
-    #clear_out_input_dirs()
+
     print("SUCCESS!!")
     front_end_updater.update(8, "Saving files")
 
