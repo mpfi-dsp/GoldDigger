@@ -1,4 +1,4 @@
-from GDapp.tasks import celery_timer_task, run_gold_digger_task
+from GDapp.tasks import run_gold_digger_task#, celery_timer_task
 from GDapp.prediction.FrontEndUpdater import FrontEndUpdater
 from django.apps import AppConfig
 from channels.layers import get_channel_layer
