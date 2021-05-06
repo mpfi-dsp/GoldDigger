@@ -312,10 +312,10 @@ def chunked_file_upload(form):
         Returns:
             obj: Filled EMImage Object
     '''
-        obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
-        obj = populate_em_obj(obj, form)
-        obj.save()
-        return obj
+    obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
+    obj = populate_em_obj(obj, form)
+    obj.save()
+    return obj
 
 
 # makes image upload page
