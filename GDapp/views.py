@@ -384,13 +384,13 @@ def log_obj(obj):
     Parameters:
         obj: EMImage object
     '''
-        logger.debug(f"local_image (path): {obj.local_image}")
-        logger.debug(f"local_mask (path): {obj.local_mask}")
-        logger.debug(f"trained_model: {obj.trained_model}")
-        logger.debug(f"particle_groups: {obj.particle_groups}")
-        logger.debug(f"threshold_string: {obj.threshold_string}")
-        logger.debug(f"thres_sens: {obj.thresh_sens}")
-        try:
-            logger.debug(f"pk: {obj.id}") #always prints "None" ... why?
-        except:
-            logger.debug(f"could not print obj.id")
+    logger.debug(f"local_image (path): {obj.local_image}")
+    logger.debug(f"local_mask (path): {obj.local_mask}")
+    logger.debug(f"trained_model: {obj.trained_model}")
+    logger.debug(f"particle_groups: {obj.particle_groups}")
+    logger.debug(f"threshold_string: {obj.threshold_string}")
+    logger.debug(f"thres_sens: {obj.thresh_sens}")
+    try:
+        logger.debug(f"pk: {obj.id}") #always prints "None" ... why?
+    except:
+        logger.debug(f"could not print obj.id")
