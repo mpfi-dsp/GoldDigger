@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 @shared_task(bind=True)
 def celery_timer_task(self, pk):
-    ''' '''
+    '''??? NEVER USED'''
     print(pk)
     feu = FrontEndUpdater(pk)
     time.sleep(5)
@@ -22,7 +22,15 @@ def celery_timer_task(self, pk):
 
 @shared_task(bind=True)
 def run_gold_digger_task(self, pk):
-    ''' '''
+    '''
+        This function calls run_gold_digger from run.py on an EMImage object
+
+        Parameters:
+            pk: pk for an EMImage object
+
+        Returns "Done" when complete.
+
+    '''
     print(pk)
     obj = EMImage.objects.get(pk=pk)
     mask_path = get_mask(obj)
@@ -37,11 +45,12 @@ def run_gold_digger_task(self, pk):
 
 @shared_task(bind=True)
 def after_task(self):
-    ''' '''
+    '''This function starts running the next EMImage object'''
     start_tasks()
 
 def start_tasks():
-    ''' '''
+    '''This function starts running queued EMImage objects by accessing their
+    pks from the queue file'''
     pk = pop_pk_from_queue()
     if pk is not None:
         gd_task = run_gold_digger_task.si(pk)
@@ -50,7 +59,15 @@ def start_tasks():
 
 
 def get_mask(obj):
-    ''' '''
+    '''
+        This function returns the mask in the EMImage object depending on the upload method
+
+        Parameters:
+            obj: EMImage object
+
+        Returns:
+            mask: path to mask file
+    '''
     if obj.mask.name == "" and obj.local_mask == "" :
         mask = None
     elif obj.mask.name == "":
@@ -61,14 +78,26 @@ def get_mask(obj):
 
 
 def get_image(obj):
-    ''' '''
+    '''
+        This function returns the image in the EMImage object depeding on the upload
+        method
+
+        Parameters:
+            obj: EMImage object
+
+        Returns:
+            mask: path to mask file
+    '''
     if obj.image.name == "":
         return obj.local_image
     else:
         return obj.image.path
 
 def check_for_items_in_queue():
-    ''' '''
+    '''
+        This function returns True if there are items in the queue.pkl file and
+        returns False otherwise
+    '''
     queue_path = 'media/queue.pkl'
     if os.path.exists(queue_path):
         with open(queue_path, 'rb') as queue_save_file:
@@ -85,7 +114,10 @@ def check_for_items_in_queue():
         return False
 
 def check_if_celery_worker_active():
-    ''' '''
+    '''
+        This function returns True if the celery worker for the queue is active
+        and returns false otherwise.
+    '''
     for key, val in celery_app.control.inspect().active().items():
         dict_is_empty = len(val)==0
         #print(f"value is zero? {len(val)==0}")
@@ -97,7 +129,12 @@ def check_if_celery_worker_active():
         return True
 
 def save_to_queue(pk):
-    ''' '''
+    '''
+        This function adds an EMImage object's pk to the queue of objects to be run
+
+        Parameters:
+            pk: pk/ID number of an EMImage object
+    '''
     if os.path.isfile('media/queue.pkl'):
         with open('media/queue.pkl', 'rb') as queue_save_file:
             pk_queue = pickle.load(queue_save_file)
@@ -110,7 +147,14 @@ def save_to_queue(pk):
 
 
 def pop_pk_from_queue():
-    ''' '''
+    '''
+        This function takes the next pk from the queue. This will always be the
+        pk that was added earliest.
+
+        Returns:
+            pk: pk of EMImage object
+            OR None if there are no items in the queue.
+    '''
     if os.path.isfile('media/queue.pkl'):
         with open('media/queue.pkl', 'rb') as queue_save_file:
             pk_queue = pickle.load(queue_save_file)

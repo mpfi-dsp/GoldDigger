@@ -72,34 +72,30 @@ logger = logging.getLogger(__name__)
 
 
 class MyChunkedUploadView(ChunkedUploadView):
+    '''Class for MyChunkedUploadView functions'''
     model = MyChunkedUpload
     field_name = 'the_file'
     def check_permissions(self, request):
-        # Allow non authenticated users to make uploads
+        '''Allow non authenticated users to make uploads'''
         pass
 
 
 class MyChunkedUploadCompleteView(ChunkedUploadCompleteView):
+    '''Class for MyChunkedUploadCompleteView functions'''
     model = MyChunkedUpload
     def check_permissions(self, request):
-        # Allow non authenticated users to make uploads
+        '''Allow non authenticated users to make uploads'''
         pass
 
     def on_completion(self, uploaded_file, request):
-        # Do something with the uploaded file. E.g.:
-        # * Store the uploaded file on another model:
-        # SomeModel.objects.create(user=request.user, file=uploaded_file)
+        '''This function saves the uploaded image file to an EMImage object'''
         instance = EMImage.objects.create(image=uploaded_file)
         self.pk = instance.id
         instance.save()
-        # * Pass it as an argument to a function:
-        # function_that_process_file(uploaded_file)
-        # print(request.POST)
+
 
     def get_response_data(self, chunked_upload, request):
-        # form = EMImageForm(instance=self.instance)
-        # return render(request, "GDapp/upload.html", {'form': form})
-        # print(request.POST)
+        '''This function prints information about the upload to the webpage'''
         return {'message': ("You successfully uploaded '%s' (%s bytes)!" %
                             (chunked_upload.filename, chunked_upload.offset)),
                 'upload_id': chunked_upload.upload_id,
@@ -108,19 +104,22 @@ class MyChunkedUploadCompleteView(ChunkedUploadCompleteView):
 
 
 class MyChunkedMaskUploadView(ChunkedUploadView):
+    '''Class for MyChunkedMaskUploadView functions'''
     model = MyChunkedMaskUpload
     field_name = 'the_mask'
     def check_permissions(self, request):
-        # Allow non authenticated users to make uploads
+        '''Allow non authenticated users to make uploads'''
         pass
 
 
 class MyChunkedMaskUploadCompleteView(ChunkedUploadCompleteView):
+    '''Class for MyChunkedMaskUploadCompleteView functions'''
     model = MyChunkedMaskUpload
     def check_permissions(self, request):
-        # Allow non authenticated users to make uploads
+        '''Allow non authenticated users to make uploads'''
         pass
     def on_completion(self, uploaded_file, request):
+        '''This function saves the uploaded mask file to an EMImage object'''
         obj = EMImage.objects.get(pk=request.POST['pk'])
         obj.mask = uploaded_file
         obj.save()
@@ -128,40 +127,65 @@ class MyChunkedMaskUploadCompleteView(ChunkedUploadCompleteView):
         print(request.POST)
 
     def get_response_data(self, chunked_upload, request):
+        '''This function prints information about the upload to the webpage'''
         return {'message': ("You successfully uploaded '%s' (%s bytes)!" %
                             (chunked_upload.filename, chunked_upload.offset)),
                 'upload_id': chunked_upload.upload_id,
                 'filename': chunked_upload.filename}
 
-# creates previous runs page
 class RunListView(ListView):
+    '''creates previous runs page'''
     model = EMImage
     context_object_name = 'run_list'
     queryset = EMImage.objects.exclude(analyzed_image='').order_by('-id')
     template_name = 'runs.html'
 
-# creates unfinished runs page
+
 class UnfinishedRunListView(ListView):
+    '''creates unfinished runs page'''
     model = EMImage
     context_object_name = 'to_run_list'
     queryset = EMImage.objects.filter(analyzed_image='').order_by('-id')
     template_name = 'unfinished_runs.html'
 
-# homepage view
+
 def home(request):
+    '''Homepage view, renders home.html file'''
     logger.debug("homepage accessed")
     return render(request, 'GDapp/home.html', {'version': VERSION_NUMBER})
 
 # cleaned data for params in EMImage object
 def populate_em_obj(obj, form):
+    '''
+    This function returns cleaned data for parameters in an EMImage object
+    Parameters:
+        obj: EMImage object
+        form: Completed upload form
+
+    Returns:
+        obj: EMImage object now with filled parameter fields
+    '''
     obj.trained_model = form.cleaned_data['trained_model']
     obj.particle_groups = form.cleaned_data['particle_groups']
     obj.threshold_string = form.cleaned_data['threshold_string']
     obj.thresh_sens = form.cleaned_data['thresh_sens']
     return obj
 
-# creates an EMImage object for 1 image, mask, and set of params
+
 def create_single_local_image_obj(form, local_files_form, image_path=None, mask_path=None):
+    '''
+    This function creates an EMImage object for 1 image, mask, and set of parameters.
+
+    Parameters:
+        form: EMImageForm object
+        local_files_form: LocalFilesForm object
+        image_path: Path to image file
+        mask_path: Path to mask file
+
+    Returns:
+        obj: Filled EMImage object
+
+    '''
     obj = form.save(commit=False)
     if image_path:
         obj.local_image = image_path
@@ -181,20 +205,35 @@ def create_single_local_image_obj(form, local_files_form, image_path=None, mask_
     obj.save()
     return obj
 
-#returns only the stem of a mask file path, making it lowercase and removing "mask" from the name
+
 def clean_mask(m):
+    '''
+        This function cleans the mask file name so it can be matched with image names.
+        Parameters:
+            m: Path to mask file
+        Returns:
+            m_clean: String containing only the stem of the mask file path with "mask" removed from the name
+    '''
     m_stem = pathlib.Path(m).stem
     m_lower = m_stem.lower()
     m_nospace = m_lower.replace(" ", "")
     m_clean = m_nospace.replace('mask', '')
-    #logger.debug(f"m: {m}, m_clean: {m_clean}")
     return m_clean
 
 # for loop adds files to either mask or image list depending on filename
 def sort_masks_and_images(all_files, dir_path):
+    '''
+        This function adds image files to either a mask or image list depending on
+        the filename.
+        Parameters:
+            all_files: list of files in the directory
+            dir_path: path to the directory
+        Returns:
+            masks: List of files to be treated as masks (image filetype that contains "mask" in the filename)
+            images: List of files to be treated as images (image filetype that does not contain "mask" in the filename)
+    '''
     masks = []
     images = []
-    #logger.debug(f"all files in dir: {all_files}")
     for file in all_files:
         if file.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif', '.tif')):
             if "mask" in file.lower():
@@ -204,12 +243,25 @@ def sort_masks_and_images(all_files, dir_path):
         else:
             logger.debug(f"not an image: {file}")
 
-    logger.debug(f"images: {images}")
-    logger.debug(f"masks: {masks}")
     return masks, images
 
-# for loop iterates over masks in list and sees if they match with the image (based on name)
 def find_matching_mask(image, masks, dir_path):
+    '''
+        This function checks an image for a matching mask. A mask is matched
+        with an image if the string outputted by clean_mask() is contained
+        within the image name. This function ignores capitalization and spacing
+        in the mask and image names.
+
+        Parameters:
+            image: Path to an image file.
+            masks: List of mask files.
+            dir_path: Path to uploaded directory.
+        Returns:
+            mask_path: Path to mask that matches the given image. Contains empty
+                string if no such mask exists.
+
+    '''
+
     mask_path = ''
     image_stem = pathlib.Path(image).stem
     image_lower = image_stem.lower()
@@ -224,19 +276,27 @@ def find_matching_mask(image, masks, dir_path):
 
 
 def load_all_images_from_dir(form, local_files_form):
+    '''
+        This function creates an EMImage object for every (non-mask) image in a
+        directory.
+
+        Parameters:
+            form: EMImageForm object
+            local_files_form: LocalFilesForm object
+
+        Returns:
+            pk_list: List of pks for each EMImage object created
+
+    '''
     dir_path = local_files_form.cleaned_data["local_image"]
     logger.debug(f"directory path: {dir_path}")
     all_files = os.listdir(dir_path)
-    #logger.debug(all_files)
     pk_list = []
     masks, images = sort_masks_and_images(all_files, dir_path)
 
-    # for loop creates EMImage object for each image in directory
     for f in images:
         file_path = os.path.join(dir_path, f)
-        #logger.debug(f"local_image (path): (in load all images from dir) {file_path}")
         mask_path = find_matching_mask(f, masks, dir_path)
-        #logger.debug(f"in load all images from dir, mask_path: {mask_path}")
         obj = create_single_local_image_obj(form, local_files_form, image_path=file_path, mask_path=mask_path)
         log_obj(obj)
         pk_list.append(obj.id)
@@ -244,27 +304,45 @@ def load_all_images_from_dir(form, local_files_form):
     return pk_list
 
 def chunked_file_upload(form):
+    '''
+        This function creates an EMImage object for an image uploaded via chunked upload.
+
+        Parameters:
+            form: EMImageForm object
+        Returns:
+            obj: Filled EMImage Object
+    '''
         obj = EMImage.objects.get(pk=form.cleaned_data['preloaded_pk'])
-        #moved these inside the if statement
-        obj.trained_model = form.cleaned_data['trained_model']
-        obj.particle_groups = form.cleaned_data['particle_groups']
-        obj.threshold_string = form.cleaned_data['threshold_string']
+        obj = populate_em_obj(obj, form)
         obj.save()
         return obj
 
 
 # makes image upload page
 def image_view(request):
+    '''
+    This function generates the image upload page and creates EMImage objects
+    from the submitted data.
+
+    Parameters:
+        request: 'POST' or 'GET'
+
+
+
+    '''
     if request.method == 'POST':
         form = EMImageForm(request.POST, request.FILES)
         local_files_form = LocalFilesForm(request.POST)
+
         if form.is_valid() and local_files_form.is_valid() and not (local_files_form.cleaned_data["local_image"] == "" and form.cleaned_data["preloaded_pk"] == ""):
             if form.cleaned_data['preloaded_pk'] == '': # local file used
                 if os.path.isfile(local_files_form.cleaned_data["local_image"]):  #if single file (not directory)
                     obj = create_single_local_image_obj(form, local_files_form)
+
                 elif os.path.isdir(local_files_form.cleaned_data["local_image"]):
                     pk_list = load_all_images_from_dir(form, local_files_form)
                     return run_gd(request, {'pk': pk_list})
+
             else: # chunked file upload
                 obj = chunked_file_upload(form)
             logger.debug("form valid, object saved")

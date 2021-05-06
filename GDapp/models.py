@@ -80,8 +80,8 @@ def add_histogram_image(pk, url):
     '''
         This function saves a histogram of gold particle sizes to media/analyzed/histograms.
         Parameters:
-        pk: preloaded_pk for EMImage object/front_end_updater.
-        url: File path to where the histogram generated during run.py is saved.
+            pk: preloaded_pk for EMImage object/front_end_updater.
+            url: File path to where the histogram generated during run.py is saved.
 
     '''
 
@@ -95,8 +95,8 @@ def add_analyzed_image(pk, url):
     '''
         This function saves analyzed image (Gold Digger network output) to media/analyzed/images.
         Parameters:
-        pk: preloaded_pk for EMImage object/front_end_updater.
-        url: File path to where the analyzed image generated during run.py is saved.
+            pk: preloaded_pk for EMImage object/front_end_updater.
+            url: File path to where the analyzed image generated during run.py is saved.
 
     '''
 
@@ -110,8 +110,8 @@ def add_gold_particle_coordinates(pk, url):
     '''
         This function saves the csv of gold particle coordinates with their areas to media/analyzed/coordinates.
         Parameters:
-        pk: preloaded_pk for EMImage object/front_end_updater.
-        url: File path to where the coordinates file (all sizes) generated during run.py is saved.
+            pk: preloaded_pk for EMImage object/front_end_updater.
+            url: File path to where the coordinates file (all sizes) generated during run.py is saved.
 
     '''
 
@@ -124,8 +124,8 @@ def add_output_file(pk, url):
     '''
         This function saves the output zip file to media.
         Parameters:
-        pk: preloaded_pk for EMImage object/front_end_updater.
-        url: File path to where zip file generated during run.py is saved.
+            pk: preloaded_pk for EMImage object/front_end_updater.
+            url: File path to where zip file generated during run.py is saved.
 
     '''
 
@@ -152,9 +152,9 @@ def get_histogram_image_url(pk):
     '''
         This function is used to help display the results of a single run.
         Parameters:
-        pk: preloaded_pk for EMImage object/front_end_updater.
+            pk: preloaded_pk for EMImage object/front_end_updater.
         Returns:
-        gd_data.histogram_image.url: Location where histogram_image is saved for the EMImage object with a specified pk.
+            gd_data.histogram_image.url: Location where histogram_image is saved for the EMImage object with a specified pk.
 
     '''
 
@@ -165,9 +165,9 @@ def get_analyzed_image_url(pk):
     '''
         This function is used to help display the results of a single run.
         Parameters:
-        pk: preloaded_pk for EMImage object/front_end_updater.
+            pk: preloaded_pk for EMImage object/front_end_updater.
         Returns:
-        gd_data.analyzed_image.url: Location where analyzed_image is saved for the EMImage object with a specified pk.
+            gd_data.analyzed_image.url: Location where analyzed_image is saved for the EMImage object with a specified pk.
 
     '''
 
