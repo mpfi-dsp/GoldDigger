@@ -31,17 +31,16 @@ from django.conf import settings
 
 def get_artifact_status(model):
     '''
-    THIS DOCSTRING IS DEPRECATED
-
-    This function checks whether part of the image needs to be blocked out due
-    to a constant artifact produced in the upper left corner by the
-    87kGoldDigger model.
+    This function checks if the output of GoldDigger will need a black rectangle
+     to cover an artifact in the upper right corner and what that artifact needs
+     to look like.
 
     Parameters:
     model (string): Name of trained model.
 
     Returns:
-    artifact: True if model=='87kGoldDigger', else False.
+    art_idx: Integer to later be used as an index for a location on the image to
+        overwrite with black. None if no artifact is required.
     '''
 
     if model == '87kGoldDigger':
@@ -122,18 +121,18 @@ def create_small_image(current_progress, total_progress, front_end_updater, img_
         This function makes and saves 1 256x256 crop of an image.
 
         Parameters:
-        current_progress:
-        total_progress:
-        front_end_updater: FrontEndUpdater class object for updating the front end.
-        img_size:
-        img_new_w:
-        i:
-        j:
-        r:
+            current_progress:
+            total_progress:
+            front_end_updater: FrontEndUpdater class object for updating the front end.
+            img_size:
+            img_new_w:
+            i:
+            j:
+            r:
 
         Returns:
-        current_progress:
-        r:
+            current_progress:
+            r:
 
         '''
 
@@ -155,17 +154,17 @@ def load_data_make_jpeg(image, mask, model, front_end_updater, imageName=''):
         image into 256 x 256 pixel squares.
 
         Parameters:
-        image:
-        mask:
-        model:
-        front_end_updater:
-        imageName:
+            image:
+            mask:
+            model:
+            front_end_updater:
+            imageName:
 
         Returns:
-        file_list:
-        width:
-        height:
-        img_mask:
+            file_list:
+            width:
+            height:
+            img_mask:
 
     '''
 
@@ -208,9 +207,9 @@ def combine_white(white, folderA, front_end_updater):
         the PIX2PIX network to write over.
 
         Parameters:
-        white: Blank 256x256 image.
-        folderA: Folder containing the 256x256 crops of the original image.
-        front_end_updater: FrontEndUpdater class object for updating the front end.
+            white: Blank 256x256 image.
+            folderA: Folder containing the 256x256 crops of the original image.
+            front_end_updater: FrontEndUpdater class object for updating the front end.
 
     '''
 
@@ -239,8 +238,8 @@ def save_to_output_folder(file_list, model):
         media/Output_ToStitch.
 
         Parameters:
-        file_list: List of 256x256 output images.
-        model: Name of trained model.
+            file_list: List of 256x256 output images.
+            model: Name of trained model.
 
     '''
 
@@ -263,14 +262,14 @@ def stitch_row(n, master, folderstart, art_idx, widthdiv256):
         row that has the width of the original cropped image.
 
         Parameters:
-        n:
-        master:
-        folderstart:
-        art_idx:
-        widthdiv256:
+            n:
+            master:
+            folderstart:
+            art_idx:
+            widthdiv256:
 
         Returns:
-        full_row:
+            full_row:
     '''
 
 
@@ -305,14 +304,14 @@ def stitch_image(folderstart, widthdiv256, heighttimeswidth, art_idx):
         of the original cropped image.
 
         Parameters:
-        folderstart:
-        widthdiv256:
-        heighttimeswidth:
-        art_idx:
+            folderstart:
+            widthdiv256:
+            heighttimeswidth:
+            art_idx:
 
         Returns:
-        picture:
-        file_list:
+            picture:
+            file_list:
 
     '''
 
@@ -341,12 +340,12 @@ def find_centers(cnts, img_original):
          network to mark particle locations.
 
         Parameters:
-        cnts:
-        img_original:
+            cnts:
+            img_original:
 
         Returns:
-        seedlistx:
-        seedlisty:
+            seedlistx:
+            seedlisty:
 
     '''
 
@@ -380,14 +379,14 @@ def find_centers(cnts, img_original):
 # Basically it just uses the green masks to find a seed point to start flood filling. This makes sure that the mask is the exact size of the gold particle
 def count_green_dots(model, imageName='', thresh_sens=4):
     '''
-        This function
+    This function
 
-        Parameters:
+    Parameters:
         model:
         imageName:
         thresh_sens:
 
-        Returns:
+    Returns:
         cnts:
 
 
@@ -436,9 +435,9 @@ def check_if_coordinate_is_in_mask(x, y, mask):
         This function
 
         Parameters:
-        x:
-        y:
-        mask:
+            x:
+            y:
+            mask:
 
         Returns:
 
@@ -459,12 +458,12 @@ def get_contour_centers(cnts, img_mask):
         This function
 
         Parameters:
-        cnts:
-        img_mask:
+            cnts:
+            img_mask:
 
         Returns:
-        all_coordinates:
-        coords_in_mask:
+            all_coordinates:
+            coords_in_mask:
 
 
     '''
@@ -690,7 +689,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
     imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
     front_end_updater.update(7, "Identifying green dots")
     cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
-    
+
     all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
 
 
