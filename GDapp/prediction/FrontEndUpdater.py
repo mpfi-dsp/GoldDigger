@@ -28,7 +28,7 @@ class FrontEndUpdater:
 
         '''
         self.pk = pk
-        self.total_count = 20
+        #self.total_count = 20
         self.latest_message = "Progress"
 
     def update(self, counter, message):

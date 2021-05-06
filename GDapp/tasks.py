@@ -10,14 +10,14 @@ import os
 
 logger = logging.getLogger(__name__)
 
-@shared_task(bind=True)
-def celery_timer_task(self, pk):
-    '''??? NEVER USED'''
-    print(pk)
-    feu = FrontEndUpdater(pk)
-    time.sleep(5)
-    feu.update(10, f"Update from celery timer task {pk}")
-    return ('Done')
+# @shared_task(bind=True)
+# def celery_timer_task(self, pk):
+#     '''??? NEVER USED'''
+#     print(pk)
+#     feu = FrontEndUpdater(pk)
+#     time.sleep(5)
+#     feu.update(10, f"Update from celery timer task {pk}")
+#     return ('Done')
 
 
 @shared_task(bind=True)
