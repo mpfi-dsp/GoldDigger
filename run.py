@@ -445,7 +445,7 @@ def check_if_coordinate_is_in_mask(x, y, mask):
     '''
     if mask is None:
         return True
-    elif len(mask) == 0: #if mask is empty string 
+    elif len(mask) == 0: #if mask is empty string
         return True
     # if coordinate is in white region on the mask image, return false (do not count it)
     elif np.array_equal(mask[x, y], np.array((255, 255, 255))):
@@ -734,7 +734,7 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
 
     save_all_results(coords_in_mask, results1, results2, results3, model, front_end_updater, imageName=imageName)
 
-    clear_out_input_dirs()
+    #clear_out_input_dirs()
     print("SUCCESS!!")
     front_end_updater.update(8, "Saving files")
 
