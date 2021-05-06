@@ -445,7 +445,7 @@ def check_if_coordinate_is_in_mask(x, y, mask):
     '''
     if mask is None:
         return True
-    elif mask=='':
+    elif len(mask) == 0: #if mask is empty string 
         return True
     # if coordinate is in white region on the mask image, return false (do not count it)
     elif np.array_equal(mask[x, y], np.array((255, 255, 255))):
