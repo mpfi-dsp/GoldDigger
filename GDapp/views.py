@@ -335,8 +335,12 @@ def image_view(request):
         logger.debug("clear queue button pressed")
         cwd = os.getcwd()
         logger.debug(f"cwd: {cwd}")
-        os.remove('media/queue.pkl')
-        logger.debug("attempted to delete queue")
+        try:
+            os.remove('media/queue.pkl')
+            logger.debug("deleted queue file")
+        except:
+            logger.debug("media/queue.pkl does not exist")
+        #logger.debug("attempted to delete queue")
 
         form = EMImageForm()
         local_files_form = LocalFilesForm()
