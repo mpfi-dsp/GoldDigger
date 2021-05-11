@@ -336,6 +336,8 @@ def image_view(request):
         shutil.rmtree('../media/queue.pkl', ignore_errors=True)
         logger.debug("attempted to delete queue")
 
+        form = EMImageForm()
+        local_files_form = LocalFilesForm()
 
     elif request.method == 'POST' and 'run-btn' in request.POST:
         form = EMImageForm(request.POST, request.FILES)
