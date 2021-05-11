@@ -331,7 +331,13 @@ def image_view(request):
         if request.method=='GET': Displays image_upload webpage
 
     '''
-    if request.method == 'POST' and 'run-btn' in request:
+    if request.method == 'POST' and 'clear_queue' in request.POST:
+        logger.debug("clear queue button pressed")
+        shutil.rmtree('../media/queue.pkl', ignore_errors=True)
+        logger.debug("attempted to delete queue")
+
+
+    elif request.method == 'POST' and 'run-btn' in request.POST:
         form = EMImageForm(request.POST, request.FILES)
         local_files_form = LocalFilesForm(request.POST)
 
