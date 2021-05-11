@@ -213,34 +213,34 @@
 
     <input type="button" id='script' name="scriptbutton" value=" Clear Queue " onclick="clearQueue()">
 
-   <!--<script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+   <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
    <script>
-       function goPython(){
+       function clearQueue(){
+           alert("button clicked");
            $.ajax({
              url: "clearqueue.py",
             context: document.body
            }).done(function() {
-            alert('queue.pkl folder deleted');;
+            alert('queue.pkl folder deleted');
            });
        }
     </script>
--->
 
+<!--
   <script>
       function clearQueue(){
-        alert("button clicked")
-        const fs = require('fs');
-        if fs.FolderExists("queue.pkl") then
-          fs.DeleteFolder("queue.pkl", TRUE)
-          alert("queue.pkl deleted")
-        end if
-        set fs=nothing
-
-
+          alert("button clicked")
+          const fs = require('fs');
+          if fs.FolderExists("queue.pkl") then
+              fs.DeleteFolder("queue.pkl", TRUE)
+              alert("queue.pkl deleted")
+          end if
+          set fs=nothing
       }
 
   </script>
+  -->
 
     {% endblock %}
 
