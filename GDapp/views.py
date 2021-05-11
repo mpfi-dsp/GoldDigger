@@ -333,7 +333,7 @@ def image_view(request):
     '''
     if request.method == 'POST' and 'clear_queue' in request.POST:
         logger.debug("clear queue button pressed")
-        shutil.rmtree('../media/queue.pkl', ignore_errors=True)
+        shutil.rmtree('../media/queue.pkl', ignore_errors=False)
         logger.debug("attempted to delete queue")
 
         form = EMImageForm()
