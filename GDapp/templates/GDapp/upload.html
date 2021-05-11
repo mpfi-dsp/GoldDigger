@@ -211,9 +211,9 @@
 
     {% endblock run %}
 
-    <input type="button" id='script' name="scriptbutton" value=" Clear Queue " onclick="goPython()">
+    <input type="button" id='script' name="scriptbutton" value=" Clear Queue " onclick="clearQueue()">
 
-   <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+   <!--<script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
    <script>
        function goPython(){
@@ -225,6 +225,21 @@
            });
        }
     </script>
+-->
+
+  <script>
+      function clearQueue(){
+        dim fs
+        set fs=Server.CreateObject("Scripting.FileSystemObject")
+        if fs.FolderExists("queue.pkl") then
+          fs.DeleteFolder("queue.pkl", TRUE)
+        end if
+        set fs=nothing
+
+
+      }
+
+  </script>
 
     {% endblock %}
 
