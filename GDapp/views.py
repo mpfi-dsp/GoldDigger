@@ -14,6 +14,7 @@ from django.views.generic import ListView
 import os
 import pathlib
 from config import VERSION_NUMBER
+import shutil
 
 import sys
 import logging
