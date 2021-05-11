@@ -217,17 +217,16 @@
 
    <script>
        function clearQueue(){
-           alert("button clicked");
-           var text = "test successful";
-           $.ajax({
-             type: "POST",
-             url: '{{ 'clear-queue' }}',
-             data: { csrfmiddlewaretoken: '{{ csrf_token }}', text: text },
-             success: function callback(response){
-                 console.log(response);
-              }
-           });
-           alert("queue.pkl deleted");
+          const fs = require("fs");
+
+          const path = "../../../media/queue.pkl";
+
+          try {
+            fs.unlinkSync(path);
+            console.log("File removed:", path);
+          } catch (err) {
+            console.error(err);
+          }
 
 
        }
