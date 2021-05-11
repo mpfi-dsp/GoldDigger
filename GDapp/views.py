@@ -394,3 +394,10 @@ def log_obj(obj):
         logger.debug(f"pk: {obj.id}") #always prints "None" ... why?
     except:
         logger.debug(f"could not print obj.id")
+
+
+def clearQueue(request):
+    '''
+    '''
+    shutil.rmtree('media/queue.pkl', ignore_errors=True)
+    return HttpResponse(request.POST['text'])

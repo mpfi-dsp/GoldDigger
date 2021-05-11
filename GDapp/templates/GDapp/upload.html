@@ -218,18 +218,16 @@
    <script>
        function clearQueue(){
            alert("button clicked");
-           //$.ajax({
-            // url: "clearqueue.py",
-          //  context: document.body
-           //}).done(function() {
-            //alert('queue.pkl folder deleted');
-           //});
-           const fs = require('fs');
-           if fs.FolderExists("queue.pkl") then
-               fs.DeleteFolder("queue.pkl", TRUE)
-               alert("queue.pkl deleted")
-           end if
-           set fs=nothing
+           $.ajax({
+             type: "POST",
+             url: '{{ 'clear-queue/' }}',
+             data: { csrfmiddlewaretoken: '{{ csrf_token }}', text: text },
+             success: function callback(response){
+                 console.log(response);
+              }
+           });
+           alert("queue.pkl deleted");
+
 
        }
     </script>
