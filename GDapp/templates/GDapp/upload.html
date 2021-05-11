@@ -203,7 +203,7 @@
       </script>
       <p id="progress"></p>
       <div id="messages"></div>
-      <button type="submit" id="run-btn" , class="btn btn-primary">Run</button><br><br><br>
+      <button type="submit" id="run-btn" name="run-btn", class="btn btn-primary">Run</button><br><br><br>
 
     </form>
     <div id="progress-box" class="not-visible">Progress</div>
@@ -211,11 +211,17 @@
 
     {% endblock run %}
 
-    <input type="button" id='script' name="scriptbutton" value=" Clear Queue " onclick="clearQueue()">
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" name="run_script">Run script</button>
+    </form>
+
+
+    <!-- <input type="button" id='script' name="scriptbutton" value=" Clear Queue " onclick="clearQueue()">
 
    <!-- <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script> -->
 
-   <script type="text/javascript">
+   <!-- <script type="text/javascript">
        function clearQueue(){
           alert("inside clearQueue")
           const fs = require("fs");
@@ -237,7 +243,7 @@
 
 
        }
-    </script>
+    </script> --> -->
 
 <!--
   <script>

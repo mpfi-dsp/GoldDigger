@@ -331,7 +331,7 @@ def image_view(request):
         if request.method=='GET': Displays image_upload webpage
 
     '''
-    if request.method == 'POST':
+    if request.method == 'POST' and 'run-btn' in request:
         form = EMImageForm(request.POST, request.FILES)
         local_files_form = LocalFilesForm(request.POST)
 
