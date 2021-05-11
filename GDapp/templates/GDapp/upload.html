@@ -229,6 +229,7 @@
 
   <script>
       function clearQueue(){
+        alert("button clicked")
         const fs = require('fs');
         if fs.FolderExists("queue.pkl") then
           fs.DeleteFolder("queue.pkl", TRUE)
