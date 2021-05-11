@@ -402,4 +402,5 @@ def clearQueue(request):
     logger.debug("INSIDE clearQueue FUNCTION")
     shutil.rmtree('media/queue.pkl', ignore_errors=True)
     logger.debug("COMPLETED clearQUEUE FUNCTION")
-    return HttpResponse(request.POST['text'])
+    #return HttpResponse(request.POST['text'])
+    return render(request, 'GDapp/upload.html')
