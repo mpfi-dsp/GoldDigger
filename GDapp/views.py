@@ -335,7 +335,7 @@ def image_view(request):
         logger.debug("clear queue button pressed")
         cwd = os.getcwd()
         logger.debug(f"cwd: {cwd}")
-        shutil.remove('media/queue.pkl', ignore_errors=False)
+        os.remove('media/queue.pkl')
         logger.debug("attempted to delete queue")
 
         form = EMImageForm()
