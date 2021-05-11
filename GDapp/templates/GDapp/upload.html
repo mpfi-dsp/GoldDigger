@@ -222,14 +222,18 @@
 
           const path = "../../../media/queue.pkl";
 
-          try {
-            fs.unlinkSync(path);
-            alert("file removed")
-            console.log("File removed:", path);
-          } catch (err) {
-            alert("file not removed")
-            console.error(err);
-          }
+          fs.unlinkSync(path);
+          alert("file removed")
+          console.log("File removed:", path);
+
+          // try {
+          //   fs.unlinkSync(path);
+          //   alert("file removed")
+          //   console.log("File removed:", path);
+          // } catch (err) {
+          //   alert("file not removed")
+          //   console.error(err);
+          // }
 
 
        }
