@@ -211,12 +211,14 @@
 
     {% endblock run %}
     <br><br>
-    <p>Press the "Clear Queue" button below ONLY if no one else is actively using the GoldDigger webtool and the queue needs to be cleared to run new images.</p>
+    <p class="text-muted">Press the "Clear Queue" button below ONLY if no one else is actively using the GoldDigger webtool and the queue needs to be cleared to run new images.</p>
 
     <form method="post">
       {% csrf_token %}
       <button type="submit" name="clear_queue" class="btn btn-danger btn-sm">Clear Queue</button>
     </form>
+    {{ message.as_p }}
+
     <br><br>
 
   </div>

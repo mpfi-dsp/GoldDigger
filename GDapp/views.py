@@ -331,6 +331,7 @@ def image_view(request):
         if request.method=='GET': Displays image_upload webpage
 
     '''
+    message = ""
     if request.method == 'POST' and 'clear_queue' in request.POST:
         logger.debug("clear queue button pressed")
         cwd = os.getcwd()
@@ -344,6 +345,7 @@ def image_view(request):
 
         form = EMImageForm()
         local_files_form = LocalFilesForm()
+        message = "Queue deleted."
 
     elif request.method == 'POST' and 'run-btn' in request.POST:
         form = EMImageForm(request.POST, request.FILES)
@@ -362,7 +364,7 @@ def image_view(request):
         form = EMImageForm()
         local_files_form = LocalFilesForm()
 
-    return render(request, 'GDapp/upload.html', {'form': form, 'local_files_form': local_files_form})
+    return render(request, 'GDapp/upload.html', {'form': form, 'local_files_form': local_files_form, 'message': message})
 
 
 def run_gd(request, inputs):
