@@ -210,59 +210,14 @@
 
 
     {% endblock run %}
+    <br><br>
+    <p>Press the "Clear Queue" button below ONLY if no one else is actively using the GoldDigger webtool and the queue needs to be cleared to run new images.</p>
 
     <form method="post">
       {% csrf_token %}
-      <button type="submit" name="clear_queue">Clear Queue</button>
+      <button type="submit" name="clear_queue" class="btn btn-danger btn-small">Clear Queue</button>
     </form>
-
-
-    <!-- <input type="button" id='script' name="scriptbutton" value=" Clear Queue " onclick="clearQueue()">
-
-   <!-- <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script> -->
-
-   <!-- <script type="text/javascript">
-       function clearQueue(){
-          alert("inside clearQueue")
-          const fs = require("fs");
-
-          const path = "../../../media/queue.pkl";
-
-          fs.unlinkSync(path);
-          alert("file removed")
-          console.log("File removed:", path);
-
-          // try {
-          //   fs.unlinkSync(path);
-          //   alert("file removed")
-          //   console.log("File removed:", path);
-          // } catch (err) {
-          //   alert("file not removed")
-          //   console.error(err);
-          // }
-
-
-       }
-    </script> -->
-
-<!--
-  <script>
-      function clearQueue(){
-          alert("button clicked")
-          const fs = require('fs');
-          if fs.FolderExists("queue.pkl") then
-              fs.DeleteFolder("queue.pkl", TRUE)
-              alert("queue.pkl deleted")
-          end if
-          set fs=nothing
-      }
-
-  </script>
-  -->
-
-    <!-- <button onclick="location.href='{% url 'clear-queue' %}'">Clear Queue</button> -->
-
-
+    <br><br>
 
   </div>
 
