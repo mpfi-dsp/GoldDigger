@@ -666,6 +666,7 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
     thresh_sens = obj.thresh_sens
 
     obj.status = "Inside run_gold_digger function"
+    obj.save()
 
     print(f'Running with {model}')
 
