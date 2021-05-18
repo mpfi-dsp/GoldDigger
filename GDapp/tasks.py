@@ -39,8 +39,14 @@ def run_gold_digger_task(self, pk):
     front_end_updater = FrontEndUpdater(pk)
 
     front_end_updater.update(0, "running gold digger")
+    obj.status = "Running Gold Digger"
+    obj.save()
+
     run_gold_digger(obj.trained_model, image_path, obj.particle_groups,
                     obj.threshold_string, thresh_sens=obj.thresh_sens, mask=mask_path, front_end_updater=front_end_updater)
+                    
+    obj.status = "Completed Run"
+    obj.save()
     return ('Done')
 
 @shared_task(bind=True)
