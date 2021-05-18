@@ -391,6 +391,7 @@ def run_gd(request, inputs):
         save_to_queue(pk_single)
         obj = EMImage.objects.get(pk=pk_single)
         obj.status = "Added to queue"
+        obj.save()
     if fresh_start:
         start_tasks()
     return render(request, 'GDapp/run_gd.html', {'pk': pk[0]})
