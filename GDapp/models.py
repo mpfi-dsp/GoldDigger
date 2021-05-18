@@ -13,13 +13,13 @@ logger = logging.getLogger(__name__)
 # ('model name within code', 'model display name')
 # add to this list if adding a new trained model
 TRAINED_MODEL_CHOICES = [
-    ('43kGoldDigger', 'GoldDigger for small particles in 43k images'),
-    ('87kGoldDigger', 'General GoldDigger (87k)'),
+    ('43kGoldDigger', 'GoldDigger v0.9 (43k)'),
+    ('87kGoldDigger', 'GoldDigger v1.0 (87k)'),
     #('032521Experimental', '03/25/2021 Experimental GoldDigger'),
-    ('greenonly_041421', 'Green Only GoldDigger (04/14/2021)'),
-    ('balanced_041421', 'Balanced GoldDigger (04/14/2021)'),
-    ('greenonly_0422','Corrected Images: Green Only GoldDigger (04/22/2021)'),
-    ('balanced_0422', 'Corrected Images: Balanced GoldDigger (04/22/2021)')
+    #('greenonly_041421', 'Green Only GoldDigger (04/14/2021)'),
+    #('balanced_041421', 'Balanced GoldDigger (04/14/2021)'),
+    ('greenonly_0422','GoldDigger v1.1 (Corrected)')
+    #('balanced_0422', 'Corrected Images: Balanced GoldDigger (04/22/2021)')
 ]
 
 MyChunkedUpload = ChunkedUpload
