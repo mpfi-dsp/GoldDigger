@@ -73,6 +73,8 @@ class EMImage(models.Model):
     output_file = models.FileField(
         upload_to="analyzed/output", null=True)
 
+    status = models.CharField(max_length=100, blank=True, null=True, default = 'Uploaded and added to queue')    
+
     preloaded_pk = models.CharField(max_length=10, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -11,6 +11,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Date</th>
+                <th scope="col">Status</th>
                 <th scope="col">Preview</th>
 
 
@@ -43,7 +44,14 @@
 
 
                     {{ run.trained_model}} <br>
+                </td>
 
+                <td>
+                    {{ % if run.status % }}
+                      {{ run.status }}
+                    {{ % else % }}
+                      <p>Status Unavailable</p>
+                    {{ % endif % }}
 
                 </td>
                 <!--<td>{% if run.image %}<img src="/media/{{ run.image }}" width="150">
