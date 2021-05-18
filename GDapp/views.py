@@ -389,6 +389,8 @@ def run_gd(request, inputs):
     logger.debug(f"fresh_start: {fresh_start}")
     for pk_single in pk:
         save_to_queue(pk_single)
+        obj = EMImage.objects.get(pk=pk_single)
+        obj.status = "Added to queue"
     if fresh_start:
         start_tasks()
     return render(request, 'GDapp/run_gd.html', {'pk': pk[0]})
