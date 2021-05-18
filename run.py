@@ -662,7 +662,7 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
     model = obj.trained_model
     input_image_list = image_path
     particle_group_count = obj.particle_groups
-    thresholds_list_string = obj.thresholds_list_string
+    thresholds_list_string = obj.threshold_string
     thresh_sens = obj.thresh_sens
 
     obj.status = "Inside run_gold_digger function"
