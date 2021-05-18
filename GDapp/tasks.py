@@ -42,11 +42,12 @@ def run_gold_digger_task(self, pk):
     obj.status = "Running Gold Digger"
     obj.save()
 
-    run_gold_digger(obj.trained_model, image_path, obj.particle_groups,
-                    obj.threshold_string, thresh_sens=obj.thresh_sens, mask=mask_path, front_end_updater=front_end_updater)
-                    
-    obj.status = "Completed Run"
-    obj.save()
+    #run_gold_digger(obj.trained_model, image_path, obj.particle_groups,
+    #                obj.threshold_string, thresh_sens=obj.thresh_sens, mask=mask_path, front_end_updater=front_end_updater)
+    run_gold_digger(image_path, obj, mask=mask_path, front_end_updater=front_end_updater)
+
+    #obj.status = "Completed Run"
+    #obj.save()
     return ('Done')
 
 @shared_task(bind=True)
