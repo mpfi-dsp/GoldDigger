@@ -644,7 +644,7 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, mode
 #def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string, thresh_sens=4, mask=None, front_end_updater=None):
 
 #run_gold_digger(obj.trained_model, image_path, obj.particle_groups, obj.threshold_string, thresh_sens=obj.thresh_sens, mask=mask_path, front_end_updater=front_end_updater)
-def run_gold_digger(image_path, obj, mask=None, front_end_updater=front_end_updater):
+def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
 
     '''
         This function calls all the functions required to run a profile through a trained model and produce output.
