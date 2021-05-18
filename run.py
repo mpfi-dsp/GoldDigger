@@ -641,7 +641,11 @@ def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, mode
     save_histogram(coordinates, front_end_updater)
 
 
-def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string, thresh_sens=4, mask=None, front_end_updater=None):
+#def run_gold_digger(model, input_image_list, particle_group_count, thresholds_list_string, thresh_sens=4, mask=None, front_end_updater=None):
+
+#run_gold_digger(obj.trained_model, image_path, obj.particle_groups, obj.threshold_string, thresh_sens=obj.thresh_sens, mask=mask_path, front_end_updater=front_end_updater)
+def run_gold_digger(image_path, obj, mask=None, front_end_updater=front_end_updater):
+
     '''
         This function calls all the functions required to run a profile through a trained model and produce output.
 
@@ -655,6 +659,14 @@ def run_gold_digger(model, input_image_list, particle_group_count, thresholds_li
         front_end_updater:
 
     '''
+    model = obj.trained_model
+    input_image_list = image_path
+    particle_group_count = obj.particle_groups
+    thresholds_list_string = obj.thresholds_list_string
+    thresh_sens = obj.thresh_sens
+
+    obj.status = "Inside run_gold_digger function"
+
     print(f'Running with {model}')
 
     imageName = pathlib.Path(input_image_list).stem
