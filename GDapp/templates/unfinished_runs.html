@@ -47,11 +47,11 @@
                 </td>
 
                 <td>
-                    {{ % if run.status % }}
+                    {% if run.status %}
                       {{ run.status }}
-                    {{ % else % }}
+                    {% else %}
                       <p>Status Unavailable</p>
-                    {{ % endif % }}
+                    {% endif %}
 
                 </td>
                 <!--<td>{% if run.image %}<img src="/media/{{ run.image }}" width="150">
