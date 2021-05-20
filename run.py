@@ -724,58 +724,58 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
     heighttimeswidth = width * height
     folderstart = 'media/Output_ToStitch/'
 
-    try:
-        save_to_output_folder(file_list, model)
-        obj.status = "Moved PIX2PIX output into folder to be stitched together"
-        obj.save()
-    except:
-        obj.status = "Error during save_to_output_folder function"
-        obj.save()
-        return
+    # try:
+    save_to_output_folder(file_list, model)
+    obj.status = "Moved PIX2PIX output into folder to be stitched together"
+    obj.save()
+    # except:
+    #     obj.status = "Error during save_to_output_folder function"
+    #     obj.save()
+    #     return
 
-    try:
-        picture, file_list = stitch_image(
-            folderstart, widthdiv256, heighttimeswidth, art_idx)
-        obj.status = "Reassembled PIX2PIX output into full image"
-        obj.save()
-    except:
-        obj.status = "Error during stitch_image function"
-        obj.save()
-        return
+    # try:
+    picture, file_list = stitch_image(
+        folderstart, widthdiv256, heighttimeswidth, art_idx)
+    obj.status = "Reassembled PIX2PIX output into full image"
+    obj.save()
+    # except:
+    #     obj.status = "Error during stitch_image function"
+    #     obj.save()
+    #     return
 
     imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
     front_end_updater.update(7, "Identifying green dots")
 
-    try:
-        cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
-        obj.status = "Possible particle locations extracted from PIX2PIX output"
-        obj.save()
-    except:
-        obj.status = "Error during count_green_dots function"
-        obj.save()
-        return
+    # try:
+    cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
+    obj.status = "Possible particle locations extracted from PIX2PIX output"
+    obj.save()
+    # except:
+    #     obj.status = "Error during count_green_dots function"
+    #     obj.save()
+    #     return
 
-    try:
-        all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
-        obj.status = "Generated list of particle coordinates and areas"
-        obj.save()
-    except:
-        obj.status = "Error during get_contour_centers function"
-        obj.save()
-        return
+    # try:
+    all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
+    obj.status = "Generated list of particle coordinates and areas"
+    obj.save()
+    # except:
+    #     obj.status = "Error during get_contour_centers function"
+    #     obj.save()
+    #     return
 
     print("image name: " + input_image_list)
     print(pathlib.Path(input_image_list).stem)
 
-    try:
-        results1, results2, results3 = sort_from_thresholds(coords_in_mask,
-                                                        particle_group_count, thresholds_list_string)
-        obj.status = "Particle list sorted into size groups"
-        obj.save()
-    except:
-        obj.status = "Error during sort_from_thresholds function"
-        obj.save()
-        return
+    # try:
+    results1, results2, results3 = sort_from_thresholds(coords_in_mask,
+                                                    particle_group_count, thresholds_list_string)
+    obj.status = "Particle list sorted into size groups"
+    obj.save()
+    # except:
+    #     obj.status = "Error during sort_from_thresholds function"
+    #     obj.save()
+    #     return
 
     #try:
     save_all_results(coords_in_mask, results1, results2, results3, model, front_end_updater, imageName=imageName)
