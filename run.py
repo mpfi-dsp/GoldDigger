@@ -773,8 +773,7 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
 
 
     save_all_results(coords_in_mask, results1, results2, results3, model, front_end_updater, imageName=imageName)
-    obj.status = "Results saved"
-    obj.save()
+
 
 
 
