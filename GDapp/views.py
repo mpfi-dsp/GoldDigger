@@ -364,7 +364,7 @@ def image_view(request):
         form = EMImageForm()
         local_files_form = LocalFilesForm()
 
-    return render(request, 'GDapp/upload.html', {'form': form, 'local_files_form': local_files_form, 'message': message})
+    return render(request, 'GDapp/upload.html', {'form': form, 'local_files_form': local_files_form})
 
 
 def run_gd(request, inputs):
