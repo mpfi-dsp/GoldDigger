@@ -678,41 +678,41 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
     clear_out_old_files(model)
     front_end_updater.update(2, "loading and cutting up image")
 
-    try:
-        file_list, width, height, img_mask = load_data_make_jpeg(
-            input_image_list, mask, model, front_end_updater, imageName=imageName)
-        obj.status = "Cropped image into 256x256 windows"
-        obj.save()
-    except:
-        obj.status = "Error in load_data_make_jpeg function"
-        obj.save()
-        return
+    # try:
+    file_list, width, height, img_mask = load_data_make_jpeg(
+        input_image_list, mask, model, front_end_updater, imageName=imageName)
+    obj.status = "Cropped image into 256x256 windows"
+    obj.save()
+    # except:
+    #     obj.status = "Error in load_data_make_jpeg function"
+    #     obj.save()
+    #     return
 
 
     front_end_updater.update(4, "combining with white background")
     white = io.imread('media/White/white.png')
 
-    try:
-        combine_white(white, 'media/Output', front_end_updater)
-        obj.status = "Formatted 256x256 windows for PIX2PIX network"
-        obj.save()
-    except:
-        obj.status = "Error in combine_white function"
-        obj.save()
-        return
+    # try:
+    combine_white(white, 'media/Output', front_end_updater)
+    obj.status = "Formatted 256x256 windows for PIX2PIX network"
+    obj.save()
+    # except:
+    #     obj.status = "Error in combine_white function"
+    #     obj.save()
+    #     return
 
     front_end_updater.update(5, "running PIX2PIX...")
 
-    try:
-        os.system(
-            'python3 media/PIX2PIX/test.py --dataroot media/Output_Appended/ --name {0} --model pix2pix --direction AtoB --num_test 1000000 --checkpoints_dir media/PIX2PIX/checkpoints/ --results_dir media/PIX2PIX/results/'.format(
-                model))
-        obj.status = "Ran PIX2PIX network"
-        obj.save()
-    except:
-        obj.status = "Error while running PIX2PIX network"
-        obj.save()
-        return
+    # try:
+    os.system(
+        'python3 media/PIX2PIX/test.py --dataroot media/Output_Appended/ --name {0} --model pix2pix --direction AtoB --num_test 1000000 --checkpoints_dir media/PIX2PIX/checkpoints/ --results_dir media/PIX2PIX/results/'.format(
+            model))
+    obj.status = "Ran PIX2PIX network"
+    obj.save()
+    # except:
+    #     obj.status = "Error while running PIX2PIX network"
+    #     obj.save()
+    #     return
 
     print("RAN PIX2PIX")
     front_end_updater.update(6, "Finished. stitching files together...")
