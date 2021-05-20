@@ -680,8 +680,9 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
         obj.status = "Prepared files to run"
         obj.save()
     except:
-        obj.status = "Error when preparing files to run"
+        obj.status = "Error in get_artifact_status or clear_out_old_files function"
         obj.save()
+        return
 
     try:
         front_end_updater.update(2, "loading and cutting up image")
@@ -692,13 +693,24 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
         obj.status = "Image cut into 256x256 windows"
         obj.save()
     except:
-        obj.status = "Error when cutting image into 256x256 windows"
+        obj.status = "Error in load_data_make_jpeg"
         obj.save()
+        return
+
+    try:
+        front_end_updater.update(4, "combining with white background")
+        white = io.imread('media/White/white.png')
+        combine_white(white, 'media/Output', front_end_updater)
+        obj.status = "Image prepared for PIX2PIX"
+        obj.save()
+    except:
+        obj.status = "Error in combine_white function"
+        obj.save()
+        return
 
 
-    front_end_updater.update(4, "combining with white background")
-    white = io.imread('media/White/white.png')
-    combine_white(white, 'media/Output', front_end_updater)
+
+
     front_end_updater.update(5, "running PIX2PIX...")
     os.system(
         'python3 media/PIX2PIX/test.py --dataroot media/Output_Appended/ --name {0} --model pix2pix --direction AtoB --num_test 1000000 --checkpoints_dir media/PIX2PIX/checkpoints/ --results_dir media/PIX2PIX/results/'.format(
