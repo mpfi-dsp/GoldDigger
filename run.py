@@ -1,5 +1,5 @@
 # imports
-from GDapp.models import add_analyzed_image, add_gold_particle_coordinates, add_histogram_image, add_output_file
+from GDapp.models import add_analyzed_image, add_gold_particle_coordinates, add_histogram_image, add_output_file, EMImage
 import os
 from skimage import io  # library for python to help access pictures
 import numpy as np  # help do math in python
