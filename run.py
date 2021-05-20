@@ -668,14 +668,22 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
     obj.status = "Inside run_gold_digger function"
     obj.save()
 
-    print(f'Running with {model}')
+    try:
+        print(f'Running with {model}')
 
-    imageName = pathlib.Path(input_image_list).stem
-    print(f'Image name: {imageName}')
+        imageName = pathlib.Path(input_image_list).stem
+        print(f'Image name: {imageName}')
 
-    front_end_updater.update(1, "starting")
-    art_idx = get_artifact_status(model)
-    clear_out_old_files(model)
+        front_end_updater.update(1, "starting")
+        art_idx = get_artifact_status(model)
+        clear_out_old_files(model)
+        obj.status = "Prepared files to run"
+        obj.save()
+    except:
+        obj.status = "Error when preparing files to run"
+        obj.save()
+
+
     front_end_updater.update(2, "loading and cutting up image")
 
     file_list, width, height, img_mask = load_data_make_jpeg(
