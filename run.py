@@ -710,12 +710,19 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
 
 
 
-
-    front_end_updater.update(5, "running PIX2PIX...")
-    os.system(
-        'python3 media/PIX2PIX/test.py --dataroot media/Output_Appended/ --name {0} --model pix2pix --direction AtoB --num_test 1000000 --checkpoints_dir media/PIX2PIX/checkpoints/ --results_dir media/PIX2PIX/results/'.format(
-            model))
-    print("RAN PIX2PIX")
+    try:
+        front_end_updater.update(5, "running PIX2PIX...")
+        os.system(
+            'python3 media/PIX2PIX/test.py --dataroot media/Output_Appended/ --name {0} --model pix2pix --direction AtoB --num_test 1000000 --checkpoints_dir media/PIX2PIX/checkpoints/ --results_dir media/PIX2PIX/results/'.format(
+                model))
+        print("RAN PIX2PIX")
+        obj.status = "Ran PIX2PIX"
+        obj.save()
+    except:
+        obj.status = "Error when running PIX2PIX"
+        obj.save()
+        return
+    
     front_end_updater.update(6, "Finished. stitching files together...")
 
     file_list = glob.glob(
