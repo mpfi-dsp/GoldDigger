@@ -683,11 +683,19 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
         obj.status = "Error when preparing files to run"
         obj.save()
 
+    try:
+        front_end_updater.update(2, "loading and cutting up image")
 
-    front_end_updater.update(2, "loading and cutting up image")
+        file_list, width, height, img_mask = load_data_make_jpeg(
+            input_image_list, mask, model, front_end_updater, imageName=imageName)
 
-    file_list, width, height, img_mask = load_data_make_jpeg(
-        input_image_list, mask, model, front_end_updater, imageName=imageName)
+        obj.status = "Image cut into 256x256 windows"
+        obj.save()
+    except:
+        obj.status = "Error when cutting image into 256x256 windows"
+        obj.save()
+
+
     front_end_updater.update(4, "combining with white background")
     white = io.imread('media/White/white.png')
     combine_white(white, 'media/Output', front_end_updater)
