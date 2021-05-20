@@ -745,10 +745,17 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
         obj.save()
         return
 
-    front_end_updater.update(7, "Identifying green dots")
-    cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
+    try:
+        front_end_updater.update(7, "Identifying green dots")
+        cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
 
-    all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
+        all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
+        obj.status = "Identified particle coordinates"
+        obj.save()
+    except:
+        obj.status = "Error in count_green_dots or get_contour_centers"
+        obj.save()
+        return
 
 
     print("image name: " + input_image_list)
