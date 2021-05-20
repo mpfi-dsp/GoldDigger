@@ -722,19 +722,29 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
         obj.status = "Error when running PIX2PIX"
         obj.save()
         return
-    
-    front_end_updater.update(6, "Finished. stitching files together...")
 
-    file_list = glob.glob(
-        'media/PIX2PIX/results/{0}/test_latest/images/*_fake_B.png'.format(model))
-    print("---BEFORE STITCH---")
-    widthdiv256 = width
-    heighttimeswidth = width * height
-    folderstart = 'media/Output_ToStitch/'
-    save_to_output_folder(file_list, model)
-    picture, file_list = stitch_image(
-        folderstart, widthdiv256, heighttimeswidth, art_idx)
-    imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
+
+    try:
+        front_end_updater.update(6, "Finished. stitching files together...")
+
+        file_list = glob.glob(
+            'media/PIX2PIX/results/{0}/test_latest/images/*_fake_B.png'.format(model))
+        print("---BEFORE STITCH---")
+        widthdiv256 = width
+        heighttimeswidth = width * height
+        folderstart = 'media/Output_ToStitch/'
+        save_to_output_folder(file_list, model)
+        picture, file_list = stitch_image(
+            folderstart, widthdiv256, heighttimeswidth, art_idx)
+        imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
+
+        obj.status = "Stitched PIX2PIX output image together"
+        obj.save()
+    except:
+        obj.status = "Error in save_to_output_folder or stitch_image function"
+        obj.save()
+        return
+
     front_end_updater.update(7, "Identifying green dots")
     cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
 
