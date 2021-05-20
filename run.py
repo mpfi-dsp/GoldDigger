@@ -758,11 +758,18 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
         return
 
 
-    print("image name: " + input_image_list)
-    print(pathlib.Path(input_image_list).stem)
+    try:
+        print("image name: " + input_image_list)
+        print(pathlib.Path(input_image_list).stem)
 
-    results1, results2, results3 = sort_from_thresholds(coords_in_mask,
-                                                        particle_group_count, thresholds_list_string)
+        results1, results2, results3 = sort_from_thresholds(coords_in_mask,
+                                                            particle_group_count, thresholds_list_string)
+        obj.status = "Sorted particle coordinates into area groups"
+        obj.save()
+    except:
+        obj.status = "Error in sort_from_thresholds function"
+        obj.save()
+        return
 
     save_all_results(coords_in_mask, results1, results2, results3, model, front_end_updater, imageName=imageName)
 
