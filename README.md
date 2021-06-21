@@ -30,7 +30,7 @@ sh scripts/build.sh
 ```
 5. Manually edit config.py to set the relevant information
 
-6. Run the docker container:  
+6. Run the docker container: (these scripts are to run GD webtool each time after the previous setup instructions are completed) 
     - detached (if you don't need to see all the terminal outputs):
     ```
     sh scripts/run_docker_detached.sh
@@ -51,7 +51,7 @@ sh scripts/build.sh
         ```
         scripts/run_django.sh
         ```
-        4. open a new terminal window and run flower (to monitor celery processes)
+        4. open a new terminal window and run flower (to monitor celery processes, usually not needed)
         ```
         sh scritps/run_flower.sh
         ```
