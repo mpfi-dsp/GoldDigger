@@ -4,7 +4,7 @@ This repository contains the code to have a working local server for GoldDigger.
 Gold Digger runs via Django Webserver and currently has static IP of 10.203.1.222 assigned Machine Name is DS-LAB-WS04.
 Make sure config.py in the /scripts folder has the correct IP address.
 
-# Start GoldDigger Server
+## Start GoldDigger Server
 Once installed with the instructions below you just need to run ~/Desktop/scripts/  sudo ./run_docker_detached.sh.
 If after powercut you may need to pull the sources from github with 'git pull'
 
