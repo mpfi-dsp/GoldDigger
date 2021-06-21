@@ -1,5 +1,5 @@
 # imports
-from GDapp.models import add_analyzed_image, add_gold_particle_coordinates, add_histogram_image, add_output_file
+from GDapp.models import add_analyzed_image, add_gold_particle_coordinates, add_histogram_image, add_output_file, EMImage
 import os
 from skimage import io  # library for python to help access pictures
 import numpy as np  # help do math in python
@@ -668,123 +668,115 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
     obj.status = "Inside run_gold_digger function"
     obj.save()
 
-    print(f'Running with {model}')
+    try:
+        print(f'Running with {model}')
 
-    imageName = pathlib.Path(input_image_list).stem
-    print(f'Image name: {imageName}')
+        imageName = pathlib.Path(input_image_list).stem
+        print(f'Image name: {imageName}')
 
-    front_end_updater.update(1, "starting")
-    art_idx = get_artifact_status(model)
-    clear_out_old_files(model)
-    front_end_updater.update(2, "loading and cutting up image")
+        front_end_updater.update(1, "starting")
+        art_idx = get_artifact_status(model)
+        clear_out_old_files(model)
+        obj.status = "Prepared files to run"
+        obj.save()
+    except:
+        obj.status = "Error in get_artifact_status or clear_out_old_files function"
+        obj.save()
+        return
 
-    # try:
-    file_list, width, height, img_mask = load_data_make_jpeg(
-        input_image_list, mask, model, front_end_updater, imageName=imageName)
-    obj.status = "Cropped image into 256x256 windows"
-    obj.save()
-    # except:
-    #     obj.status = "Error in load_data_make_jpeg function"
-    #     obj.save()
-    #     return
+    try:
+        front_end_updater.update(2, "loading and cutting up image")
+
+        file_list, width, height, img_mask = load_data_make_jpeg(
+            input_image_list, mask, model, front_end_updater, imageName=imageName)
+
+        obj.status = "Image cut into 256x256 windows"
+        obj.save()
+    except:
+        obj.status = "Error in load_data_make_jpeg"
+        obj.save()
+        return
+
+    try:
+        front_end_updater.update(4, "combining with white background")
+        white = io.imread('media/White/white.png')
+        combine_white(white, 'media/Output', front_end_updater)
+        obj.status = "Image prepared for PIX2PIX"
+        obj.save()
+    except:
+        obj.status = "Error in combine_white function"
+        obj.save()
+        return
 
 
-    front_end_updater.update(4, "combining with white background")
-    white = io.imread('media/White/white.png')
 
-    # try:
-    combine_white(white, 'media/Output', front_end_updater)
-    obj.status = "Formatted 256x256 windows for PIX2PIX network"
-    obj.save()
-    # except:
-    #     obj.status = "Error in combine_white function"
-    #     obj.save()
-    #     return
+    try:
+        front_end_updater.update(5, "running PIX2PIX...")
+        os.system(
+            'python3 media/PIX2PIX/test.py --dataroot media/Output_Appended/ --name {0} --model pix2pix --direction AtoB --num_test 1000000 --checkpoints_dir media/PIX2PIX/checkpoints/ --results_dir media/PIX2PIX/results/'.format(
+                model))
+        print("RAN PIX2PIX")
+        obj.status = "Ran PIX2PIX"
+        obj.save()
+    except:
+        obj.status = "Error when running PIX2PIX"
+        obj.save()
+        return
 
-    front_end_updater.update(5, "running PIX2PIX...")
 
-    # try:
-    os.system(
-        'python3 media/PIX2PIX/test.py --dataroot media/Output_Appended/ --name {0} --model pix2pix --direction AtoB --num_test 1000000 --checkpoints_dir media/PIX2PIX/checkpoints/ --results_dir media/PIX2PIX/results/'.format(
-            model))
-    obj.status = "Ran PIX2PIX network"
-    obj.save()
-    # except:
-    #     obj.status = "Error while running PIX2PIX network"
-    #     obj.save()
-    #     return
+    try:
+        front_end_updater.update(6, "Finished. stitching files together...")
 
-    print("RAN PIX2PIX")
-    front_end_updater.update(6, "Finished. stitching files together...")
+        file_list = glob.glob(
+            'media/PIX2PIX/results/{0}/test_latest/images/*_fake_B.png'.format(model))
+        print("---BEFORE STITCH---")
+        widthdiv256 = width
+        heighttimeswidth = width * height
+        folderstart = 'media/Output_ToStitch/'
+        save_to_output_folder(file_list, model)
+        picture, file_list = stitch_image(
+            folderstart, widthdiv256, heighttimeswidth, art_idx)
+        imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
 
-    file_list = glob.glob(
-        'media/PIX2PIX/results/{0}/test_latest/images/*_fake_B.png'.format(model))
-    print("---BEFORE STITCH---")
-    widthdiv256 = width
-    heighttimeswidth = width * height
-    folderstart = 'media/Output_ToStitch/'
+        obj.status = "Stitched PIX2PIX output image together"
+        obj.save()
+    except:
+        obj.status = "Error in save_to_output_folder or stitch_image function"
+        obj.save()
+        return
 
-    # try:
-    save_to_output_folder(file_list, model)
-    obj.status = "Moved PIX2PIX output into folder to be stitched together"
-    obj.save()
-    # except:
-    #     obj.status = "Error during save_to_output_folder function"
-    #     obj.save()
-    #     return
+    try:
+        front_end_updater.update(7, "Identifying green dots")
+        cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
 
-    # try:
-    picture, file_list = stitch_image(
-        folderstart, widthdiv256, heighttimeswidth, art_idx)
-    obj.status = "Reassembled PIX2PIX output into full image"
-    obj.save()
-    # except:
-    #     obj.status = "Error during stitch_image function"
-    #     obj.save()
-    #     return
+        all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
+        obj.status = "Identified particle coordinates"
+        obj.save()
+    except:
+        obj.status = "Error in count_green_dots or get_contour_centers"
+        obj.save()
+        return
 
-    imageio.imwrite('media/Output_Final/OutputStitched.png', picture)
-    front_end_updater.update(7, "Identifying green dots")
 
-    # try:
-    cnts = count_green_dots(model, imageName=imageName, thresh_sens=thresh_sens)
-    obj.status = "Possible particle locations extracted from PIX2PIX output"
-    obj.save()
-    # except:
-    #     obj.status = "Error during count_green_dots function"
-    #     obj.save()
-    #     return
+    try:
+        print("image name: " + input_image_list)
+        print(pathlib.Path(input_image_list).stem)
 
-    # try:
-    all_coordinates, coords_in_mask = get_contour_centers(cnts, img_mask)
-    obj.status = "Generated list of particle coordinates and areas"
-    obj.save()
-    # except:
-    #     obj.status = "Error during get_contour_centers function"
-    #     obj.save()
-    #     return
+        results1, results2, results3 = sort_from_thresholds(coords_in_mask,
+                                                            particle_group_count, thresholds_list_string)
+        obj.status = "Sorted particle coordinates into area groups"
+        obj.save()
+    except:
+        obj.status = "Error in sort_from_thresholds function"
+        obj.save()
+        return
 
-    print("image name: " + input_image_list)
-    print(pathlib.Path(input_image_list).stem)
-
-    # try:
-    results1, results2, results3 = sort_from_thresholds(coords_in_mask,
-                                                    particle_group_count, thresholds_list_string)
-    obj.status = "Particle list sorted into size groups"
-    obj.save()
-    # except:
-    #     obj.status = "Error during sort_from_thresholds function"
-    #     obj.save()
-    #     return
 
     #try:
     save_all_results(coords_in_mask, results1, results2, results3, model, front_end_updater, imageName=imageName)
-    obj.status = "Output files created"
+    obj = EMImage.objects.get(pk=front_end_updater.pk)
+    obj.status = "Results saved"
     obj.save()
-    #except:
-    #    obj.status = "Error during save_all_results function"
-    #    obj.save()
-    #    return
 
 
 
