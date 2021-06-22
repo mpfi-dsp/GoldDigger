@@ -31,6 +31,24 @@ If that doesn't work, download them manually and put them in their respective fo
 sh scripts/build.sh
 ```
 5. Manually edit config.py to set the relevant information (IP Address, Image Folder Path)
+'''
+ALLOWED_HOSTS = [
+    '0.0.0.0',
+    '127.0.0.1',
+    '10.202.1.192', # host machine's local ip address
+    '10.202.1.193',
+    '10.203.1.222',
+    'localhost',
+    ]
+
+LOCAL_IMAGE_FOLDER = "/home/MPFI.ORG/stuarte/Desktop/Drives/ds-prog/EM-DATA/gd-for-analysis"
+
+VERSION_NUMBER = "1.09.00"
+
+DJANGO_DEV_PORT = "8001"
+
+REDIS_PORT = "6380
+'''
 
 6. Run the docker container: (these scripts are to run GD webtool each time after the previous setup instructions are completed) 
     - detached (if you don't need to see all the terminal outputs):
