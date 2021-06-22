@@ -4,18 +4,14 @@ This repository contains the code to have a working local server for GoldDigger.
 Gold Digger runs via Django Webserver and currently has static IP of 10.203.1.222 assigned Machine Name is DS-LAB-WS04.
 Make sure config.py in the /scripts folder has the correct IP address.
 
-## Start GoldDigger Server
-Once installed with the instructions below you just need to run ~/Desktop/scripts/  sudo ./run_docker_detached.sh.
-If after powercut you may need to pull the sources from github with 'git pull'. You may also want to run 'git stash' then 'git checkout master' followed by 'git pull'. This should switch to the Master repository.
-
 ## Installation Instructions:
 
 1. Install nvidia docker:  
     https://github.com/NVIDIA/nvidia-docker
 
-2. Download this github repository and extract it into a folder
+2. Download this github repository and extract it into a folder.
 
-3. In terminal, navigate to the main golddigger directory and download the models using this command.
+3. In terminal, navigate to the main GoldDigger directory and download the models using this command.
 ```
 sh scripts/download_models.sh
 ```
@@ -67,6 +63,14 @@ sh scripts/build.sh
     http://0.0.0.0:8000
 
 8. Give yourself a high five.
+
+## Start GoldDigger Server after Restart
+After a computer restart you may need to pull the sources from github with 'git pull'. You may also want to run 'git stash' then 'git checkout master' followed by 'git pull' if you want to switch back to the Master repository.
+
+Then start at step 3 of the installation instructions above:
+- sudo sh scripts/download_models.sh
+- sudo sh scripts/build.sh
+- sh scripts/run_docker_detached.sh
 
 ## Troubleshooting:
 
