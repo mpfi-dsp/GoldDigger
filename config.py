@@ -3,7 +3,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '10.202.1.192', # host machine's local ip address
     '10.202.1.193',
-    '10.203.222',
+    '10.203.1.222',
     'localhost',
     ]
 
