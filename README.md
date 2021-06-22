@@ -6,9 +6,7 @@ Make sure config.py in the /scripts folder has the correct IP address.
 
 ## Start GoldDigger Server
 Once installed with the instructions below you just need to run ~/Desktop/scripts/  sudo ./run_docker_detached.sh.
-If after powercut you may need to pull the sources from github with 'git pull'. You may also want to run 'git checkout master' followed by 'git pull'.
-
-
+If after powercut you may need to pull the sources from github with 'git pull'. You may also want to run 'git stash' then 'git checkout master' followed by 'git pull'. This should switch to the Master repository.
 
 ## Installation Instructions:
 
