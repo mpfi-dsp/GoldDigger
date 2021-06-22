@@ -1,8 +1,8 @@
 # GoldDigger Server
 
 This repository contains the code to have a working local server for GoldDigger.
-Gold Digger runs via Django Webserver and currently has static IP of 10.203.1.222 assigned Machine Name is DS-LAB-WS04.
-Make sure config.py in the /scripts folder has the correct IP address.
+Gold Digger runs via Django Webserver and currently has static IP of 10.203.1.222 assigned - the Machine Name is DS-LAB-WS04.
+Make sure config.py in the /scripts folder has the correct IP address and image folder path.
 
 ## Installation Instructions:
 
@@ -30,7 +30,7 @@ If that doesn't work, download them manually and put them in their respective fo
 ```
 sh scripts/build.sh
 ```
-5. Manually edit config.py to set the relevant information
+5. Manually edit config.py to set the relevant information (IP Address, Image Folder Path)
 
 6. Run the docker container: (these scripts are to run GD webtool each time after the previous setup instructions are completed) 
     - detached (if you don't need to see all the terminal outputs):
