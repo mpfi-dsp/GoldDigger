@@ -68,10 +68,11 @@ sh scripts/build.sh
 After a computer restart you may need to pull the sources from github with 'git pull'. You may also want to run 'git stash' then 'git checkout master' followed by 'git pull' if you want to switch back to the Master repository.
 
 Then start at step 3 of the installation instructions above:
-- sudo sh scripts/download_models.sh
-- sudo sh scripts/build.sh
-- sh scripts/run_docker_detached.sh
-
+```
+sudo sh scripts/download_models.sh
+sudo sh scripts/build.sh
+sudo sh scripts/run_docker_detached.sh
+```
 ## Troubleshooting:
 
 ### To restart the server, just ctrl+c the celery worker terminal and then the django terminal. Then restart the celery worker, and then django.
