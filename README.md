@@ -76,7 +76,7 @@ Change working Directory to GoldDigger
 ```
 cd ~/Desktop/GoldDigger
 ```
-Then start at step 3 of the installation instructions above:
+Then start at step 3 of the installation instructions above (make sure you run the commands from inside the GoldDigger folder - otherwise might give errors):
 ```
 sudo sh scripts/download_models.sh
 sudo sh scripts/build.sh
