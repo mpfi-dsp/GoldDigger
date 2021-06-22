@@ -55,7 +55,7 @@ sh scripts/build.sh
         ```
         4. open a new terminal window and run flower (to monitor celery processes, usually not needed)
         ```
-        sh scritps/run_flower.sh
+        sh scripts/run_flower.sh
         ```
 
 
