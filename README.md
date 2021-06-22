@@ -67,12 +67,22 @@ sh scripts/build.sh
 ## Start GoldDigger Server after Restart
 After a computer restart you may need to pull the sources from github with 'git pull'. You may also want to run 'git stash' then 'git checkout master' followed by 'git pull' if you want to switch back to the Master repository.
 
+If the shared drive directories are not mounted correctly, double-click on the 'mount-drives.sh' icon on the desktop. This will mount the shared drives into the directory 'ds-prog' which should make it visible to Gold-Digger.
+
+Make sure LOCAL config.py has the following path information:
+LOCAL_IMAGE_FOLDER = "/home/mpfi.org/db-lab-adm/Desktop/Drives/ds-prog/EM-DATA/gd-for-analysis"
+
+Change working Directory to GoldDigger 
+```
+cd ~/Desktop/GoldDigger
+```
 Then start at step 3 of the installation instructions above:
 ```
 sudo sh scripts/download_models.sh
 sudo sh scripts/build.sh
 sudo sh scripts/run_docker_detached.sh
 ```
+
 ## Troubleshooting:
 
 ### To restart the server, just ctrl+c the celery worker terminal and then the django terminal. Then restart the celery worker, and then django.
