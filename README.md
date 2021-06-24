@@ -79,6 +79,13 @@ REDIS_PORT = "6380
 ## Start GoldDigger Server after Restart
 After a computer restart you may need to pull the sources from github with 'git pull'. You may also want to run 'git stash' then 'git checkout master' followed by 'git pull' if you want to switch back to the Master repository.
 
+If you updated the models you would need to run from the GoldDigger diretory
+
+```
+sudo sh scripts/download_models.sh
+sudo sh scripts/build.sh
+```
+
 If the shared drive directories are not mounted correctly, double-click on the 'mount-drives.sh' icon on the desktop. This will mount the shared drives into the directory 'ds-prog' which should make it visible to Gold-Digger.
 
 Make sure LOCAL config.py has the following path information:
@@ -88,12 +95,14 @@ Change working Directory to GoldDigger
 ```
 cd ~/Desktop/GoldDigger
 ```
-Then start at step 3 of the installation instructions above (make sure you run the commands from inside the GoldDigger folder - otherwise might give errors):
+Make sure you run the commands from inside the GoldDigger folder - otherwise might give errors):
 ```
-sudo sh scripts/download_models.sh
-sudo sh scripts/build.sh
 sudo sh scripts/run_docker_detached.sh
 ```
+This should get Gold Digger Webtool up and running on https://10.203.1.222:8001
+
+
+
 
 ## Troubleshooting:
 
