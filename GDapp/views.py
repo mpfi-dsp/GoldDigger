@@ -418,6 +418,7 @@ def log_obj(obj):
 
 def clearQueue(request):
     '''
+        This function creates the functionality of the clear queue button (deletes queue file on click)
     '''
     logger.debug("INSIDE clearQueue FUNCTION")
     shutil.rmtree('../media/queue.pkl', ignore_errors=True)

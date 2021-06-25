@@ -379,7 +379,7 @@ def find_centers(cnts, img_original):
 # Basically it just uses the green masks to find a seed point to start flood filling. This makes sure that the mask is the exact size of the gold particle
 def count_green_dots(model, imageName='', thresh_sens=4):
     '''
-    This function
+    This function extracts gold particle coordinates from the PIX2PIX output image
 
     Parameters:
         model:
@@ -432,7 +432,7 @@ def count_green_dots(model, imageName='', thresh_sens=4):
 
 def check_if_coordinate_is_in_mask(x, y, mask):
     '''
-        This function
+        This function checks if a coordinate is inside the mask (pface area)
 
         Parameters:
             x:
@@ -455,7 +455,7 @@ def check_if_coordinate_is_in_mask(x, y, mask):
 
 def get_contour_centers(cnts, img_mask):
     '''
-        This function
+        This function obtains the list of all gold particle coordinates
 
         Parameters:
             cnts:
@@ -501,7 +501,7 @@ def get_contour_centers(cnts, img_mask):
 
 def sort_from_thresholds(coords_in_mask, particle_group_count, thresholds_list_string):
     '''
-        This function
+        This function sorts the coordinates into up to 3 groups based on their area cutoffs.
 
         Parameters:
         coords_in_mask:
@@ -553,7 +553,7 @@ def sort_from_thresholds(coords_in_mask, particle_group_count, thresholds_list_s
 
 def update_progress(progress_recorder, step, total_steps, message):
     '''
-        This function
+        This function updates the progress bar progress
 
         Parameters:
         progress_recorder:
@@ -567,6 +567,10 @@ def update_progress(progress_recorder, step, total_steps, message):
 
 
 def save_preview_figure(all_coordinates, imageName, model, front_end_updater):
+    '''
+        This function saves the image with printed area values to the EMImage object
+
+    '''
     img_original = cv2.imread(f'media/Output_Final/Cropped-{imageName}-with-{model}.png')
 
     for i, coord in all_coordinates.iterrows():
@@ -580,7 +584,7 @@ def save_preview_figure(all_coordinates, imageName, model, front_end_updater):
 
 def save_histogram(coordinates, front_end_updater):
     '''
-        This function
+        This function saves the histogram image to the EMImage object
 
         Parameters:
         coordinates:
@@ -609,7 +613,7 @@ def save_coordinates(coordinates, name, front_end_updater):
 
 def save_all_results(coordinates, coordinates1, coordinates2, coordinates3, model, front_end_updater, imageName=''):
     '''
-        This function
+        This function saves the output files to the EMImage object.
 
         Parameters:
         coordinates:
