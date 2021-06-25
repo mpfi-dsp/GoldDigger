@@ -787,6 +787,10 @@ def run_gold_digger(image_path, obj, mask=None, front_end_updater=None):
 
     add_output_file(front_end_updater.pk, f'media/Output-{imageName}-with-{model}.zip')
 
+    obj = EMImage.objects.get(pk=front_end_updater.pk)
+    obj.status = "Output zip file created"
+    obj.save()
+
     print('CREATED ZIP FILE')
     front_end_updater.update(9, f"All done with {imageName}")
     front_end_updater.analysis_done(imageName = imageName)
