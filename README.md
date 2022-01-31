@@ -1,6 +1,6 @@
 # GoldDigger Server
 
-_**⚠️ This project is no longer offically supported. Please do not contact us with related inquiries.**_
+_**⚠️ This project is no longer officially supported. We are unable to provide assistance in regards to troubleshooting.**_
 
 This repository contains the code to have a working local server for GoldDigger.
 Gold Digger runs via Django Webserver and currently has static IP of 10.203.1.222 assigned - the Machine Name is DS-LAB-WS04.
