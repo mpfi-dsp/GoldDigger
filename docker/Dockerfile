@@ -16,4 +16,4 @@ RUN pip install -r requirements.txt
 RUN apt-get update
 RUN pip install opencv-python
 RUN apt-get install python-opencv -y
-run pip install wheel flower
+run pip install wheel flower==0.9.7
